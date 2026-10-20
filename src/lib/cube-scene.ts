@@ -1,41 +1,20 @@
 import * as THREE from "three";
 import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.js";
-import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
+import { cubicBezier } from "motion";
 import { createFaceMaterials } from "./cube-textures";
-import { createCubeLight } from "./cube-light";
 import { CubeOrbit, type OrbitInput } from "./cube-orbit";
-import { applyTurn, createCubies, createTurnSequence, FACE_NORMALS, hasSticker, type Cubie, type Turn } from "./rubik-state";
+import { createCubeParticles } from "./cube-particles";
+import { applyTurn, createCubies, createScrambleSequence, createTurnSequence, FACE_NORMALS, hasSticker, type Cubie, type ScrambleMove } from "./rubik-state";
 
 export type CubeInput = OrbitInput & {
   paused: boolean;
   reduced: boolean;
+  scroll: number;
 };
 
-function createStickerGeometry() {
-  const shape = new THREE.Shape();
-  const h = 0.414;
-  const r = 0.045;
-  shape.moveTo(-h + r, -h);
-  shape.lineTo(h - r, -h); shape.quadraticCurveTo(h, -h, h, -h + r);
-  shape.lineTo(h, h - r); shape.quadraticCurveTo(h, h, h - r, h);
-  shape.lineTo(-h + r, h); shape.quadraticCurveTo(-h, h, -h, h - r);
-  shape.lineTo(-h, -h + r); shape.quadraticCurveTo(-h, -h, -h + r, -h);
-  const geometry = new THREE.ExtrudeGeometry(shape, {
-    depth: 0.035,
-    steps: 1,
-    curveSegments: 4,
-    bevelEnabled: true,
-    bevelThickness: 0.012,
-    bevelSize: 0.012,
-    bevelSegments: 2,
-  });
-  const uv = geometry.getAttribute("uv");
-  const position = geometry.getAttribute("position");
-  for (let i = 0; i < uv.count; i++) uv.setXY(i, position.getX(i) / (2 * h) + 0.5, position.getY(i) / (2 * h) + 0.5);
-  return geometry;
-}
+const easeLayerTurn = cubicBezier(0.42, 0, 0.58, 1);
 
-export function createCubeScene(canvas: HTMLCanvasElement, input: CubeInput) {
+export async function createCubeScene(canvas: HTMLCanvasElement, input: CubeInput) {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: "high-performance" });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75));
   renderer.setClearColor(0x000000, 0);
@@ -46,22 +25,30 @@ export function createCubeScene(canvas: HTMLCanvasElement, input: CubeInput) {
   camera.position.set(4.8, 3.4, 5.8);
   camera.lookAt(0, 0, 0);
 
-  const pmrem = new THREE.PMREMGenerator(renderer);
-  const room = new RoomEnvironment();
-  const environment = pmrem.fromScene(room, 0.04);
-  scene.environment = environment.texture;
-  scene.environmentIntensity = 0.28;
-  room.dispose();
-  pmrem.dispose();
-
-  const geometry = new RoundedBoxGeometry(0.955, 0.955, 0.955, 3, 0.045);
-  const material = new THREE.MeshStandardMaterial({ color: 0x090909, metalness: 0.65, roughness: 0.28, envMapIntensity: 1.1 });
-  const tileEdgeMaterial = new THREE.MeshStandardMaterial({ color: 0x101010, metalness: 0.5, roughness: 0.22, envMapIntensity: 1.3 });
-  const stickerGeometry = createStickerGeometry();
-  const faces = createFaceMaterials(renderer.capabilities.getMaxAnisotropy());
+  let faces: Awaited<ReturnType<typeof createFaceMaterials>>;
+  try {
+    faces = await createFaceMaterials(renderer.capabilities.getMaxAnisotropy());
+  } catch (error) {
+    renderer.dispose();
+    throw error;
+  }
+  // Rounded solid blocks match the source cube, without raised sticker plates.
+  const geometry = new RoundedBoxGeometry(0.99, 0.99, 0.99, 5, 0.075);
+  const material = new THREE.MeshMatcapMaterial({ matcap: faces.materials[4].matcap, color: 0x777777, toneMapped: false });
+  const surfaces = [...faces.materials, material];
+  surfaces.forEach((surface) => { surface.transparent = true; });
+  const view = new THREE.Group();
+  view.rotation.set(0.03, -0.17, -0.12);
+  const pitch = new THREE.Group();
   const group = new THREE.Group();
-  group.rotation.set(0.03, -0.17, -0.12);
-  scene.add(group);
+  // Separate pitch/yaw axes preserve direct drag tracking and the view tilt.
+  scene.add(view);
+  view.add(pitch);
+  pitch.add(group);
+  const particles = createCubeParticles(window.innerWidth < 760, renderer.getPixelRatio());
+  group.add(particles.object);
+  const cameraRight = new THREE.Vector3(1, 0, 0).applyQuaternion(camera.quaternion);
+  const cameraUp = new THREE.Vector3(0, 1, 0).applyQuaternion(camera.quaternion);
   const cubies = createCubies();
   const nextTurn = createTurnSequence();
   // Start with a legal scramble, including for reduced-motion visitors.
@@ -80,24 +67,17 @@ export function createCubeScene(canvas: HTMLCanvasElement, input: CubeInput) {
 
   for (const cubie of cubies) {
     const object = new THREE.Group();
-    object.add(new THREE.Mesh(geometry, material));
-    FACE_NORMALS.forEach((normal, index) => {
-      if (!hasSticker(cubie, normal)) return;
-      const sticker = new THREE.Mesh(stickerGeometry, [faces.materials[index], tileEdgeMaterial]);
-      const direction = new THREE.Vector3(...normal);
-      sticker.position.copy(direction).multiplyScalar(0.481);
-      sticker.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), direction);
-      object.add(sticker);
-    });
+    const faceMaterials = FACE_NORMALS.map((normal, index) => hasSticker(cubie, normal) ? faces.materials[index] : material);
+    object.add(new THREE.Mesh(geometry, faceMaterials));
     objects.set(cubie, object);
     syncTransform(cubie);
     group.add(object);
   }
 
-  const lighting = createCubeLight(scene);
-
   const pivot = new THREE.Group();
-  let active: { turn: Turn; cubies: Cubie[]; elapsed: number } | null = null;
+  const nextScramble = createScrambleSequence();
+  let pendingTurns: ScrambleMove[] = [];
+  let active: { turn: ScrambleMove; cubies: Cubie[]; elapsed: number } | null = null;
   let rest = 0.85;
   let visible = true;
   let disposed = false;
@@ -105,9 +85,30 @@ export function createCubeScene(canvas: HTMLCanvasElement, input: CubeInput) {
   let previousTime: number | null = null;
   const orbit = new CubeOrbit();
   let dirty = true;
+  let previousScroll = -1;
+  let animationTime = 0;
+
+  function updateScroll(progress: number) {
+    const compact = canvas.clientWidth < 760;
+    const spread = 1 + Math.sin(progress * Math.PI) * 0.4;
+    const opacity = 1 - THREE.MathUtils.smoothstep(progress, 0.12, 0.7);
+    surfaces.forEach((surface) => { surface.opacity = opacity; });
+    cubies.forEach((cubie) => {
+      const object = objects.get(cubie)!;
+      object.position.fromArray(cubie.position).multiplyScalar(spread);
+      object.visible = opacity > 0.005;
+    });
+    view.position.copy(cameraRight).multiplyScalar(compact ? 0 : 0.4 * (1 - progress));
+    view.position.addScaledVector(cameraUp, -0.5 + progress * 0.65);
+    view.scale.setScalar((compact ? 0.83 : 0.78) - progress * 0.14);
+    particles.update(progress, animationTime);
+    previousScroll = progress;
+    dirty = true;
+  }
 
   function startTurn() {
-    const turn = nextTurn();
+    if (pendingTurns.length === 0) pendingTurns = nextScramble();
+    const turn = pendingTurns.shift()!;
     const selected = cubies.filter((cubie) => cubie.position[turn.axis] === turn.layer);
     pivot.rotation.set(0, 0, 0);
     group.add(pivot);
@@ -117,14 +118,14 @@ export function createCubeScene(canvas: HTMLCanvasElement, input: CubeInput) {
 
   function finishTurn() {
     if (!active) return;
-    applyTurn(cubies, active.turn);
+    for (let i = 0; i < active.turn.quarterTurns; i++) applyTurn(cubies, active.turn);
     active.cubies.forEach((cubie) => {
       group.add(objects.get(cubie)!);
       syncTransform(cubie);
     });
     group.remove(pivot);
     active = null;
-    rest = 0.9;
+    rest = pendingTurns.length > 0 ? 0 : 0.9;
   }
 
   function paint() {
@@ -138,6 +139,7 @@ export function createCubeScene(canvas: HTMLCanvasElement, input: CubeInput) {
     camera.aspect = width / height;
     camera.zoom = Math.min(1.06, width / height * 1.06);
     camera.updateProjectionMatrix();
+    updateScroll(input.reduced ? 0 : input.scroll);
     paint();
   }
 
@@ -146,15 +148,15 @@ export function createCubeScene(canvas: HTMLCanvasElement, input: CubeInput) {
     const delta = previousTime === null ? 0 : Math.min((now - previousTime) / 1000, 0.05);
     previousTime = now;
     if (visible && !document.hidden) {
-      // Render at the display's requestAnimationFrame rate, without a 30 fps gate.
       const automatic = !input.paused && !input.reduced;
+      if (automatic) animationTime += delta;
       if (input.reduced && active) { finishTurn(); dirty = true; }
       if (automatic) {
         if (active) {
           active.elapsed += delta;
-          const progress = Math.min(active.elapsed / 1.15, 1);
-          const eased = progress * progress * progress * (progress * (progress * 6 - 15) + 10);
-          const angle = active.turn.direction * Math.PI / 2 * eased;
+          const duration = active.turn.quarterTurns === 2 ? 1.7 : 1.15;
+          const progress = Math.min(active.elapsed / duration, 1);
+          const angle = active.turn.direction * Math.PI / 2 * active.turn.quarterTurns * easeLayerTurn(progress);
           pivot.rotation.set(active.turn.axis === 0 ? angle : 0, active.turn.axis === 1 ? angle : 0, active.turn.axis === 2 ? angle : 0);
           if (progress === 1) finishTurn();
         } else {
@@ -164,11 +166,13 @@ export function createCubeScene(canvas: HTMLCanvasElement, input: CubeInput) {
         dirty = true;
       }
       const orientation = orbit.update(input, delta, automatic);
-      const targetX = 0.03 + orientation.y;
-      const targetY = -0.17 + orientation.x;
-      if (group.rotation.x !== targetX || group.rotation.y !== targetY) {
+      const scroll = input.reduced ? 0 : Math.max(0, Math.min(1, input.scroll));
+      if (scroll !== previousScroll || (automatic && scroll > 0)) updateScroll(scroll);
+      const targetX = orientation.y;
+      const targetY = orientation.x;
+      if (pitch.rotation.x !== targetX || group.rotation.y !== targetY) {
         // Direct tracking avoids inertial drift after the pointer is released.
-        group.rotation.x = targetX;
+        pitch.rotation.x = targetX;
         group.rotation.y = targetY;
         dirty = true;
       }
@@ -185,7 +189,6 @@ export function createCubeScene(canvas: HTMLCanvasElement, input: CubeInput) {
   frame = requestAnimationFrame(tick);
 
   return {
-    reset() { orbit.reset(); input.x = 0; input.y = 0; dirty = true; },
     dispose() {
       disposed = true;
       cancelAnimationFrame(frame);
@@ -193,11 +196,8 @@ export function createCubeScene(canvas: HTMLCanvasElement, input: CubeInput) {
       intersection.disconnect();
       geometry.dispose();
       material.dispose();
-      tileEdgeMaterial.dispose();
-      stickerGeometry.dispose();
       faces.dispose();
-      lighting.dispose();
-      environment.dispose();
+      particles.dispose();
       renderer.dispose();
     },
   };

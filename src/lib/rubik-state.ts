@@ -2,6 +2,7 @@
 export type Coordinate = [number, number, number];
 export type Axis = 0 | 1 | 2;
 export type Turn = { axis: Axis; layer: -1 | 1; direction: -1 | 1 };
+export type ScrambleMove = Turn & { quarterTurns: 1 | 2 };
 export type Cubie = {
   id: string;
   home: Coordinate;
@@ -56,5 +57,24 @@ export function createTurnSequence(seed = 7127) {
     const axis = ((previousAxis + 1 + Math.floor(random() * 2)) % 3) as Axis;
     previousAxis = axis;
     return { axis, layer: random() < 0.5 ? -1 : 1, direction: random() < 0.5 ? -1 : 1 };
+  };
+}
+
+/** Continuous half-turns, with an opposite-layer follow-up every 3–5 sequences. */
+export function createScrambleSequence(seed = 3907) {
+  const nextTurn = createTurnSequence(seed);
+  const interval = () => {
+    seed = seed * 16807 % 2147483647;
+    return 3 + Math.floor((seed - 1) / 2147483646 * 3);
+  };
+  let remaining = interval();
+  return (): ScrambleMove[] => {
+    const turn = nextTurn();
+    const turns: ScrambleMove[] = [{ ...turn, quarterTurns: 2 }];
+    if (--remaining === 0) {
+      turns.push({ ...turn, layer: turn.layer === 1 ? -1 : 1, quarterTurns: 1 });
+      remaining = interval();
+    }
+    return turns;
   };
 }

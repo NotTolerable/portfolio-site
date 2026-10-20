@@ -1,6 +1,6 @@
 # Roadmap
 
-Updated: 2026-10-14. Current phase: implementation and design review.
+Updated: 2026-10-19. Current phase: implementation and design review.
 
 ## 1. Establish project context
 
@@ -12,7 +12,7 @@ Updated: 2026-10-14. Current phase: implementation and design review.
 - [ ] Identify career stage, target roles, and primary engineering focus.
 - [ ] Review the two existing projects and the owner's contributions.
 - [ ] Inventory publishable code, screenshots, demos, and technical evidence.
-- [x] Agree on initial homepage scope and replace the old visuals with the latest `DESIGN.md`.
+- [x] Agree on a personal systems portfolio direction and replace the company-style layout with the latest `DESIGN.md`.
 - [ ] Decide whether to develop a systems project alongside the site.
 
 ## 3. Choose the implementation approach
@@ -30,9 +30,12 @@ Updated: 2026-10-14. Current phase: implementation and design review.
 - [x] Implement the new visual design, 3D cube, project explorer, and infrastructure planning page.
 - [x] Add autonomous legal cube turns, six scrambled surface textures, display-synchronized rendering, controlled whole-cube dragging, and glass-finish buttons.
 - [x] Refine cube materials with distinct near-black-to-charcoal shades, above-right directional lighting, and hover rotation.
-- [x] Add raised beveled tiles, distinct gloss/relief, and direction-aware idle rotation.
+- [x] Match the cube reference with original material maps, rounded solid cubelets, and authored two-axis motion.
 - [x] Restore the cube’s original column, enlarge it slightly, add a visible ray, and ease faster idle direction changes.
 - [x] Rewrite the copy as a relaxed personal portfolio and add a quick first-load greeting.
+- [x] Introduce the name-led systems theme, asymmetric project entries, expandable notes, and a reversible cube-to-particle scroll transition.
+- [x] Refine identity with a serif name, original cube-outline mark and BP, no underscore suffixes/index branding, and selective glass depth on controls.
+- [x] Refine glass with static frosting and rim highlights; remove the cube/hologram overlay while retaining automatic animation and requiring drag/keyboard input for manual steering.
 - [ ] Complete owner-verified project case studies, source links, resume, and contact details.
 - [ ] Configure the chosen infrastructure and deployment workflow.
 - [ ] Write the hosting walkthrough from the actual implementation.

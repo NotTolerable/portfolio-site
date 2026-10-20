@@ -1,42 +1,36 @@
 import Link from "next/link";
 import { Header } from "@/components/header";
-import { Arrow, Chevron, LineIcon } from "@/components/icons";
-import { HeroCube } from "@/components/hero-cube";
-import { ProjectExplorer } from "@/components/project-explorer";
+import { Arrow } from "@/components/icons";
+import { PortfolioIntro } from "@/components/portfolio-intro";
+import { ProjectVisual } from "@/components/project-visual";
 import { Reveal } from "@/components/reveal";
+import { projects } from "@/lib/projects";
 
 export default function Home() {
   return <>
     <Header />
     <main id="main">
-      <section className="hero shell" aria-labelledby="hero-title">
-        <Reveal className="hero-copy">
-          <p className="hero-note mono">software engineer. curious about the details.</p>
-          <h1 id="hero-title">Hey, I’m<br />Babisan.</h1>
-          <p>I’m into low-level systems, GPU computing, and the stuff that keeps software running. Here’s what I’ve been working on and what I’m learning next.</p>
-          <div className="hero-actions"><a className="button" href="#projects">My projects <Arrow /></a><a className="text-link" href="#about">A bit about me <Chevron /></a></div>
-        </Reveal>
-        <Reveal className="hero-visual" delay={0.1}><HeroCube /></Reveal>
-      </section>
-
-      <section className="interests-bar shell" aria-label="Engineering interests"><p className="mono">THINGS I’M INTO</p><div><span><LineIcon kind="code" />Low-level systems</span><span><LineIcon kind="layers" />Low latency</span><span><LineIcon kind="chip" />GPU computing</span><span><LineIcon kind="cloud" />Cloud infrastructure</span></div></section>
-
+      <PortfolioIntro />
       <section id="projects" className="work-section shell" aria-labelledby="work-title">
-        <Reveal className="section-heading"><p className="eyebrow mono">SOME THINGS I’VE BUILT</p><h2 id="work-title">A couple of projects.</h2><p>AI governance, computer vision, and a few interesting problems to work through.</p></Reveal>
-        <Reveal><ProjectExplorer /></Reveal>
+        <Reveal className="work-heading"><div><p className="section-index">0x01 <span>/</span> SELECTED WORK</p><h2 id="work-title">Things I’ve built<span className="accent">.</span></h2></div><p>Two projects. Different problems.<br />A little of how I think.</p></Reveal>
+        <div className="project-list">
+          {projects.map((project, index) => <Reveal key={project.id} className="project-entry">
+            <article aria-labelledby={`${project.id}-title`}>
+              <div className="project-topline"><span className="project-number">0{index + 1}</span><span>{project.focus}</span><span className="project-kind">PERSONAL PROJECT</span></div>
+              <ProjectVisual kind={project.id} />
+              <div className="project-body"><div><p className="project-category">{index === 0 ? "AI GOVERNANCE / COMPLIANCE" : "AI / COMPUTER VISION"}</p><h3 id={`${project.id}-title`}>{project.name}</h3></div><div className="project-summary"><p>{project.description}</p><details><summary>Project note <span aria-hidden="true">+</span></summary><div className="project-note"><p>{project.context}</p><span>DETAILED WRITE-UP IN PROGRESS</span></div></details></div></div>
+            </article>
+          </Reveal>)}
+        </div>
       </section>
-
-      <section className="infra-section shell" aria-labelledby="infra-title">
-        <Reveal className="infra-copy"><p className="eyebrow mono">ON MY TO-BUILD LIST</p><h2 id="infra-title">Some cloud<br />experiments, too.</h2><p>I’m planning a separate AWS site to learn more about hosting, deployment, and what happens after you type a URL. I’ll share the setup and the decisions there.</p><Link className="button" href="/infrastructure">Cloud & infrastructure <Arrow diagonal /></Link></Reveal>
-        <Reveal className="infra-terminal" delay={0.1}><div className="terminal-window"><div className="window-toolbar"><span className="window-dots" aria-hidden="true"><i /><i /><i /></span><span className="mono">infrastructure / roadmap</span></div><div className="terminal-body mono"><p><span className="terminal-prompt">~</span> cat infrastructure.plan</p><br /><p className="code-comment"># A separate static showcase</p><p><span className="code-key">origin</span><span className="code-string">private S3 bucket</span></p><p><span className="code-key">delivery</span><span className="code-string">CloudFront</span></p><p><span className="code-key">dns</span><span className="code-string">Route 53</span></p><p><span className="code-key">tls</span><span className="code-string">ACM</span></p><br /><p><span className="code-comment">status</span><span className="terminal-status">planned, not deployed</span></p><p className="terminal-last"><span className="terminal-prompt">~</span><span className="terminal-cursor" /></p></div><div className="window-bottom"><span className="mono">NOT LIVE YET — WORKING OUT THE DETAILS</span></div></div></Reveal>
-      </section>
-
       <section id="about" className="about-section shell" aria-labelledby="about-title">
-        <Reveal className="section-heading"><p className="eyebrow mono">A BIT ABOUT ME</p><h2 id="about-title">I like knowing<br />how things work.</h2><p>Especially the parts you don’t see: memory, performance, GPUs, and the infrastructure behind an application.</p></Reveal>
-        <Reveal className="about-grid"><article className="about-card"><div className="card-icon"><LineIcon kind="code" /></div><h3>What I’ve been up to</h3><p>So far, I’ve built projects around AI governance and computer vision. This is where I’m sharing the work and writing down what I learned.</p><span className="mono code-accent">AI / GOVERNANCE / VISION</span></article><article className="about-card"><div className="card-icon"><LineIcon kind="chip" /></div><h3>What I want to try next</h3><p>I’m keen to spend more time with low-latency systems, CUDA, and cloud infrastructure. One project at a time.</p><span className="mono code-accent">SYSTEMS / CUDA / INFRASTRUCTURE</span></article></Reveal>
-        <Reveal className="closing"><span className="mono">BABISAN PIRAPAKARAN</span><p>Thanks for<br />having a look.</p><a className="button" href="#projects">Back to my projects <Chevron /></a></Reveal>
+        <Reveal className="about-label"><p className="section-index">0x02 <span>/</span> THE PERSON</p><span className="about-bracket" aria-hidden="true">&#123;</span></Reveal>
+        <Reveal className="about-content"><h2 id="about-title">Curious about<br />what’s underneath.</h2><p className="about-lead">I’m Babisan, a software engineer drawn to the parts of computing that you don’t usually see.</p><p>My current projects explore AI governance and computer vision. I want to go deeper into low-level systems, GPU programming, and the infrastructure behind the software we use.</p><p>I like figuring out how the pieces fit together, then making something with that understanding.</p><div className="current-interests"><span className="section-index">CURRENT CURIOSITIES</span><ul><li><span>01</span> Systems & performance</li><li><span>02</span> GPU computing / CUDA</li><li><span>03</span> Cloud & infrastructure</li></ul></div></Reveal>
+      </section>
+      <section className="cloud-section shell" aria-labelledby="cloud-title">
+        <Reveal className="cloud-note"><div className="cloud-note-top"><p className="section-index">0x03 <span>/</span> ON THE BENCH</p><span className="plan-status"><i aria-hidden="true" /> PLANNED</span></div><div className="cloud-note-body"><div><h2 id="cloud-title">My next cloud experiment.</h2><p>A separate static site on AWS, with the hosting, infrastructure, and decisions explained along the way.</p></div><Link href="/infrastructure" className="text-link">Explore the plan <Arrow diagonal /></Link></div><div className="cloud-path" aria-label="Proposed request path"><span>browser</span><i aria-hidden="true">→</i><span>cloudfront</span><i aria-hidden="true">→</i><span>private s3</span><span className="cloud-path-label">PROPOSED ARCHITECTURE</span></div></Reveal>
       </section>
     </main>
-    <footer className="site-footer shell"><span>© {new Date().getFullYear()} Babisan Pirapakaran</span><div><Link href="/infrastructure">Infrastructure</Link><a href="#main">Back to top ↑</a></div></footer>
+    <footer className="site-footer shell"><div><a className="footer-name" href="#main">Babisan Pirapakaran</a><p>Software engineering, one layer at a time.</p></div><div className="footer-index"><span>© 2026</span><a href="#main">Back to top ↑</a></div></footer>
   </>;
 }

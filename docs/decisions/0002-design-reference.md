@@ -1,6 +1,6 @@
 # 0002: Replace the initial visual design with the updated DESIGN.md
 
-Status: accepted
+Status: superseded for page layout/theme by [0004](0004-personal-systems-portfolio.md); retained as historical reference
 Date: 2026-10-14
 
 ## Context

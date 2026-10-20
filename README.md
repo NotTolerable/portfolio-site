@@ -1,53 +1,38 @@
-# Babisan Pirapakaran — Portfolio
+# Babisan Pirapakaran — portfolio
 
-An interactive Next.js + TypeScript portfolio following the current [DESIGN.md](DESIGN.md): pure black, a serif hero, graphite hairlines, ghost buttons, and restrained violet code accents. The earlier navy/teal particle design has been replaced.
+A personal software engineering portfolio built with Next.js App Router, TypeScript, Three.js, and Motion. Vercel is the initial hosting plan; no external deployment has been configured.
 
-## Development
-
-Use Node.js 22 or newer and npm.
+## Local development
 
 ```sh
 npm ci
 npm run dev
 ```
 
-Open the Local URL printed by Next.js. For production:
-
-```sh
-npm run build
-npm start
-```
-
 ## Verification
 
 ```sh
+npm run build
 npm run lint
 npm run typecheck
-npm run build
 npm run test:e2e
 ```
 
-Browser checks require installed Google Chrome and start a dedicated production server on port 3012. They exercise project selection, keyboard navigation, clipboard copying, the 3D cube, idle direction/resumption, reduced motion, WebGL failure, responsive overflow, and automated WCAG accessibility checks. Screenshots and failure traces go in ignored `test-results/`.
+Browser checks require installed Google Chrome. They start a separate production server at `127.0.0.1:3012`; build first. Tests exercise project notes, mouse/touch/keyboard cube rotation, automatic animation, drag-only manual steering, keyboard pause, touch cancellation, the reversible particle transition, reduced motion, responsive layouts, missing assets/WebGL fallback, and automated accessibility.
 
-## Visual implementation
+## Experience
 
-- **Fonts:** locally bundled Inter, Playfair Display as the specified Domaine substitute, and JetBrains Mono as the specified Commit Mono substitute. Commercial reference font files are not included.
-- **3D:** A self-scrambling 3×3 Three.js cube with six procedural monochrome textures with distinct near-black-to-charcoal base shades. Raised beveled tiles have individual clearcoat, roughness, and height relief. A fixed soft spotlight shines from above-right, paired with a broad, diffuse SVG light shaft and supporting reflections. The initial legal scramble mixes textures across every side. Layers turn autonomously; moving the mouse rotates the whole cube without holding a button; touch dragging and arrow keys are also supported. The idle orbit resumes on the next frame after movement or pointer release, carrying its speed into the last movement direction and easing from 0.28 toward 0.36 radians/second. It smoothly steers toward a new heading every 3–4 seconds. A stationary hovering cursor allows idle rotation to resume; holding the pointer pauses the idle orbit. Space or the pause button freezes all automatic motion; reset restores only the view. Rendering follows `requestAnimationFrame` with no 30 fps cap; actual frame rate depends on display and GPU. No external models, textures, or HDR downloads are required.
-- **Fallback:** a CSS cube remains visible if WebGL cannot initialize. Reduced motion shows the initially scrambled cube without automatic motion; rendering is skipped offscreen and while the document is hidden.
-- **Motion:** Motion for restrained reveals and project content transitions, respecting reduced-motion preferences. Buttons have a subtle neutral glass finish with vertical gradients, top-edge highlights, and backdrop blur.
-- **Intro:** a short loading-bar greeting appears on a fresh page load and clears in about one second. It does not replay on internal navigation, is skipped for reduced motion, and dismisses on Tab/Escape.
-- **Projects:** an accessible tabbed explorer with overview and copyable portfolio metadata. Metadata is not presented as the projects' implementation source.
+- An ink-black, subtly blue-gray systems theme with self-hosted Inter, JetBrains Mono details, a Playfair Display name, and selective glass controls.
+- A name-led intro with the interactive, textured Rubik-style cube. A short native-scroll sequence deconstructs its cubelets into a GPU particle cloud, then a generic processor silhouette. The project link skips directly to work. Reduced motion removes the extended scroll sequence and morph.
+- A legal initial scramble mixes the materials. Automatic tumble and eased double-scrambles remain enabled. Manual steering requires mouse/touch dragging or arrow keys; hover does not steer. Space on the focused cube pauses/resumes automatic motion. The cube and hologram have no caption/control overlay. The static glass-frost SVG gives buttons subtle texture and rim highlights.
+- Original Resend material images are self-hosted with [provenance and motion notes](docs/assets/resend-cube.md). The custom Three.js implementation recreates some material layers and is not a complete Spline embed.
+- Two project articles with original SVG concept illustrations and native expandable notes. The illustrations are not actual product screenshots. Project contributions, stacks, source/demo links, results, and detailed case studies await owner-provided evidence.
+- A personal about section and a clearly labeled `/infrastructure` planning page for a separate static AWS showcase. No certifications or deployment claims are invented.
+- Offscreen/hidden rendering suppression, capped device pixel ratio, 3,400/6,800 point budgets, and scene/texture/geometry/event disposal. A static CSS fallback preserves content if WebGL or material loading fails.
+- A roughly one-second first-load greeting, skipped for reduced motion and dismissible with Tab/Escape. It does not replay on internal navigation.
 
-## Content
+## Context
 
-The two existing projects are AI governance compliance checking and AI mock interviews involving computer vision. Deeper implementation details, screenshots, source links, resume, and contact details require owner-provided material. The site does not invent results or capabilities.
+See [DESIGN.md](DESIGN.md), [product requirements](docs/product-requirements.md), [architecture](docs/architecture.md), [roadmap](docs/roadmap.md), and [decisions](docs/decisions/README.md).
 
-`/infrastructure` is a clearly labeled plan for a future separate AWS static showcase, with an interactive proposed architecture. Update its link when that site exists. The main portfolio is intended for Vercel.
-
-## Vercel
-
-Import `NotTolerable/portfolio-site` into Vercel, keep the detected Next.js preset and default build/output settings, and select the production branch. No environment variables are required by this implementation. After connecting, Git pushes produce deployments and production branch updates deploy to production. The account connection and deployment have not been configured here. See [Vercel's Git integration documentation](https://vercel.com/docs/git).
-
-## Dependency status
-
-The dependency installation reports an unpatched `braces` advisory in the development-only Next.js ESLint dependency chain. The application dependencies are not implicated by that advisory. Do not force an incompatible Next.js lint-tool downgrade; recheck when upstream tooling updates. See [the advisory](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm).
+Contact details, a resume, public profile/source links, and deployment credentials are not configured. Supply publishable destinations before adding those links. Environment files, dependencies, build output, and browser artifacts are ignored by Git.

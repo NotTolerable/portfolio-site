@@ -1,7 +1,26 @@
 import { expect, test } from "@playwright/test";
-import { applyTurn, createCubies, createTurnSequence, FACE_NORMALS, hasSticker, worldNormal, type Axis, type Turn } from "../src/lib/rubik-state";
+import { applyTurn, createCubies, createScrambleSequence, createTurnSequence, FACE_NORMALS, hasSticker, worldNormal, type Axis, type Turn } from "../src/lib/rubik-state";
 
 const serialize = (value: unknown) => JSON.stringify(value);
+
+test("automatic scrambles pair half-turns with opposite-layer turns every 3–5 sequences", () => {
+  const next = createScrambleSequence();
+  let sinceFollowUp = 0;
+  const intervals = new Set<number>();
+  for (let i = 0; i < 100; i++) {
+    const turns = next();
+    sinceFollowUp++;
+    expect(turns[0].quarterTurns).toBe(2);
+    if (turns.length === 2) {
+      expect(sinceFollowUp).toBeGreaterThanOrEqual(3);
+      expect(sinceFollowUp).toBeLessThanOrEqual(5);
+      expect(turns[1]).toEqual({ ...turns[0], layer: -turns[0].layer, quarterTurns: 1 });
+      intervals.add(sinceFollowUp);
+      sinceFollowUp = 0;
+    } else expect(sinceFollowUp).toBeLessThan(5);
+  }
+  expect([...intervals].sort()).toEqual([3, 4, 5]);
+});
 
 test("every face turn has an exact inverse and four quarter-turns return home", () => {
   for (const axis of [0, 1, 2] as Axis[]) {

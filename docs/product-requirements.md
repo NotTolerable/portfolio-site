@@ -1,6 +1,6 @@
 # Product requirements
 
-Status: initial implementation and design review. Updated: 2026-10-14.
+Status: initial implementation and design review. Updated: 2026-10-19.
 
 ## Purpose and audience
 
@@ -14,9 +14,10 @@ The owner is interested in infrastructure, low-latency systems, GPU/CUDA program
 - No projects in the target systems/GPU/infrastructure areas have been identified yet.
 - The main portfolio should be animated and interactive, built with Next.js and TypeScript, with Vercel as the initial hosting plan.
 - A Cloud / Infrastructure entry should navigate to a separate static showcase demonstrating cloud hosting and explaining its actual infrastructure.
-- Visual direction: follow the latest [DESIGN.md](../DESIGN.md), a Resend-style reference with pure black, graphite borders, serif hero typography, ghost buttons, and restrained violet code accents. The user explicitly superseded the earlier navy/teal preference.
-- The owner is Babisan Pirapakaran and has authorized implementation. The current headline is “Hey, I’m Babisan.” The latest copy direction is relaxed and personal, with fewer slogan-like headings.
+- Visual direction: a personal systems engineering portfolio, following [DESIGN.md](../DESIGN.md). Use ink black, subtle blue-gray color, code-like details, a distinct name-led intro, and a Viszen-inspired particle scroll transition. This supersedes the Resend-style page layout and violet theme. The owner subsequently requested Resend-style serif typography for their name, the original cube-outline logo with a name/initials, no identity underscores or “personal index” branding, and subtle glass depth on controls. A free serif alternative is approved for now, documented in the design source.
+- The owner is Babisan Pirapakaran and has authorized implementation and the new layout/theme. The opening emphasizes the full name and personal engineering interests, with relaxed, direct copy.
 - Add a brief loading-bar intro on the initial page load, respecting reduced motion and keyboard navigation.
+- Preserve automatic cube rotation and scrambling. Only manual mouse rotation is drag-only, with an arrow-key alternative and no hover steering. Keep the starting scrambled materials and scroll transformation. Remove the entire cube/hologram caption, material credit, and pause/reset overlay. Glass controls should have subtle actual surface texture, beyond a smooth gradient.
 - Keep the main portfolio distinct from the planned static infrastructure showcase.
 
 ## Visitor needs
@@ -27,7 +28,7 @@ The owner is interested in infrastructure, low-latency systems, GPU/CUDA program
 - Understand how this site runs through an accurate, approachable technical explanation.
 - Find a way to contact the owner or access a resume, if the owner chooses to publish these.
 
-## Proposed initial scope
+## Current scope
 
 The initial implementation follows this structure:
 
@@ -36,7 +37,7 @@ The initial implementation follows this structure:
 - A Cloud / Infrastructure entry linking to the separate static showcase and its architecture walkthrough.
 - Resume, source-code profile, and contact links once owner-provided details are available; omit missing destinations.
 
-The current project explorer presents overviews and copyable portfolio metadata. Deeper case studies and measured results remain pending. The cloud entry currently opens a clearly labeled planning page until the separate static showcase exists.
+The current project entries present confirmed overviews, original concept illustrations, and expandable notes. Illustrations are not actual project screenshots. Deeper case studies, owner contributions, actual screenshots, links, and measured results remain pending. The cloud entry currently opens a clearly labeled planning page until the separate static showcase exists.
 
 Potential case-study topics include the problem, personal contribution, architecture, tradeoffs, deployment, and measured results. Include only topics supported by the actual project.
 
@@ -47,7 +48,7 @@ Potential case-study topics include the problem, personal contribution, architec
 - Any performance claims include actual measurements and enough context to interpret them.
 - The hosting explanation matches the deployed system and links to publishable infrastructure or deployment code where available.
 - Content does not imply unearned certifications or experience. The referenced AWS-certified portfolio is inspiration, not the owner's biography.
-- Pages work on mobile and desktop and support keyboard navigation, readable contrast, and semantic structure.
+- Pages work on mobile and desktop and support keyboard navigation, readable contrast, and semantic structure. The cube/particle scroll sequence is reversible, respects reduced motion and keyboard pause, and can be skipped directly through the project link.
 - Published links work and no placeholder identity, project result, or contact information remains.
 
 ## Open questions

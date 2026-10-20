@@ -1,6 +1,6 @@
 # Architecture
 
-Status: initial site implemented locally; external deployment pending. Updated: 2026-10-14.
+Status: initial site implemented locally; external deployment pending. Updated: 2026-10-19.
 
 ## Current repository
 
@@ -17,13 +17,17 @@ The repository contains a Next.js App Router application using TypeScript and np
 
 - Next.js + TypeScript for the animated, interactive experience.
 - Vercel is the initial hosting plan, with Git-connected automatic deployment intended but not configured.
-- Three.js renders a monochrome textured 3×3 cube, initially scrambled through legal quarter-turns. Its 26 pieces carry 54 raised, beveled face tiles across six procedural physical materials with independent clearcoat, roughness, and height-map relief. An integer lattice and orientation basis preserve exact piece positions through repeated autonomous turns. The scene module is dynamically loaded in a client component; it disposes GPU resources on unmount, skips rendering offscreen/hidden, supports pause/reset and whole-cube mouse-hover, touch-drag, and keyboard input, renders at the display refresh rate without a 30 fps cap, and respects reduced motion. A CSS cube supplies loading and WebGL-failure fallback.
-- Each texture has its own neutral base shade from near-black to charcoal. Dim environment reflections support an above-right spotlight; a diffuse, feathered SVG shaft behind the transparent canvas suggests the light path without full-scene fog or per-frame shadow passes. The lighting stays in world space while the cube rotates.
-- A separate idle-orbit model retains speed during pointer input and resumes on the next frame after movement or pointer release, easing from 0.28 toward 0.36 radians/second. It follows the last horizontal/vertical direction, then gradually steers toward a new heading every 3–4 seconds. Pointer presence alone does not stop the orbit; holding a pointer, pausing, or reduced motion suppresses automatic rotation.
+- Three.js renders a monochrome 3×3 cube with 26 rounded solid cubelets and 54 logical face assignments, initially scrambled through 22 legal quarter-turns. Each rounded mesh uses six face material slots so the texture extends onto its bevels without separate raised sticker geometry. Integer positions/orientation bases make the starting scramble exact. The client lazily loads the scene and awaits self-hosted material images; stale asynchronous scene results are disposed after unmount. Primary-pointer dragging, arrow-key input, display-synchronized rendering, offscreen/hidden skipping, reduced motion, and the CSS loading/WebGL fallback remain supported.
+- Automatic orbit and timed layer turns remain enabled; only the pause/reset buttons, captions, and visible source-credit overlay are removed. Space on the focused cube toggles pause without adding visible clutter. Material provenance remains in the repository.
+- Original reflection, roughness-lighting matcaps, surface-grain, and terrazzo image assets were extracted unchanged from Resend’s public Spline export and are self-hosted under `public/textures/resend/`. `MeshMatcapMaterial` uses those baked lighting images alongside recreated fiber/perforation relief; the original Spline material-layer stack is not embedded wholesale. See [asset provenance](assets/resend-cube.md) and [the rendering decision](decisions/0003-source-cube-materials.md). The previous PBR spotlight/environment setup has been removed. The broad SVG ray is a separate hero-wide decorative backdrop, extending above and beyond the cube with a viewport-width layer; matcap shading does not respond to scene lights.
+- A fixed outer group preserves the portfolio’s view tilt. CubeOrbit integrates the original nested X/Y tumble at 359 degrees per ten seconds, without resetting at loop boundaries. Holding a drag suppresses idle orbit; release resumes immediately in the last input direction. Timed scrambles ease a continuous 180-degree turn over 1.7 seconds, followed every 3–5 sequences by an opposite-layer quarter-turn over 1.15 seconds, with no added beat; sequences have a 900 ms rest. Pause freezes both; reduced motion completes an active layer turn and suppresses further automatic animation. The client tracks the active primary pointer, captures it during a drag, and releases the gesture on pointer-up/cancel/lost capture. Hover cannot create a drag; manual input is direct with no inertial fling. Touch uses `pan-y` so native vertical scrolling can cancel the gesture normally.
 - The shared root layout includes a roughly one-second loading-bar greeting. It clears on a timer or keyboard interaction, is skipped for reduced motion, and does not replay on internal navigation. CSS also hides it if client JavaScript does not run.
-- Motion handles restrained reveals and project-view transitions. Buttons use a neutral translucent glass finish with vertical gradients, inset top-edge highlights, and backdrop blur.
-- Inter, Playfair Display, and JetBrains Mono are self-hosted through Fontsource, using the substitutes named in `DESIGN.md`.
-- The project explorer supports keyboard-selectable project tabs, overview/source views, and clipboard copying of portfolio metadata.
+- `PortfolioIntro` maps native scroll progress through Motion to a sticky, name-led composition. It passes a motion value to `HeroCube`, which updates a mutable scene input rather than re-rendering React on every scroll frame. Scrolling separates and fades the cubelets and interpolates one GPU point cloud into a generic processor silhouette, with a small circuit-line overlay. No wheel interception or scroll-snapping library is used. Reduced motion removes the extended sticky interval and suppresses the morph.
+- The particle geometry uses 6,800 points on desktop or 3,400 on smaller initial viewports. Shader uniforms handle scroll interpolation and subtle time-based drift. The time clock freezes while paused/reduced; returning to the top restores the exact paused pose. Logical cubie coordinates/orientations are unchanged. Rendering follows display frames during animation, with offscreen/hidden work suppressed.
+- Shared glass controls use a static local SVG frost texture (`public/textures/glass-frost.svg`), translucent backdrop blur, a fine rim highlight, and inset/drop shadows. Text remains above the non-interactive texture; whole content sections stay matte.
+- The ink-black/blue-gray theme uses Inter for body copy, JetBrains Mono for code-like details, thin dividers, faint grids, and restrained glass controls. The original cube-outline header logo is paired with BP; identity text has no underscore suffixes or “personal index” label. See [DESIGN.md](../DESIGN.md) for current typography and glass guidance. The Resend page composition, feature strip, mock terminal, oversized farewell, and metadata-copying project tabs have been replaced.
+- Inter, JetBrains Mono, and Playfair Display regular are self-hosted through Fontsource. The owner approved a free serif alternative to Domaine for now, implemented with Playfair for the name.
+- Two server-rendered project articles use original decorative SVG concept illustrations and native keyboard-accessible `<details>` notes. No actual screenshots, project technology stacks, owner contributions, or performance results are invented.
 - The Cloud / Infrastructure link currently opens `/infrastructure`, a labeled plan with an interactive proposed AWS architecture. It will link to the separate static showcase when deployed; that URL is undecided.
 
 ## Separate infrastructure showcase
@@ -51,8 +55,8 @@ Terraform for infrastructure and GitHub Actions for build/deployment were sugges
 
 ## Decisions still needed
 
-- Any richer features beyond the current cube, project explorer, and architecture diagram.
-- Page structure and project case-study organization.
+- Further features beyond the cube/particle intro, project notes, and architecture diagram.
+- Owner-verified case-study content and publishable source, resume, and contact destinations.
 - Vercel project/repository connection, domain, and budget; hosting details for the separate showcase.
 - Infrastructure-as-code and deployment approach.
 - Whether any feature requires an API, external service, or stored data.
@@ -62,16 +66,16 @@ Record approved consequential choices in [decisions](decisions/README.md), then 
 ## Module boundaries
 
 - `src/app/`: layouts, route content, metadata, shared CSS, and icon.
-- `src/components/hero-cube.tsx` and `src/lib/cube-scene.ts`: accessible whole-cube controls and lazy WebGL rendering with autonomous layer turns.
-- `src/lib/rubik-state.ts`: exact logical cube state, legal turns, and deterministic scrambling.
-- `src/lib/cube-textures.ts`: six shared procedural face materials with distinct grayscale tones and GPU texture disposal.
-- `src/components/cube-ray.tsx`: broad, diffuse light shaft behind the WebGL canvas, with no hard streaks or source line.
+- `src/components/portfolio-intro.tsx`: sticky intro, native scroll motion values, name/copy transitions, and decorative ambient dust.
+- `src/components/hero-cube.tsx` and `src/lib/cube-scene.ts`: accessible controls, lazy WebGL rendering, legal turns, and reversible scroll composition.
+- `src/lib/cube-particles.ts`: deterministic source/processor point geometry, GPU interpolation, circuit lines, and resource disposal.
+- `src/lib/rubik-state.ts`: exact logical cube state, legal turns, deterministic initial scrambling, and autonomous double-turn planning.
+- `src/lib/cube-textures.ts`: asynchronous local source-image loading, six shared matcap materials, recreated surface relief, and texture/material disposal.
+- `src/components/cube-ray.tsx`: hero-wide diffuse light shaft behind the hero content, with no hard streaks or source line.
 - `src/components/site-intro.tsx`: first-load greeting and timed loading bar.
-- `src/lib/cube-orbit.ts`: pointer-direction memory, immediate handoff from manual movement, and idle angular drift.
-- `src/lib/cube-light.ts`: fixed above-right spotlight and supporting fill/rim lights.
-- `src/components/project-explorer.tsx` and `src/lib/projects.ts`: client interactions and factual project metadata.
+- `src/components/project-visual.tsx` and `src/lib/projects.ts`: original concept illustrations and factual project metadata. Project articles and native notes are authored in `src/app/page.tsx`.
 - `src/components/infrastructure-flow.tsx`: explorable proposed architecture.
 - `src/components/reveal.tsx`: reusable reduced-motion-aware transitions.
-- `tests/portfolio.spec.ts`: browser behavior, responsive, fallback, and automated accessibility checks.
-- `tests/cube-orbit.spec.ts`: idle resumption, direction reversal, diagonal direction, and suppression during pause/held input.
-- `tests/rubik-state.spec.ts`: inverse moves, repeated turns, lattice/sticker preservation, and mixed initial faces.
+- `tests/portfolio.spec.ts`: project notes, scroll morph/reconstruction, mouse/touch/keyboard input, automatic motion, drag-only manual steering, keyboard pause, touch cancellation, responsive layouts, reduced motion, material/WebGL fallback, and automated accessibility checks.
+- `src/lib/cube-orbit.ts` and `tests/cube-orbit.spec.ts`: frame-rate-independent automatic tumble, drag handoff, input direction, and pause/reduced-motion suppression.
+- `tests/rubik-state.spec.ts`: inverse moves, repeated turns, lattice/sticker preservation, mixed initial faces, and automatic double-turn/opposite-layer cadence.
