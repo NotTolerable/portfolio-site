@@ -1,6 +1,6 @@
 # Architecture
 
-Status: initial site implemented locally; external deployment pending. Updated: 2026-10-19.
+Status: main portfolio deployed on Vercel; separate AWS showcase remains planned. Updated: 2026-10-20.
 
 ## Current repository
 
@@ -16,7 +16,7 @@ The repository contains a Next.js App Router application using TypeScript and np
 ## Main portfolio
 
 - Next.js + TypeScript for the animated, interactive experience.
-- Vercel is the initial hosting plan, with Git-connected automatic deployment intended but not configured.
+- Vercel hosts production at [portfolio-site-mu-six-92.vercel.app](https://portfolio-site-mu-six-92.vercel.app), project `portfolio-site` under `nottolerables-projects`. The connected repository is `NotTolerable/portfolio-site`, with `main` as the production branch. Next.js build settings are detected automatically; no app environment variables are required. Account credentials and the local `.vercel/` link remain outside Git.
 - Three.js renders a monochrome 3×3 cube with 26 rounded solid cubelets and 54 logical face assignments, initially scrambled through 22 legal quarter-turns. Each rounded mesh uses six face material slots so the texture extends onto its bevels without separate raised sticker geometry. Integer positions/orientation bases make the starting scramble exact. The client lazily loads the scene and awaits self-hosted material images; stale asynchronous scene results are disposed after unmount. Primary-pointer dragging, arrow-key input, display-synchronized rendering, offscreen/hidden skipping, reduced motion, and the CSS loading/WebGL fallback remain supported.
 - Automatic orbit and timed layer turns remain enabled; only the pause/reset buttons, captions, and visible source-credit overlay are removed. Space on the focused cube toggles pause without adding visible clutter. Material provenance remains in the repository.
 - Original reflection, roughness-lighting matcaps, surface-grain, and terrazzo image assets were extracted unchanged from Resend’s public Spline export and are self-hosted under `public/textures/resend/`. `MeshMatcapMaterial` uses those baked lighting images alongside recreated fiber/perforation relief; the original Spline material-layer stack is not embedded wholesale. See [asset provenance](assets/resend-cube.md) and [the rendering decision](decisions/0003-source-cube-materials.md). The previous PBR spotlight/environment setup has been removed. The broad SVG ray is a separate hero-wide decorative backdrop, extending above and beyond the cube with a viewport-width layer; matcap shading does not respond to scene lights.
@@ -57,7 +57,7 @@ Terraform for infrastructure and GitHub Actions for build/deployment were sugges
 
 - Further features beyond the cube/particle intro, project notes, and architecture diagram.
 - Owner-verified case-study content and publishable source, resume, and contact destinations.
-- Vercel project/repository connection, domain, and budget; hosting details for the separate showcase.
+- Any custom domain and hosting budget changes; hosting details for the separate showcase.
 - Infrastructure-as-code and deployment approach.
 - Whether any feature requires an API, external service, or stored data.
 

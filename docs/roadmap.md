@@ -1,6 +1,6 @@
 # Roadmap
 
-Updated: 2026-10-19. Current phase: implementation and design review.
+Updated: 2026-10-20. Current phase: deployed portfolio with content/design refinements pending.
 
 ## 1. Establish project context
 
@@ -20,7 +20,8 @@ Updated: 2026-10-19. Current phase: implementation and design review.
 - [x] Select Next.js and TypeScript for the main portfolio.
 - [x] Choose Vercel as the initial hosting plan.
 - [x] Select npm, TSX content, Three.js, Motion, and locally bundled reference font substitutes.
-- [ ] Agree on hosting, budget, domain, and deployment workflow.
+- [x] Deploy the main portfolio to Vercel with GitHub-connected production builds from `main`.
+- [ ] Decide any custom domain/budget changes and the separate AWS deployment workflow.
 - [x] Record the main stack and initial hosting decision.
 - [ ] Record remaining significant technical decisions as agreed.
 - [x] Obtain the user's go-ahead to implement and then rebuild to the new design reference.
@@ -37,11 +38,13 @@ Updated: 2026-10-19. Current phase: implementation and design review.
 - [x] Refine identity with a serif name, original cube-outline mark and BP, no underscore suffixes/index branding, and selective glass depth on controls.
 - [x] Refine glass with static frosting and rim highlights; remove the cube/hologram overlay while retaining automatic animation and requiring drag/keyboard input for manual steering.
 - [ ] Complete owner-verified project case studies, source links, resume, and contact details.
-- [ ] Configure the chosen infrastructure and deployment workflow.
+- [x] Configure the main portfolio's Vercel project and GitHub integration.
+- [ ] Configure infrastructure and deployment for the separate AWS showcase.
 - [ ] Write the hosting walkthrough from the actual implementation.
 - [x] Verify the local build, types, lint, interactive behavior, responsive layout, reduced motion, WebGL fallback, and automated accessibility.
-- [ ] Verify complete project evidence and the eventual deployed site.
-- [ ] Review the completed site before launch and publish when authorized.
+- [ ] Complete and verify owner-provided project evidence.
+- [x] Publish the current portfolio to Vercel at the owner's request.
+- [x] Verify public access, desktop/mobile layout, WebGL assets, cube/particle interactions, and project/cloud navigation on the deployed portfolio.
 
 ## Deferred or undecided
 

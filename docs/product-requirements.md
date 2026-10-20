@@ -1,6 +1,6 @@
 # Product requirements
 
-Status: initial implementation and design review. Updated: 2026-10-19.
+Status: initial portfolio deployed; content and design review continues. Updated: 2026-10-20.
 
 ## Purpose and audience
 
@@ -12,7 +12,7 @@ The owner is interested in infrastructure, low-latency systems, GPU/CUDA program
 
 - Existing projects: an AI governance compliance checker and an AI mock interview project involving computer vision.
 - No projects in the target systems/GPU/infrastructure areas have been identified yet.
-- The main portfolio should be animated and interactive, built with Next.js and TypeScript, with Vercel as the initial hosting plan.
+- The main portfolio is animated and interactive, built with Next.js and TypeScript, and deployed on Vercel with GitHub-connected production builds. See [architecture](architecture.md) for the current hosting details.
 - A Cloud / Infrastructure entry should navigate to a separate static showcase demonstrating cloud hosting and explaining its actual infrastructure.
 - Visual direction: a personal systems engineering portfolio, following [DESIGN.md](../DESIGN.md). Use ink black, subtle blue-gray color, code-like details, a distinct name-led intro, and a Viszen-inspired particle scroll transition. This supersedes the Resend-style page layout and violet theme. The owner subsequently requested Resend-style serif typography for their name, the original cube-outline logo with a name/initials, no identity underscores or “personal index” branding, and subtle glass depth on controls. A free serif alternative is approved for now, documented in the design source.
 - The owner is Babisan Pirapakaran and has authorized implementation and the new layout/theme. The opening emphasizes the full name and personal engineering interests, with relaxed, direct copy.
