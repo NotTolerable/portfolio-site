@@ -1,6 +1,6 @@
 # Babisan Pirapakaran — portfolio
 
-A personal software engineering portfolio built with Next.js App Router, TypeScript, Three.js, and Motion. Hosted on Vercel at [portfolio-site-mu-six-92.vercel.app](https://portfolio-site-mu-six-92.vercel.app).
+A personal software engineering portfolio built with Next.js App Router, TypeScript, Three.js, and Motion. Hosted on Vercel at [babisanp.com](https://babisanp.com).
 
 ## Deployment
 
@@ -33,7 +33,7 @@ Browser checks require installed Google Chrome. They start a separate production
 - Two project articles with original SVG concept illustrations and native expandable notes. The illustrations are not actual product screenshots. Project contributions, stacks, source/demo links, results, and detailed case studies await owner-provided evidence.
 - A personal about section and a clearly labeled `/infrastructure` planning page for a separate static AWS showcase. No certifications or deployment claims are invented.
 - Offscreen/hidden rendering suppression, capped device pixel ratio, 3,400/6,800 point budgets, and scene/texture/geometry/event disposal. A static CSS fallback preserves content if WebGL or material loading fails.
-- A roughly one-second first-load greeting, skipped for reduced motion and dismissible with Tab/Escape. It does not replay on internal navigation.
+- A roughly three-second first-load opening: light dot, kinetic name letters, metallic PORTFOLIO wordmark, and a curtain reveal. Skip intro, Tab/Escape, and scroll/touch intent dismiss it. Reduced motion skips it immediately; internal navigation never replays it.
 
 ## Context
 

@@ -1,6 +1,6 @@
 # Product requirements
 
-Status: initial portfolio deployed; content and design review continues. Updated: 2026-10-20.
+Status: initial portfolio deployed; content and design review continues. Updated: 2026-10-21.
 
 ## Purpose and audience
 
@@ -16,7 +16,7 @@ The owner is interested in infrastructure, low-latency systems, GPU/CUDA program
 - A Cloud / Infrastructure entry should navigate to a separate static showcase demonstrating cloud hosting and explaining its actual infrastructure.
 - Visual direction: a personal systems engineering portfolio, following [DESIGN.md](../DESIGN.md). Use ink black, subtle blue-gray color, code-like details, a distinct name-led intro, and a Viszen-inspired particle scroll transition. This supersedes the Resend-style page layout and violet theme. The owner subsequently requested Resend-style serif typography for their name, the original cube-outline logo with a name/initials, no identity underscores or “personal index” branding, and subtle glass depth on controls. A free serif alternative is approved for now, documented in the design source.
 - The owner is Babisan Pirapakaran and has authorized implementation and the new layout/theme. The opening emphasizes the full name and personal engineering interests, with relaxed, direct copy.
-- Add a brief loading-bar intro on the initial page load, respecting reduced motion and keyboard navigation.
+- Replace the loading-bar greeting with a short Code and Chill-inspired opening: dot → kinetic name letters → metallic PORTFOLIO → reveal the existing cube/homepage. Keep a visible skip action, Escape/Tab and scroll dismissal, reduced-motion suppression, and no replay on internal navigation. Visual details belong in [DESIGN.md](../DESIGN.md).
 - Preserve automatic cube rotation and scrambling. Only manual mouse rotation is drag-only, with an arrow-key alternative and no hover steering. Keep the starting scrambled materials and scroll transformation. Remove the entire cube/hologram caption, material credit, and pause/reset overlay. Glass controls should have subtle actual surface texture, beyond a smooth gradient.
 - Keep the main portfolio distinct from the planned static infrastructure showcase.
 

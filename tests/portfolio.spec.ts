@@ -32,6 +32,7 @@ test("cube animates automatically while manual rotation requires dragging, with 
   page.on("console", (message) => { if (message.type() === "error") errors.push(message.text()); });
   await page.goto("/");
   await expect(page.locator(".cube-figure")).toHaveAttribute("data-renderer", "webgl", { timeout: 20000 });
+  await page.keyboard.press("Escape");
   const stage = page.getByRole("group", { name: /Interactive black cube/ });
   await expect(page.locator(".cube-figure button, .cube-figure figcaption, .cube-figure a")).toHaveCount(0);
   await page.waitForTimeout(600);
@@ -142,12 +143,46 @@ test("a failed WebGL initialization keeps an accessible static cube", async ({ p
   await expect(page.getByRole("link", { name: "Explore my work", exact: true })).toBeVisible();
 });
 
-test("the quick intro clears and does not replay on internal navigation", async ({ page }) => {
+test("the kinetic intro clears and does not replay on internal navigation", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator(".cube-figure")).toHaveAttribute("data-renderer", "webgl", { timeout: 20000 });
-  await expect(page.locator(".site-intro")).toHaveCount(0, { timeout: 3000 });
+  await expect(page.locator(".site-intro")).toHaveCount(0, { timeout: 5000 });
   await page.getByRole("link", { name: /Cloud lab/ }).click();
   await expect(page).toHaveURL(/\/infrastructure$/);
+  await expect(page.locator(".site-intro")).toHaveCount(0);
+});
+
+test("the opening can be skipped by button or keyboard and respects reduced motion", async ({ page }) => {
+  // The intro remains dismissible even when cube assets fail; avoid software shader compilation here.
+  await page.route("**/textures/resend/**", (route) => route.abort());
+  await page.goto("/");
+  await expect(page.locator(".cube-figure")).toHaveAttribute("data-renderer", "fallback");
+  const skip = page.getByRole("button", { name: "Skip intro" });
+  await expect(skip).toBeVisible();
+  await skip.click();
+  await expect(page.locator(".site-intro")).toHaveCount(0);
+  await page.goto("/");
+  await expect(page.locator(".cube-figure")).toHaveAttribute("data-renderer", "fallback");
+  await expect(skip).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(page.locator(".site-intro")).toHaveCount(0);
+  await page.goto("/");
+  await expect(page.locator(".cube-figure")).toHaveAttribute("data-renderer", "fallback");
+  await page.keyboard.press("Tab");
+  await expect(page.locator(".site-intro")).toHaveCount(0);
+  await expect(page.getByRole("link", { name: "Skip to content" })).toBeFocused();
+  await page.goto("/");
+  await expect(page.locator(".cube-figure")).toHaveAttribute("data-renderer", "fallback");
+  await page.mouse.wheel(0, 80);
+  await expect(page.locator(".site-intro")).toHaveCount(0);
+  await page.goto("/");
+  await expect(skip).toBeVisible();
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await expect(page.locator(".site-intro")).toHaveCount(0);
+  await page.goto("/");
+  await expect(page.locator(".site-intro")).toBeHidden();
+  await expect(page.getByRole("heading", { level: 1, name: "Babisan Pirapakaran" })).toBeVisible();
+  await page.emulateMedia({ reducedMotion: "no-preference" });
   await expect(page.locator(".site-intro")).toHaveCount(0);
 });
 
@@ -168,6 +203,7 @@ test("scroll morphs the cube into still particles and reverses without losing it
   page.on("console", (message) => { if (message.type() === "error") errors.push(message.text()); });
   await page.goto("/");
   await expect(page.locator(".cube-figure")).toHaveAttribute("data-renderer", "webgl", { timeout: 20000 });
+  await page.keyboard.press("Escape");
   const stage = page.getByRole("group", { name: /Interactive black cube/ });
   await stage.focus();
   await page.keyboard.press(" ");

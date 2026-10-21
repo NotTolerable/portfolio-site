@@ -1,6 +1,6 @@
 # Babisan Pirapakaran — Personal systems portfolio
 
-Status: approved direction, implemented locally. Updated: 2026-10-19.
+Status: approved direction, implemented. Updated: 2026-10-21.
 
 The owner requested a personal software engineering portfolio with a low-level, code-like feel, very restrained color, a distinct opening composition, and scroll-driven particle effects inspired by [Viszen](https://viszen.tech/). This supersedes the earlier Resend page layout and violet theme. A later refinement restores a serif specifically for the personal identity and subtle glass controls. The previous page reference is [archived](docs/references/resend-style-reference.md).
 
@@ -15,7 +15,7 @@ The owner requested a personal software engineering portfolio with a low-level, 
 
 ## Page structure
 
-1. A full-viewport, name-led introduction. The full name spans the composition; the cube sits within the visual field below/behind it rather than as a product illustration beside a marketing headline. Brief personal copy explains current interests honestly.
+1. A roughly three-second first-load opening inspired by [Code and Chill’s portfolio demo](https://demo.codeandchill.store/portfolio/): a small light dot, individually tumbling letters assembling “BABISAN,” a restrained surname, then a large metallic “PORTFOLIO” wordmark and an upward curtain reveal. Use the existing serif for the name, Inter for the wordmark, and the current ink/blue-gray palette. Replace the earlier loading bar; retain no template assets or code. Include a small Skip intro action, Escape/Tab dismissal, and immediate dismissal on scroll/touch intent. Skip for reduced motion, including when the preference changes during playback; never replay during internal navigation. Follow with a full-viewport, name-led introduction. The full name spans the composition; the cube sits within the visual field below/behind it rather than as a product illustration beside a marketing headline. Brief personal copy explains current interests honestly.
 2. A short, native-scroll deconstruction sequence. The opening text recedes, cubelets separate/fade, and a soft blue-gray particle cloud morphs into a generic processor silhouette. A personal transition line leads into the work. The project link skips this sequence directly.
 3. Two substantial project entries for the confirmed governance checker and computer-vision mock interview project. Original SVG subject illustrations are labeled concept illustrations, never represented as actual project screenshots. Native expandable notes expose known project context; detailed case studies remain pending owner evidence.
 4. A personal about section with systems/performance, GPU/CUDA, and cloud/infra explicitly framed as interests to explore.
