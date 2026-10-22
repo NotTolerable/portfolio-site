@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { ENTRANCE_DURATION, IMPACT_BEATS, setEntranceStart } from "@/lib/entrance-timeline";
+import { ENTRANCE_DURATION, IMPACT_BEATS, SLICE_STARTS, setEntranceStart } from "@/lib/entrance-timeline";
 
 const easeOut = "cubic-bezier(.16,1,.3,1)";
 
@@ -84,19 +84,19 @@ export function SiteIntro() {
       IMPACT_BEATS.forEach((beat) => {
         palette.push(
           { offset: (beat.start - 1) / ENTRANCE_DURATION, filter: "none" },
-          { offset: beat.start / ENTRANCE_DURATION, filter: beat.paper ? "grayscale(1) invert(1)" : "grayscale(1) contrast(1.6)" },
-          { offset: (beat.end - 1) / ENTRANCE_DURATION, filter: beat.paper ? "grayscale(1) invert(1)" : "grayscale(1) contrast(1.6)" },
+          { offset: beat.start / ENTRANCE_DURATION, filter: beat.paper ? "grayscale(1) invert(1)" : "grayscale(1) contrast(1.15)" },
+          { offset: (beat.end - 1) / ENTRANCE_DURATION, filter: beat.paper ? "grayscale(1) invert(1)" : "grayscale(1) contrast(1.15)" },
           { offset: beat.end / ENTRANCE_DURATION, filter: "none" },
         );
         camera.push(
           { offset: (beat.start - 1) / ENTRANCE_DURATION, translate: "0px 0px" },
-          { offset: beat.start / ENTRANCE_DURATION, translate: `${beat.direction * 9}px ${beat.direction * -4}px` },
-          { offset: (beat.end - 1) / ENTRANCE_DURATION, translate: `${beat.direction * 6}px ${beat.direction * -2}px` },
+          { offset: beat.start / ENTRANCE_DURATION, translate: `${beat.direction * 3}px ${beat.direction * -1}px` },
+          { offset: (beat.end - 1) / ENTRANCE_DURATION, translate: `${beat.direction * 2}px ${beat.direction * -1}px` },
           { offset: beat.end / ENTRANCE_DURATION, translate: "0px 0px" },
         );
       });
       palette.push({ offset: 1, filter: "none" });
-      camera.push({ offset: .37, translate: "3px 1px" }, { offset: .42, translate: "-2px 0px" }, { offset: .5, translate: "0px 0px" }, { offset: 1, translate: "0px 0px" });
+      camera.push({ offset: .38, translate: "1px 0px" }, { offset: .5, translate: "0px 0px" }, { offset: 1, translate: "0px 0px" });
       document.querySelectorAll(".intro-sticky, .site-header").forEach((element) => animate(element, palette, ENTRANCE_DURATION, 0, "linear"));
       document.querySelectorAll(".intro-inner, .site-header").forEach((element) => animate(element, camera, ENTRANCE_DURATION, 0, "linear"));
       document.querySelectorAll<HTMLElement>("[data-entrance-reveal]").forEach((element) => {
@@ -107,53 +107,45 @@ export function SiteIntro() {
         animate(element, [
           { opacity: 0, transform: "translateY(12px)" },
           { opacity: getComputedStyle(element).opacity, transform: "none" },
-        ], 700, element.dataset.entranceReveal === "navigation" ? 60 : 240);
+        ], 700, element.dataset.entranceReveal === "navigation" ? 60 : element.dataset.entranceReveal === "copy" ? 800 : 240);
       });
       const effect = (selector: string, frames: Keyframe[], duration: number, delay = 0, easing = "linear") => {
         document.querySelectorAll(selector).forEach((element) => animate(element, frames, duration, delay, easing));
       };
-      const windowed = (start: number, end: number, opacity = 1) => [
-        { opacity: 0, offset: 0 }, { opacity, offset: start / ENTRANCE_DURATION },
-        { opacity, offset: end / ENTRANCE_DURATION }, { opacity: 0, offset: Math.min(1, (end + 60) / ENTRANCE_DURATION) },
-        { opacity: 0, offset: 1 },
-      ];
-      // Each impact uses a different hand-drawn silhouette, not one repeated flash.
-      IMPACT_BEATS.forEach((beat, index) => {
-        effect(`[data-entrance-effect="cut-${index}"]`, [
-          { opacity: 0, offset: 0 }, { opacity: 1, offset: .001 },
-          { opacity: 1, offset: .999 }, { opacity: 0, offset: 1 },
-        ], beat.end - beat.start, beat.start);
+      SLICE_STARTS.forEach((start, index) => {
+        const reverse = index === 1;
+        const closed = reverse ? "inset(0 0 0 100%)" : "inset(0 100% 0 0)";
+        // Fast leading edge, a short contact hold, then a fine receding trace.
+        effect(`[data-slice-stroke="${index}"]`, [
+          { opacity: 0, clipPath: closed, offset: 0 },
+          { opacity: 1, clipPath: closed, offset: .04, easing: "cubic-bezier(.55,0,.85,1)" },
+          { opacity: 1, clipPath: reverse ? "inset(0 0 0 50%)" : "inset(0 50% 0 0)", offset: 90 / 430 },
+          { opacity: 1, clipPath: "inset(0 0 0 0)", offset: .35 },
+          { opacity: .75, clipPath: "inset(0 0 0 0)", offset: .5 },
+          { opacity: 0, clipPath: reverse ? "inset(0 100% 0 0)" : "inset(0 0 0 100%)" },
+        ], 430, start - 90, "linear");
+        effect(`[data-slice-seam="${index}"]`, [
+          { opacity: 0, transform: "scaleY(.1)", offset: 0 },
+          { opacity: .6, transform: "scaleY(1)", offset: .12 },
+          { opacity: .2, transform: "scaleY(2)", offset: .4 },
+          { opacity: 0, transform: "scaleY(.2)" },
+        ], 1150 + index * 70, start, easeOut);
       });
-      effect('[data-entrance-effect="charge"]', [
-        { opacity: 0, transform: "translate(-270px, -160px) scale(.65)" },
-        { opacity: .5, offset: .58 }, { opacity: 1, transform: "none", offset: .99 }, { opacity: 0 },
-      ], 310, 230, "cubic-bezier(.7,0,1,1)");
-      [0, 1, 2].forEach((index) => effect(`[data-entrance-effect="lightning-${index}"]`, [
-        { opacity: 0, transform: `scale(.82) rotate(${-7 + index * 3}deg)`, offset: 0 },
-        { opacity: 1, transform: "scale(.96) rotate(-2deg)", offset: .08 },
-        { opacity: .85, transform: "scale(1.03) rotate(1deg)", offset: .4 },
-        { opacity: .32, transform: "scale(1.1) rotate(3deg)", offset: .75 },
-        { opacity: 0, transform: "scale(1.16) rotate(5deg)" },
-      ], 330 + index * 80, 540 + index * 110, "cubic-bezier(.2,.8,.3,1)"));
-      effect('[data-entrance-effect="ink"]', [
-        { opacity: 0, transform: "scale(.1) rotate(-12deg)" },
-        { opacity: .96, transform: "scale(1) rotate(0deg)", offset: .14 },
-        { opacity: .6, transform: "scale(1.2) rotate(2deg)", offset: .45 },
-        { opacity: 0, transform: "scale(1.35) rotate(3deg)" },
-      ], 650, 660, "cubic-bezier(.1,.8,.2,1)");
-      effect('[data-entrance-effect="debris"]', [
-        { opacity: 0, transform: "scale(.3)" }, { opacity: .85, transform: "scale(.8)", offset: .15 },
-        { opacity: .4, transform: "scale(1.5)", offset: .5 }, { opacity: 0, transform: "scale(1.9)" },
-      ], 1050, 760, "cubic-bezier(.1,.8,.3,1)");
-      effect('[data-entrance-effect="wake"]', [
-        { opacity: 0, transform: "scale(.3) rotate(-15deg)" }, { opacity: .8, offset: .1 },
-        { opacity: 0, transform: "scale(1.7) rotate(6deg)" },
-      ], 530, 740, "cubic-bezier(.1,.8,.2,1)");
-      effect('[data-entrance-effect="speed"]', windowed(440, 810, .65), ENTRANCE_DURATION);
-      effect('[data-entrance-effect="afterimage"]', [
-        { opacity: 0, transform: "scale(1.3)" }, { opacity: .3, offset: .3 },
-        { opacity: 0, transform: "scale(.45)" },
-      ], 650, 1260);
+      document.querySelectorAll("[data-slice-peripheral]").forEach((element, index) => {
+        animate(element, [
+          { opacity: 0, strokeDashoffset: 1, offset: 0 },
+          { opacity: .45, strokeDashoffset: 0, offset: .32 },
+          { opacity: .18, strokeDashoffset: 0, offset: .55 },
+          { opacity: 0, strokeDashoffset: -1 },
+        ], 430, 450 + index * 85, "cubic-bezier(.3,0,.2,1)");
+      });
+      // A single dark diagonal wipe makes the last cut feel spatial without a
+      // bright full-screen overlay or extra image copies of the real page.
+      effect("[data-entrance-shutter]", [
+        { opacity: 0, clipPath: "polygon(0 100%, 0 100%, 0 100%, 0 100%)", offset: 0 },
+        { opacity: .35, clipPath: "polygon(0 0, 2% 0, 100% 100%, 98% 100%)", offset: .4 },
+        { opacity: 0, clipPath: "polygon(100% 0, 100% 0, 100% 0, 100% 0)" },
+      ], 340, 700);
       // A single clock makes sharp palette changes coincide with the held scene poses.
       const startTime = performance.now();
       animations.forEach((animation) => { animation.startTime = startTime; });

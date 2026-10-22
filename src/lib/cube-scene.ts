@@ -4,7 +4,7 @@ import { cubicBezier } from "motion";
 import { createFaceMaterials } from "./cube-textures";
 import { CubeOrbit, type OrbitInput } from "./cube-orbit";
 import { createCubeParticles } from "./cube-particles";
-import { CUBE_ENTRANCE_DURATION, IMPACT_BEATS, entranceBeat, entrancePose } from "./entrance-timeline";
+import { CUBE_ENTRANCE_DURATION, IMPACT_BEATS, SLICE_STARTS, entranceBeat, entrancePose } from "./entrance-timeline";
 import { applyTurn, createCubies, createScrambleSequence, createTurnSequence, FACE_NORMALS, hasSticker, type Cubie, type ScrambleMove } from "./rubik-state";
 
 export type CubeInput = OrbitInput & {
@@ -94,6 +94,27 @@ export async function createCubeScene(canvas: HTMLCanvasElement, input: CubeInpu
     group.add(object);
   }
 
+  // These three restrained highlights lie on the actual separation planes.
+  const sliceCorners = [
+    [[-1.505, -.5, 1.505], [1.505, -.5, 1.505], [1.505, -.5, -1.505], [-1.505, -.5, -1.505]],
+    [[.5, -1.505, 1.505], [.5, 1.505, 1.505], [.5, 1.505, -1.505], [.5, -1.505, -1.505]],
+    [[-1.505, 1.505, -.5], [1.505, 1.505, -.5], [1.505, -1.505, -.5], [-1.505, -1.505, -.5]],
+  ];
+  const sliceLines = sliceCorners.map((corners) => {
+    const positions = new Float32Array(81 * 3);
+    for (let i = 0; i <= 80; i++) {
+      const edge = Math.floor(i / 20) % 4, progress = (i % 20) / 20;
+      for (let axis = 0; axis < 3; axis++) positions[i * 3 + axis] = THREE.MathUtils.lerp(corners[edge][axis], corners[(edge + 1) % 4][axis], progress);
+    }
+    const lineGeometry = new THREE.BufferGeometry();
+    lineGeometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+    const lineMaterial = new THREE.LineBasicMaterial({ color: 0xdce8ee, transparent: true, opacity: 0, depthWrite: false, toneMapped: false });
+    const line = new THREE.Line(lineGeometry, lineMaterial);
+    line.visible = false;
+    group.add(line);
+    return line;
+  });
+
   const pivot = new THREE.Group();
   const nextScramble = createScrambleSequence();
   let pendingTurns: ScrambleMove[] = [];
@@ -164,11 +185,22 @@ export async function createCubeScene(canvas: HTMLCanvasElement, input: CubeInpu
     camera.aspect = width / height;
     camera.zoom = Math.min(1.06, width / height * 1.06);
     camera.updateProjectionMatrix();
+    camera.updateMatrixWorld();
     updateScroll(input.reduced ? 0 : input.scroll);
-    const center = view.position.clone().project(camera);
+    // Project the real cut edges so the viewport strokes meet the same seams
+    // on wide, tablet, and mobile canvases, rather than guessing screen angles.
+    group.updateWorldMatrix(true, false);
     const box = canvas.getBoundingClientRect();
-    document.documentElement.style.setProperty("--impact-x", `${box.left + (center.x + 1) * box.width / 2}px`);
-    document.documentElement.style.setProperty("--impact-y", `${box.top + (1 - center.y) * box.height / 2}px`);
+    sliceCorners.forEach((corners, index) => {
+      const points = corners.slice(0, 2).map((point) => {
+        const projected = new THREE.Vector3(...point).applyMatrix4(group.matrixWorld).project(camera);
+        return { x: box.left + (projected.x + 1) * box.width / 2, y: box.top + (1 - projected.y) * box.height / 2 };
+      });
+      const style = document.documentElement.style;
+      style.setProperty(`--slice-${index}-x`, `${(points[0].x + points[1].x) / 2}px`);
+      style.setProperty(`--slice-${index}-y`, `${(points[0].y + points[1].y) / 2}px`);
+      style.setProperty(`--slice-${index}-angle`, `${Math.atan2(points[1].y - points[0].y, points[1].x - points[0].x)}rad`);
+    });
     paint();
   }
 
@@ -209,24 +241,22 @@ export async function createCubeScene(canvas: HTMLCanvasElement, input: CubeInpu
       const scroll = input.reduced ? 0 : Math.max(0, Math.min(1, input.scroll));
       if (scroll !== previousScroll || wasEntering || entering || (automatic && scroll > 0)) updateScroll(scroll);
       if (entering) {
-        const { compress, spread, recoil, settle } = entrancePose(entranceElapsed);
-        arrival.rotation.set(-.12 * recoil, .25 * recoil, -.13 * recoil);
-        // A hard squash at contact becomes a wide, low ink-like splat before rupture.
-        arrival.scale.set(1 + compress * .48 + settle, 1 - compress * .77 + settle, 1 + compress * .22 + settle);
-        arrival.position.copy(cameraRight).multiplyScalar(recoil * .42);
-        arrival.position.addScaledVector(cameraUp, -compress * .24);
-        cubies.forEach((cubie, index) => {
+        const [a, b, c] = entrancePose(entranceElapsed);
+        arrival.rotation.set(.025 * a, -.045 * b, .025 * c);
+        arrival.scale.setScalar(1 - .08 * Math.max(a, b, c));
+        arrival.position.set(0, 0, 0);
+        cubies.forEach((cubie) => {
           syncTransform(cubie);
           const object = objects.get(cubie)!;
-          const phase = index * 2.39996;
-          const outward = .72 + (index % 5) * .12;
-          object.position.multiplyScalar(1 + spread * .32);
-          object.position.x += Math.cos(phase) * spread * outward + recoil * .25;
-          object.position.y += Math.sin(phase) * spread * outward + spread * (index % 3 - 1) * .65;
-          object.position.z += Math.sin(phase * 1.7) * spread * .65;
-          entranceEuler.set(Math.sin(phase) * spread * 1.3, Math.cos(phase) * spread * 1.6, (index % 2 ? 1 : -1) * spread * .9);
+          const lower = cubie.position[1] === -1, right = cubie.position[0] === 1, back = cubie.position[2] === -1;
+          // Each slab moves coherently. Nothing shatters or changes the Rubik model.
+          entranceEuler.set((back ? 1 : -.35) * c * .018, (right ? 1 : -.4) * b * .025, (lower ? 1 : -.35) * a * .025);
           entranceRotation.setFromEuler(entranceEuler);
-          object.quaternion.multiply(entranceRotation);
+          object.position.applyQuaternion(entranceRotation);
+          object.quaternion.premultiply(entranceRotation);
+          object.position.x += (lower ? .43 : -.14) * a + (right ? .19 : -.09) * b;
+          object.position.y += (lower ? -.22 : .11) * a + (back ? .34 : -.12) * c;
+          object.position.z += (right ? .38 : -.14) * b + (back ? -.19 : .07) * c;
         });
         dirty = true;
       } else if (wasEntering) {
@@ -237,6 +267,16 @@ export async function createCubeScene(canvas: HTMLCanvasElement, input: CubeInpu
         cubies.forEach(syncTransform);
         dirty = true;
       }
+      sliceLines.forEach((line, index) => {
+        const elapsed = entranceElapsed - SLICE_STARTS[index];
+        const lit = entering && elapsed >= -20 && elapsed < 260;
+        if (lit || line.visible) dirty = true;
+        line.visible = lit;
+        if (lit) {
+          line.geometry.setDrawRange(0, Math.floor(81 * THREE.MathUtils.clamp((elapsed + 20) / 95, 0, 1)));
+          line.material.opacity = .75 * (1 - THREE.MathUtils.clamp(elapsed / 260, 0, 1));
+        }
+      });
       wasEntering = entering;
       const targetX = orientation.y;
       const targetY = orientation.x;
@@ -275,12 +315,14 @@ export async function createCubeScene(canvas: HTMLCanvasElement, input: CubeInpu
       edgeGeometry.dispose();
       edgeMaterial.dispose();
       inkMaterial.dispose();
+      sliceLines.forEach((line) => { line.geometry.dispose(); line.material.dispose(); });
       material.dispose();
       faces.dispose();
       particles.dispose();
       renderer.dispose();
-      document.documentElement.style.removeProperty("--impact-x");
-      document.documentElement.style.removeProperty("--impact-y");
+      sliceLines.forEach((_, index) => {
+        for (const property of ["x", "y", "angle"]) document.documentElement.style.removeProperty(`--slice-${index}-${property}`);
+      });
     },
   };
 }

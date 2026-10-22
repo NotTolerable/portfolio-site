@@ -187,7 +187,7 @@ test("the entrance settles the real headline, cube, and dot without replacing th
   }
 });
 
-test("one rapid strike cuts the entire page while its electrical drawings change", async ({ page }) => {
+test("precise slices cross the composition with clean page-wide impact cuts", async ({ page }) => {
   await page.route("**/textures/resend/**", (route) => route.abort());
   await page.clock.install({ time: 0 });
   await page.clock.pauseAt(0);
@@ -197,18 +197,17 @@ test("one rapid strike cuts the entire page while its electrical drawings change
     await expect(page.locator("html")).toHaveAttribute("data-entrance", "running");
     const setFrame = async (time: number) => page.evaluate((t) => document.getAnimations().filter((animation) => animation.timeline === document.timeline).forEach((animation) => { animation.pause(); animation.currentTime = t; }), time);
     await setFrame(430);
-    await expect(page.locator('[data-entrance-effect="charge"]')).not.toHaveCSS("opacity", "0");
-    // Contact / negative / rupture / negative happen in a single sub-300 ms burst.
-    for (const [time, cut, paper] of [[560, 0, true], [630, 1, false], [700, 2, true], [770, 3, false]] as const) {
+    await expect(page.locator('[data-slice-stroke="0"]')).not.toHaveCSS("opacity", "0");
+    // Four restrained palette cuts punctuate the fast, staggered slices.
+    for (const [time, paper] of [[500, false], [580, true], [655, false], [745, true]] as const) {
       await setFrame(time);
-      await expect(page.locator(".intro-sticky")).toHaveCSS("filter", paper ? /invert\(1\)/ : /contrast\(1.6\)/);
-      await expect(page.locator(".site-header")).toHaveCSS("filter", paper ? /invert\(1\)/ : /contrast\(1.6\)/);
-      await expect(page.locator(`[data-entrance-effect="cut-${cut}"]`)).toHaveCSS("opacity", "1");
+      await expect(page.locator(".intro-sticky")).toHaveCSS("filter", paper ? /invert\(1\)/ : /contrast\(1.15\)/);
+      await expect(page.locator(".site-header")).toHaveCSS("filter", paper ? /invert\(1\)/ : /contrast\(1.15\)/);
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     }
     await setFrame(1050);
     await expect(page.locator(".intro-sticky")).toHaveCSS("filter", "none");
-    await expect(page.locator('[data-entrance-effect="ink"]')).not.toHaveCSS("opacity", "0");
+    await expect(page.locator('[data-slice-seam="1"]')).not.toHaveCSS("opacity", "0");
     await page.keyboard.press("Escape");
     await expect(page.locator(".intro-sticky")).toHaveCSS("filter", "none");
     await expect(page.locator(".site-header")).toHaveCSS("filter", "none");
@@ -217,7 +216,7 @@ test("one rapid strike cuts the entire page while its electrical drawings change
   }
 });
 
-test("the hit squashes and bursts the real cube, then reconstructs its exact paused pose", async ({ page }) => {
+test("the cuts separate real cube sections, then reconstruct their exact paused pose", async ({ page }) => {
   // Keep the whole canvas in view: element screenshots resize a shorter viewport,
   // which deliberately dismisses the entrance before the scene can be sampled.
   await page.setViewportSize({ width: 1280, height: 900 });
@@ -237,11 +236,11 @@ test("the hit squashes and bursts the real cube, then reconstructs its exact pau
   const initial = await canvas.screenshot();
   await expect(page.locator("html")).toHaveAttribute("data-entrance", "running");
   await page.clock.runFor(758);
-  const flattened = await canvas.screenshot();
-  expect(flattened.equals(initial), "the hit must physically deform the rendered cube").toBe(false);
+  const sliced = await canvas.screenshot();
+  expect(sliced.equals(initial), "the cuts must physically offset the rendered cube sections").toBe(false);
   await page.clock.runFor(310);
-  const burst = await canvas.screenshot();
-  expect(burst.equals(flattened), "cubelets must move outward after the squash").toBe(false);
+  const opened = await canvas.screenshot();
+  expect(opened.equals(sliced), "successive slices must displace additional cube sections").toBe(false);
   await page.clock.runFor(1300);
   expect((await canvas.screenshot()).equals(initial), "reassembly must restore the original exact cube pose and materials").toBe(true);
   await page.clock.runFor(400);

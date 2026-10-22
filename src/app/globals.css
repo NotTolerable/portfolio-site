@@ -67,13 +67,15 @@ p { line-height: 1.75; }
 .intro-overline { display: flex; align-items: center; gap: 14px; height: 16px; margin-bottom: 28px; }
 .intro-overline .section-index { font-size: 9px; }
 .intro-signal { display: inline-block; flex-shrink: 0; width: 4px; height: 4px; border-radius: 50%; background: #c1d8e4; box-shadow: 0 0 18px #a3c3d326; }
-.intro-cinema { position: fixed; inset: 0; z-index: 45; color: #e9e9e9; pointer-events: none; visibility: hidden; overflow: clip; contain: strict; }
-.intro-cinema [data-entrance-effect] { opacity: 0; transform-origin: 0 0; }
-.impact-speed { position: absolute; inset: 0; width: 100%; height: 100%; }
-.impact-origin { position: absolute; left: var(--impact-x, calc(50% + 45px)); top: var(--impact-y, 56%); width: min(130vw, 1400px); aspect-ratio: 13 / 9; transform: translate(-50%, -50%); }
-.impact-origin > svg { width: 100%; height: 100%; display: block; }
-.impact-paper { color: #030305; }
-.impact-dark { color: #eee8e9; }
+.intro-cinema { position: fixed; inset: 0; z-index: 45; color: #dce8ee; pointer-events: none; visibility: hidden; overflow: clip; contain: strict; }
+.intro-cinema :is([data-slice-stroke], [data-slice-seam], [data-slice-peripheral], [data-entrance-shutter]) { opacity: 0; transform-origin: center; }
+.screen-slice, .peripheral-slice { position: absolute; width: 220vmax; height: 32px; translate: -50% -50%; }
+.screen-slice svg, .peripheral-slice svg { width: 100%; height: 100%; overflow: visible; }
+.screen-slice-0 { left: var(--slice-0-x, 53%); top: var(--slice-0-y, 58%); rotate: var(--slice-0-angle, 24deg); }
+.screen-slice-1 { left: var(--slice-1-x, 55%); top: var(--slice-1-y, 55%); rotate: var(--slice-1-angle, -75deg); }
+.screen-slice-2 { left: var(--slice-2-x, 50%); top: var(--slice-2-y, 48%); rotate: var(--slice-2-angle, -22deg); }
+.peripheral-slice { height: 10px; color: #a3c3d3; }
+.slice-shutter { position: absolute; inset: 0; background: #020508; }
 html[data-entrance="running"] .intro-cinema { visibility: visible; }
 .intro-firstname, .intro-surname { display: inline-block; transform-origin: 0 0; }
 .intro-firstname > span { display: inline-block; transform-origin: 50% 50%; }
