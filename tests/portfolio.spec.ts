@@ -152,7 +152,7 @@ test("the kinetic intro clears and does not replay on internal navigation", asyn
   await expect(page.locator(".site-intro")).toHaveCount(0);
 });
 
-test("the opening name, wordmark, and dot settle into the same homepage elements", async ({ page }) => {
+test("the entrance settles the real headline, cube, and dot without replacing them", async ({ page }) => {
   await page.route("**/textures/resend/**", (route) => route.abort());
   await page.clock.install({ time: 0 });
   await page.clock.pauseAt(0);
@@ -161,30 +161,56 @@ test("the opening name, wordmark, and dot settle into the same homepage elements
     await page.goto("/");
     await expect(page.locator("html")).toHaveAttribute("data-entrance", "running");
     const name = await page.locator(".intro-firstname").elementHandle();
-    const word = await page.getByText("PORTFOLIO", { exact: true }).elementHandle();
+    const letter = await page.locator(".intro-firstname > span").first().elementHandle();
+    const canvas = await page.locator(".cube-stage canvas").elementHandle();
     const dot = await page.locator(".intro-signal").elementHandle();
-    if (!name || !word || !dot) throw new Error("Missing permanent hero elements");
-    await page.evaluate(() => document.getAnimations().filter((animation) => animation.timeline === document.timeline).forEach((animation) => { animation.pause(); animation.currentTime = 1200; }));
-    const assembled = await name.boundingBox();
-    if (!assembled) throw new Error("Name not visible during assembly");
-    expect(assembled.x + assembled.width / 2).toBeCloseTo(width / 2, 0);
-    await page.evaluate(() => document.getAnimations().filter((animation) => animation.timeline === document.timeline).forEach((animation) => { animation.currentTime = 3200; }));
-    const settled = await name.boundingBox();
+    if (!name || !letter || !canvas || !dot) throw new Error("Missing permanent hero elements");
+    await page.evaluate(() => document.getAnimations().filter((animation) => animation.timeline === document.timeline).forEach((animation) => { animation.pause(); animation.currentTime = 420; }));
+    const entering = await letter.boundingBox();
+    if (!entering) throw new Error("Name missing during entrance");
+    await page.evaluate(() => document.getAnimations().filter((animation) => animation.timeline === document.timeline).forEach((animation) => { animation.currentTime = 2600; }));
+    const settled = await letter.boundingBox();
     if (!settled) throw new Error("Missing settled headline");
-    expect(Math.hypot(settled.x - assembled.x, settled.y - assembled.y)).toBeGreaterThan(50);
-    const settledWord = await word.boundingBox(), settledDot = await dot.boundingBox();
-    await page.clock.runFor(3200);
+    expect(entering.y - settled.y).toBeGreaterThan(20);
+    const settledName = await name.boundingBox(), settledDot = await dot.boundingBox();
+    await page.clock.runFor(2600);
     await expect(page.locator(".site-intro")).toHaveCount(0);
     expect(await name.evaluate((element) => element === document.querySelector("#intro-title .intro-firstname"))).toBe(true);
-    expect(await word.evaluate((element) => element === document.querySelector(".intro-word"))).toBe(true);
+    expect(await canvas.evaluate((element) => element === document.querySelector(".cube-stage canvas"))).toBe(true);
     expect(await dot.evaluate((element) => element === document.querySelector(".intro-signal"))).toBe(true);
-    expect(await name.boundingBox(), "ending the intro must not swap or jump the headline").toEqual(settled);
-    expect(await word.boundingBox()).toEqual(settledWord);
+    expect(await name.boundingBox(), "ending the entrance must not swap or jump the headline").toEqual(settledName);
     expect(await dot.boundingBox()).toEqual(settledDot);
     await expect(page.getByRole("heading", { name: "Babisan Pirapakaran", level: 1 })).toHaveCount(1);
-    await expect(page.getByText("PORTFOLIO", { exact: true })).toBeVisible();
+    await expect(page.getByText("PORTFOLIO", { exact: true })).toHaveCount(0);
     await expect(page.getByRole("link", { name: /Cloud lab/ })).toBeVisible();
+    await expect(page.locator(".intro-energy:visible")).toHaveCount(0);
   }
+});
+
+test("skipping during cube assembly restores a stable interactive cube", async ({ page }) => {
+  await page.clock.install({ time: 0 });
+  await page.clock.pauseAt(0);
+  await page.goto("/");
+  await expect(page.locator(".cube-figure")).toHaveAttribute("data-renderer", "webgl", { timeout: 20000 });
+  await expect(page.locator("html")).toHaveAttribute("data-entrance", "running");
+  // Hold the surrounding DOM at its destination to isolate the scene's assembly.
+  await page.evaluate(() => document.getAnimations().filter((animation) => animation.timeline === document.timeline).forEach((animation) => { animation.pause(); animation.currentTime = 2600; }));
+  await page.clock.runFor(450);
+  const canvas = page.locator(".cube-stage canvas");
+  const assembling = await canvas.screenshot();
+  await page.keyboard.press("Escape");
+  const stage = page.getByRole("group", { name: /Interactive black cube/ });
+  await stage.focus();
+  await page.keyboard.press(" ");
+  await page.clock.runFor(64);
+  const settled = await canvas.screenshot();
+  expect(settled.equals(assembling), "skipping must finish the physical cube assembly").toBe(false);
+  await page.clock.runFor(1000);
+  expect((await canvas.screenshot()).equals(settled), "paused cubelets must not keep assembling or drift after skip").toBe(true);
+  await page.keyboard.press("ArrowRight");
+  await page.clock.runFor(32);
+  expect((await canvas.screenshot()).equals(settled), "manual rotation must still work after an interrupted entrance").toBe(false);
+  await expect(page.locator(".intro-energy:visible")).toHaveCount(0);
 });
 
 test("resizing, direct links, and disabled JavaScript leave a usable landing page", async ({ page, browser }) => {
@@ -194,7 +220,7 @@ test("resizing, direct links, and disabled JavaScript leave a usable landing pag
   await page.setViewportSize({ width: 390, height: 844 });
   await expect(page.locator("html")).not.toHaveAttribute("data-entrance");
   await expect(page.locator(".intro-firstname")).toHaveCSS("transform", "none");
-  await expect(page.locator(".intro-word")).toBeVisible();
+  await expect(page.locator(".intro-signal")).toBeVisible();
   await page.goto("/#projects");
   await expect(page.locator(".site-intro")).toHaveCount(0);
   await expect(page.getByRole("heading", { name: "Things I’ve built." })).toBeInViewport();

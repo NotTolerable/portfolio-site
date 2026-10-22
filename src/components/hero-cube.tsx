@@ -3,11 +3,12 @@
 import { useEffect, useRef, useState } from "react";
 import type { MotionValue } from "motion/react";
 import type { CubeInput } from "@/lib/cube-scene";
+import { subscribeEntrance } from "@/lib/entrance-timeline";
 
 export function HeroCube({ scrollProgress }: { scrollProgress?: MotionValue<number> }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const sceneRef = useRef<{ dispose(): void } | null>(null);
-  const input = useRef<CubeInput>({ paused: false, pressed: false, reduced: false, x: 0, y: 0, scroll: 0 });
+  const input = useRef<CubeInput>({ paused: false, pressed: false, reduced: false, x: 0, y: 0, scroll: 0, entranceStartedAt: null });
   const drag = useRef<{ pointerId: number; x: number; y: number } | null>(null);
   const [mode, setMode] = useState<"loading" | "webgl" | "fallback">("loading");
 
@@ -19,6 +20,7 @@ export function HeroCube({ scrollProgress }: { scrollProgress?: MotionValue<numb
     syncPreference();
     media.addEventListener("change", syncPreference);
     const unsubscribe = scrollProgress?.on("change", syncProgress);
+    const unsubscribeEntrance = subscribeEntrance((time) => { input.current.entranceStartedAt = time; });
     import("@/lib/cube-scene").then(async ({ createCubeScene }) => {
       if (!active || !canvasRef.current) return;
       try {
@@ -34,6 +36,7 @@ export function HeroCube({ scrollProgress }: { scrollProgress?: MotionValue<numb
       active = false;
       media.removeEventListener("change", syncPreference);
       unsubscribe?.();
+      unsubscribeEntrance();
       sceneRef.current?.dispose();
       sceneRef.current = null;
     };

@@ -33,7 +33,7 @@ Browser checks require installed Google Chrome. They start a separate production
 - Two project articles with original SVG concept illustrations and native expandable notes. The illustrations are not actual product screenshots. Project contributions, stacks, source/demo links, results, and detailed case studies await owner-provided evidence.
 - A personal about section and a clearly labeled `/infrastructure` planning page for a separate static AWS showcase. No certifications or deployment claims are invented.
 - Offscreen/hidden rendering suppression, capped device pixel ratio, 3,400/6,800 point budgets, and scene/texture/geometry/event disposal. A static CSS fallback preserves content if WebGL or material loading fails.
-- A roughly three-second entrance of the real homepage elements: kinetic name letters settle into the headline, and a metallic PORTFOLIO wordmark shrinks into the overline beside the light dot as the cube and surrounding content appear. Skip intro, Tab/Escape, scroll/touch intent, or resize complete it immediately. Reduced motion and direct section links bypass it; internal navigation never replays it. Server-rendered content remains usable without JavaScript.
+- A roughly 2.6-second anime-inspired entrance: the actual cubelets assemble, the name reveals in place, and navigation/copy follow crisp monochrome cuts, radial ink lines, and one brief held silhouette pose. No characters or PORTFOLIO wordmark. Skip intro, Tab/Escape, scroll/touch intent, or resize complete it immediately. Reduced motion and direct section links bypass it; internal navigation never replays it. Server-rendered content remains usable without JavaScript.
 
 ## Context
 

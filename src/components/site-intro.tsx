@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { ENTRANCE_DURATION, IMPACT_START, IMPACT_END, setEntranceStart } from "@/lib/entrance-timeline";
 
-const settle = "cubic-bezier(.76,0,.24,1)";
-const scatter = [[-24, -16, -38], [-12, 19, 24], [-4, -22, -18], [3, 24, 34], [8, -18, -28], [17, 17, 22], [26, -12, 38]];
+const easeOut = "cubic-bezier(.16,1,.3,1)";
 
 export function SiteIntro() {
   const [playing, setPlaying] = useState(false);
@@ -14,13 +14,17 @@ export function SiteIntro() {
     const media = window.matchMedia("(prefers-reduced-motion: reduce)");
     const listeners = new AbortController();
     const animations: Animation[] = [];
+    const timers: number[] = [];
     let finished = false;
-    let timeout: number | undefined;
+    let rendererObserver: MutationObserver | undefined;
     const finish = () => {
       finished = true;
-      window.clearTimeout(timeout);
+      timers.forEach(window.clearTimeout);
+      rendererObserver?.disconnect();
+      rendererObserver = undefined;
       animations.forEach((animation) => animation.cancel());
       animations.length = 0;
+      setEntranceStart(null);
       listeners.abort();
       delete root.dataset.entrance;
       setPlaying(false);
@@ -38,75 +42,92 @@ export function SiteIntro() {
     media.addEventListener("change", preferenceChanged, { signal: listeners.signal });
 
     async function start() {
-      // Measure the real, font-loaded landing elements. No duplicate title or overlay.
-      await Promise.race([document.fonts.ready, new Promise((resolve) => { timeout = window.setTimeout(resolve, 500); })]);
-      window.clearTimeout(timeout);
+      if (media.matches || window.location.pathname !== "/" || window.location.hash || window.scrollY > 10 || root.dataset.entrance === "ready") { finish(); return; }
+      const cube = document.querySelector(".cube-figure");
+      const rendererReady = new Promise<void>((resolve) => {
+        if (!cube || cube.getAttribute("data-renderer") !== "loading") { resolve(); return; }
+        rendererObserver = new MutationObserver(() => {
+          if (cube.getAttribute("data-renderer") !== "loading") { rendererObserver?.disconnect(); resolve(); }
+        });
+        rendererObserver.observe(cube, { attributes: true, attributeFilter: ["data-renderer"] });
+        // Slow or unavailable WebGL must not hold the homepage behind a loader.
+        timers.push(window.setTimeout(resolve, 1200));
+      });
+      await Promise.all([
+        rendererReady,
+        Promise.race([document.fonts.ready, new Promise((resolve) => { timers.push(window.setTimeout(resolve, 500)); })]),
+      ]);
+      rendererObserver?.disconnect();
+      rendererObserver = undefined;
       if (finished) return;
-      const part = (name: string) => document.querySelector<HTMLElement>(`[data-entrance-part="${name}"]`);
-      const name = part("name"), surname = part("surname"), word = part("word"), signal = part("signal");
-      if (root.dataset.entrance === "ready" || media.matches || document.fonts.status !== "loaded" || window.location.pathname !== "/" || window.location.hash || window.scrollY > 10 || !name || !surname || !word || !signal) {
-        finish();
-        return;
-      }
-
-      const width = window.innerWidth, height = window.innerHeight;
-      const nameBox = name.getBoundingClientRect(), surnameBox = surname.getBoundingClientRect();
-      const wordBox = word.getBoundingClientRect(), signalBox = signal.getBoundingClientRect();
-      const scale = Math.min(1.5, (width - 48) / nameBox.width);
-      const nameX = (width - nameBox.width * scale) / 2 - nameBox.left;
-      const nameY = height * .38 - nameBox.height * scale / 2 - nameBox.top;
-      const surnameScale = width < 761 ? .75 : .52;
-      const surnameX = (width - surnameBox.width * surnameScale) / 2 - surnameBox.left;
-      const surnameY = height * .38 + nameBox.height * scale * .65 - surnameBox.top;
-      const wordSize = parseFloat(getComputedStyle(word).fontSize);
-      const largeSize = Math.min(180, height * .2, width * .146, wordSize * width * .9 / wordBox.width);
-      const wordX = (width - wordBox.width * largeSize / wordSize) / 2 - wordBox.left;
-      const wordY = height * .12 - wordBox.height * largeSize / wordSize / 2 - wordBox.top;
-      const animate = (element: Element, frames: Keyframe[], duration: number, delay = 0, easing = settle) => {
+      const name = document.querySelector<HTMLElement>('[data-entrance-part="name"]');
+      const surname = document.querySelector<HTMLElement>('[data-entrance-part="surname"]');
+      const signal = document.querySelector<HTMLElement>('[data-entrance-part="signal"]');
+      if (root.dataset.entrance === "ready" || document.fonts.status !== "loaded" || window.scrollY > 10 || !name || !surname || !signal) { finish(); return; }
+      const animate = (element: Element, frames: Keyframe[], duration: number, delay = 0, easing = easeOut) => {
         animations.push(element.animate(frames, { duration, delay, easing, fill: "both" }));
       };
 
-      animate(name, [{ transform: `translate(${nameX}px, ${nameY}px) scale(${scale})` }, { transform: "none" }], 1250, 1350);
+      // Reveal the permanent headline where it belongs, like a title cut settling into focus.
       name.querySelectorAll("span").forEach((letter, index) => {
-        const [x, y, turn] = scatter[index];
-        animate(letter, [{ opacity: 0, transform: `translate(${x}vw, ${y}vh) rotate(${turn}deg)` }, { opacity: 1, transform: "none" }], 700, 240 + index * 60, "cubic-bezier(.16,1,.3,1)");
+        animate(letter, [
+          { opacity: 0, transform: "translate(18px, 42px) skewY(8deg)" },
+          { opacity: 1, transform: "translate(-1px, -2px)", offset: .7 },
+          { opacity: 1, transform: "none" },
+        ], 850, 420 + index * 35);
       });
-      animate(surname, [{ opacity: 0 }, { opacity: 1 }], 400, 700, "ease");
-      // Travel beneath the first name before rising into the desktop baseline.
       animate(surname, [
-        { transform: `translate(${surnameX}px, ${surnameY}px) scale(${surnameScale})`, offset: 0, easing: settle },
-        { transform: `translate(0px, ${surnameY}px) scale(1)`, offset: .58, easing: settle },
-        { transform: "none", offset: 1 },
-      ], 1500, 1350, "linear");
-      animate(word, [
-        { opacity: 0, fontSize: `${largeSize}px`, transform: `translate(${wordX}px, ${wordY + 40}px)`, offset: 0 },
-        { opacity: 1, fontSize: `${largeSize}px`, transform: `translate(${wordX}px, ${wordY}px)`, offset: .24, easing: settle },
-        { opacity: 1, fontSize: `${wordSize}px`, transform: "none", offset: 1 },
-      ], 1600, 1450, "linear");
-      const signalTransform = `translate(${width / 2 - signalBox.left - signalBox.width / 2}px, ${height * .38 - signalBox.top - signalBox.height / 2}px) scale(3.5)`;
+        { opacity: 0, transform: "translate(36px, 24px)", clipPath: "polygon(0 0, 0 0, 0 100%, 0 100%)" },
+        { opacity: 1, transform: "none", clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)" },
+      ], 1100, 650);
       animate(signal, [
-        { opacity: 0, transform: signalTransform, offset: 0 },
-        { opacity: 1, transform: signalTransform, offset: .12 },
-        { opacity: 1, transform: signalTransform, offset: .35, easing: settle },
-        { opacity: 1, transform: "none", offset: 1 },
-      ], 1900, 0, "linear");
+        { opacity: 0, transform: "scale(0)" },
+        { opacity: 1, transform: "scale(2)", offset: .35 },
+        { opacity: 1, transform: "none" },
+      ], 1000, 350);
       document.querySelectorAll<HTMLElement>("[data-entrance-reveal]").forEach((element) => {
-        const opacity = getComputedStyle(element).opacity;
+        const cube = element.dataset.entranceReveal === "cube";
+        if (cube) {
+          animate(element, [{ opacity: 0 }, { opacity: 1 }], 200, 100);
+          animate(element, [{ transform: "translate(55px, 32px) scale(.88)" }, { transform: "none" }], 1700, 120);
+          return;
+        }
         animate(element, [
-          { opacity: 0, transform: element.dataset.entranceReveal === "cube" ? "translateY(40px) scale(.86)" : "translateY(12px)" },
-          { opacity, transform: "none" },
-        ], 900, element.dataset.entranceReveal === "cube" ? 2050 : 2250);
+          { opacity: 0, transform: "translateY(16px)" },
+          { opacity: getComputedStyle(element).opacity, transform: "none" },
+        ], 1050, element.dataset.entranceReveal === "navigation" ? 850 : 1100);
       });
-      // All fill styles are installed before releasing the pre-paint guard.
+      document.querySelectorAll("[data-entrance-effect]").forEach((element) => {
+        const effect = element.getAttribute("data-entrance-effect");
+        if (effect === "impact") {
+          animations.push(element.animate([{ opacity: 1 }, { opacity: 1 }], { duration: IMPACT_END - IMPACT_START, delay: IMPACT_START, fill: "none" }));
+        } else if (effect === "cut") {
+          animate(element, [
+            { opacity: 0, strokeDashoffset: 1 },
+            { opacity: .9, strokeDashoffset: 0, offset: .28 },
+            { opacity: 0, strokeDashoffset: -1 },
+          ], 950, 80, "cubic-bezier(.22,.68,0,1)");
+        } else {
+          animate(element, [
+            { opacity: 0, transform: "scale(.42) rotate(-12deg)" },
+            { opacity: effect === "halo" ? .28 : .65, transform: "scale(.8) rotate(-4deg)", offset: .25 },
+            { opacity: 0, transform: "scale(1.16) rotate(0deg)" },
+          ], effect === "halo" ? 1550 : 1200, effect === "halo" ? 160 : 260);
+        }
+      });
+      setEntranceStart(performance.now());
       root.dataset.entrance = "running";
       setPlaying(true);
-      timeout = window.setTimeout(finish, 3200);
+      timers.push(window.setTimeout(finish, ENTRANCE_DURATION));
     }
     void start().catch(finish);
     return () => {
       finished = true;
-      window.clearTimeout(timeout);
+      timers.forEach(window.clearTimeout);
+      rendererObserver?.disconnect();
+      rendererObserver = undefined;
       animations.forEach((animation) => animation.cancel());
+      setEntranceStart(null);
       delete root.dataset.entrance;
       listeners.abort();
     };

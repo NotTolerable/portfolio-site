@@ -4,12 +4,14 @@ import { cubicBezier } from "motion";
 import { createFaceMaterials } from "./cube-textures";
 import { CubeOrbit, type OrbitInput } from "./cube-orbit";
 import { createCubeParticles } from "./cube-particles";
+import { CUBE_ENTRANCE_DURATION, IMPACT_START, IMPACT_END } from "./entrance-timeline";
 import { applyTurn, createCubies, createScrambleSequence, createTurnSequence, FACE_NORMALS, hasSticker, type Cubie, type ScrambleMove } from "./rubik-state";
 
 export type CubeInput = OrbitInput & {
   paused: boolean;
   reduced: boolean;
   scroll: number;
+  entranceStartedAt: number | null;
 };
 
 const easeLayerTurn = cubicBezier(0.42, 0, 0.58, 1);
@@ -36,14 +38,17 @@ export async function createCubeScene(canvas: HTMLCanvasElement, input: CubeInpu
   const geometry = new RoundedBoxGeometry(0.99, 0.99, 0.99, 5, 0.075);
   const material = new THREE.MeshMatcapMaterial({ matcap: faces.materials[4].matcap, color: 0x777777, toneMapped: false });
   const surfaces = [...faces.materials, material];
+  const surfaceColors = surfaces.map((surface) => surface.color.clone());
   surfaces.forEach((surface) => { surface.transparent = true; });
   const view = new THREE.Group();
   view.rotation.set(0.03, -0.17, -0.12);
   const pitch = new THREE.Group();
+  const arrival = new THREE.Group();
   const group = new THREE.Group();
   // Separate pitch/yaw axes preserve direct drag tracking and the view tilt.
   scene.add(view);
-  view.add(pitch);
+  view.add(arrival);
+  arrival.add(pitch);
   pitch.add(group);
   const particles = createCubeParticles(window.innerWidth < 760, renderer.getPixelRatio());
   group.add(particles.object);
@@ -87,6 +92,10 @@ export async function createCubeScene(canvas: HTMLCanvasElement, input: CubeInpu
   let dirty = true;
   let previousScroll = -1;
   let animationTime = 0;
+  let wasEntering = false;
+  let wasInk = false;
+  const entranceRotation = new THREE.Quaternion();
+  const entranceEuler = new THREE.Euler();
 
   function updateScroll(progress: number) {
     const compact = canvas.clientWidth < 760;
@@ -133,7 +142,8 @@ export async function createCubeScene(canvas: HTMLCanvasElement, input: CubeInpu
   }
 
   function resize() {
-    const { width, height } = canvas.getBoundingClientRect();
+    // Entrance transforms must not reduce the renderer's eventual pixel resolution.
+    const width = canvas.clientWidth, height = canvas.clientHeight;
     if (!width || !height) return;
     renderer.setSize(width, height, false);
     camera.aspect = width / height;
@@ -149,9 +159,17 @@ export async function createCubeScene(canvas: HTMLCanvasElement, input: CubeInpu
     previousTime = now;
     if (visible && !document.hidden) {
       const automatic = !input.paused && !input.reduced;
+      const entranceElapsed = input.entranceStartedAt === null ? CUBE_ENTRANCE_DURATION : now - input.entranceStartedAt;
+      const entering = !input.reduced && input.scroll === 0 && entranceElapsed < CUBE_ENTRANCE_DURATION;
+      const ink = entering && entranceElapsed >= IMPACT_START && entranceElapsed < IMPACT_END;
+      if (ink !== wasInk) {
+        surfaces.forEach((surface, index) => { if (ink) surface.color.set(0x000000); else surface.color.copy(surfaceColors[index]); });
+        wasInk = ink;
+        dirty = true;
+      }
       if (automatic) animationTime += delta;
       if (input.reduced && active) { finishTurn(); dirty = true; }
-      if (automatic) {
+      if (automatic && !entering) {
         if (active) {
           active.elapsed += delta;
           const duration = active.turn.quarterTurns === 2 ? 1.7 : 1.15;
@@ -165,9 +183,38 @@ export async function createCubeScene(canvas: HTMLCanvasElement, input: CubeInpu
         }
         dirty = true;
       }
-      const orientation = orbit.update(input, delta, automatic);
+      const orientation = orbit.update(input, delta, automatic && !ink);
       const scroll = input.reduced ? 0 : Math.max(0, Math.min(1, input.scroll));
-      if (scroll !== previousScroll || (automatic && scroll > 0)) updateScroll(scroll);
+      if (scroll !== previousScroll || wasEntering || entering || (automatic && scroll > 0)) updateScroll(scroll);
+      if (entering) {
+        // Hold one ink silhouette pose, then release the assembly in a single motion.
+        const poseTime = entranceElapsed < IMPACT_END ? Math.min(entranceElapsed, IMPACT_START) : entranceElapsed - (IMPACT_END - IMPACT_START);
+        const progress = THREE.MathUtils.clamp((poseTime - 100) / 1540, 0, 1);
+        const remaining = Math.pow(1 - progress, 3);
+        arrival.rotation.set(.28 * remaining, -.85 * remaining, -.2 * remaining);
+        const punch = entranceElapsed >= IMPACT_END ? .065 * Math.exp(-Math.pow((entranceElapsed - 600) / 160, 2)) : 0;
+        arrival.scale.setScalar(1 - .26 * remaining + punch);
+        arrival.position.y = -.35 * remaining;
+        cubies.forEach((cubie, index) => {
+          const t = THREE.MathUtils.clamp((poseTime - 120 - index * 9) / 1200, 0, 1);
+          const distance = Math.pow(1 - t, 3);
+          syncTransform(cubie);
+          const object = objects.get(cubie)!;
+          object.position.multiplyScalar(1 + .9 * distance);
+          entranceEuler.set(.2 * distance * cubie.position[1], -.28 * distance * cubie.position[0], .16 * distance);
+          entranceRotation.setFromEuler(entranceEuler);
+          object.quaternion.multiply(entranceRotation);
+        });
+        dirty = true;
+      } else if (wasEntering) {
+        arrival.rotation.set(0, 0, 0);
+        arrival.position.set(0, 0, 0);
+        arrival.scale.setScalar(1);
+        // Restore exact logical orientations before handing control to regular turns.
+        cubies.forEach(syncTransform);
+        dirty = true;
+      }
+      wasEntering = entering;
       const targetX = orientation.y;
       const targetY = orientation.x;
       if (pitch.rotation.x !== targetX || group.rotation.y !== targetY) {
