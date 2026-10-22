@@ -35,7 +35,7 @@ Updated: 2026-10-22. Current phase: deployed portfolio with content/design refin
 - [x] Restore the cube’s original column, enlarge it slightly, add a visible ray, and ease faster idle direction changes.
 - [x] Rewrite the copy as a relaxed personal portfolio and add a quick first-load greeting.
 - [x] Introduce the name-led systems theme, asymmetric project entries, expandable notes, and a reversible cube-to-particle scroll transition.
-- [x] Replace the earlier name/PORTFOLIO opening with a coordinated anime-inspired cube assembly, in-place name reveal, monochrome ink/impact accents, and staggered surrounding content; preserve continuity, skip controls, reduced motion, direct links, and resize handling.
+- [x] Replace the earlier name/PORTFOLIO opening with a coordinated blade-to-name transformation, cube assembly, three full-viewport monochrome impact cuts, layered ink linework, and synchronized surrounding content; preserve continuity, skip controls, reduced motion, direct links, and resize handling.
 - [x] Refine identity with a serif name, original cube-outline mark and BP, no underscore suffixes/index branding, and selective glass depth on controls.
 - [x] Refine glass with static frosting and rim highlights; remove the cube/hologram overlay while retaining automatic animation and requiring drag/keyboard input for manual steering.
 - [ ] Complete owner-verified project case studies, source links, resume, and contact details.

@@ -183,7 +183,36 @@ test("the entrance settles the real headline, cube, and dot without replacing th
     await expect(page.getByRole("heading", { name: "Babisan Pirapakaran", level: 1 })).toHaveCount(1);
     await expect(page.getByText("PORTFOLIO", { exact: true })).toHaveCount(0);
     await expect(page.getByRole("link", { name: /Cloud lab/ })).toBeVisible();
-    await expect(page.locator(".intro-energy:visible")).toHaveCount(0);
+    await expect(page.locator(".intro-cinema:visible")).toHaveCount(0);
+  }
+});
+
+test("blade resolves into the name across coordinated page-wide impact beats", async ({ page }) => {
+  await page.route("**/textures/resend/**", (route) => route.abort());
+  await page.clock.install({ time: 0 });
+  await page.clock.pauseAt(0);
+  for (const width of [1280, 390]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto("/");
+    await expect(page.locator("html")).toHaveAttribute("data-entrance", "running");
+    const setFrame = async (time: number) => page.evaluate((t) => document.getAnimations().filter((animation) => animation.timeline === document.timeline).forEach((animation) => { animation.pause(); animation.currentTime = t; }), time);
+    await setFrame(260);
+    await expect(page.locator(".name-blade")).toBeVisible();
+    expect(await page.locator(".intro-firstname > span").first().evaluate((element) => Number(getComputedStyle(element).opacity))).toBe(0);
+    for (const time of [650, 1780]) {
+      await setFrame(time);
+      await expect(page.locator(".intro-sticky")).toHaveCSS("filter", /invert\(1\)/);
+      await expect(page.locator(".site-header")).toHaveCSS("filter", /invert\(1\)/);
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    }
+    await setFrame(1180);
+    await expect(page.locator(".intro-sticky")).toHaveCSS("filter", "grayscale(1)");
+    await expect(page.locator(".site-header")).toHaveCSS("filter", "grayscale(1)");
+    await page.keyboard.press("Escape");
+    await expect(page.locator(".intro-sticky")).toHaveCSS("filter", "none");
+    await expect(page.locator(".site-header")).toHaveCSS("filter", "none");
+    await expect(page.locator(".name-blade")).toBeHidden();
+    await expect(page.getByRole("heading", { name: "Babisan Pirapakaran", level: 1 })).toBeVisible();
   }
 });
 
@@ -195,7 +224,7 @@ test("skipping during cube assembly restores a stable interactive cube", async (
   await expect(page.locator("html")).toHaveAttribute("data-entrance", "running");
   // Hold the surrounding DOM at its destination to isolate the scene's assembly.
   await page.evaluate(() => document.getAnimations().filter((animation) => animation.timeline === document.timeline).forEach((animation) => { animation.pause(); animation.currentTime = 2600; }));
-  await page.clock.runFor(450);
+  await page.clock.runFor(650);
   const canvas = page.locator(".cube-stage canvas");
   const assembling = await canvas.screenshot();
   await page.keyboard.press("Escape");
@@ -210,7 +239,7 @@ test("skipping during cube assembly restores a stable interactive cube", async (
   await page.keyboard.press("ArrowRight");
   await page.clock.runFor(32);
   expect((await canvas.screenshot()).equals(settled), "manual rotation must still work after an interrupted entrance").toBe(false);
-  await expect(page.locator(".intro-energy:visible")).toHaveCount(0);
+  await expect(page.locator(".intro-cinema:visible")).toHaveCount(0);
 });
 
 test("resizing, direct links, and disabled JavaScript leave a usable landing page", async ({ page, browser }) => {
@@ -246,6 +275,7 @@ test("delayed hydration restores the homepage and never starts a late entrance",
   try {
     await page.goto("/", { waitUntil: "commit" });
     await expect(page.locator("html")).toHaveAttribute("data-entrance", "pending");
+    await expect(page.getByRole("heading", { name: "Babisan Pirapakaran", level: 1 })).toBeVisible();
     await expect(page.locator(".intro-firstname")).toBeHidden();
     await page.clock.runFor(4100);
     await expect(page.locator("html")).toHaveAttribute("data-entrance", "ready");
