@@ -1,6 +1,6 @@
 # Roadmap
 
-Updated: 2026-10-21. Current phase: deployed portfolio with content/design refinements pending.
+Updated: 2026-10-22. Current phase: deployed portfolio with content/design refinements pending.
 
 ## 1. Establish project context
 
@@ -35,7 +35,7 @@ Updated: 2026-10-21. Current phase: deployed portfolio with content/design refin
 - [x] Restore the cube’s original column, enlarge it slightly, add a visible ray, and ease faster idle direction changes.
 - [x] Rewrite the copy as a relaxed personal portfolio and add a quick first-load greeting.
 - [x] Introduce the name-led systems theme, asymmetric project entries, expandable notes, and a reversible cube-to-particle scroll transition.
-- [x] Replace the initial loading bar with a short kinetic name/PORTFOLIO opening, skip controls, and reduced-motion handling.
+- [x] Replace the initial loading bar with a short kinetic entrance in which the actual name, PORTFOLIO wordmark, and dot settle into the homepage; preserve skip controls, reduced motion, direct links, and resize handling.
 - [x] Refine identity with a serif name, original cube-outline mark and BP, no underscore suffixes/index branding, and selective glass depth on controls.
 - [x] Refine glass with static frosting and rim highlights; remove the cube/hologram overlay while retaining automatic animation and requiring drag/keyboard input for manual steering.
 - [ ] Complete owner-verified project case studies, source links, resume, and contact details.

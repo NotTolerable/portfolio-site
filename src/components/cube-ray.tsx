@@ -1,6 +1,6 @@
 export function CubeRay() {
   return (
-    <svg className="cube-ray" viewBox="0 0 1440 1000" preserveAspectRatio="none" fill="none" aria-hidden="true" focusable="false">
+    <svg className="cube-ray" data-entrance-reveal="ambient" viewBox="0 0 1440 1000" preserveAspectRatio="none" fill="none" aria-hidden="true" focusable="false">
       <defs>
         <radialGradient id="cube-ray-haze">
           <stop stopColor="white" stopOpacity="0.11" />

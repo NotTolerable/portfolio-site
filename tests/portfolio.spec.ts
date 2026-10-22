@@ -152,6 +152,88 @@ test("the kinetic intro clears and does not replay on internal navigation", asyn
   await expect(page.locator(".site-intro")).toHaveCount(0);
 });
 
+test("the opening name, wordmark, and dot settle into the same homepage elements", async ({ page }) => {
+  await page.route("**/textures/resend/**", (route) => route.abort());
+  await page.clock.install({ time: 0 });
+  await page.clock.pauseAt(0);
+  for (const width of [1280, 390]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto("/");
+    await expect(page.locator("html")).toHaveAttribute("data-entrance", "running");
+    const name = await page.locator(".intro-firstname").elementHandle();
+    const word = await page.getByText("PORTFOLIO", { exact: true }).elementHandle();
+    const dot = await page.locator(".intro-signal").elementHandle();
+    if (!name || !word || !dot) throw new Error("Missing permanent hero elements");
+    await page.evaluate(() => document.getAnimations().filter((animation) => animation.timeline === document.timeline).forEach((animation) => { animation.pause(); animation.currentTime = 1200; }));
+    const assembled = await name.boundingBox();
+    if (!assembled) throw new Error("Name not visible during assembly");
+    expect(assembled.x + assembled.width / 2).toBeCloseTo(width / 2, 0);
+    await page.evaluate(() => document.getAnimations().filter((animation) => animation.timeline === document.timeline).forEach((animation) => { animation.currentTime = 3200; }));
+    const settled = await name.boundingBox();
+    if (!settled) throw new Error("Missing settled headline");
+    expect(Math.hypot(settled.x - assembled.x, settled.y - assembled.y)).toBeGreaterThan(50);
+    const settledWord = await word.boundingBox(), settledDot = await dot.boundingBox();
+    await page.clock.runFor(3200);
+    await expect(page.locator(".site-intro")).toHaveCount(0);
+    expect(await name.evaluate((element) => element === document.querySelector("#intro-title .intro-firstname"))).toBe(true);
+    expect(await word.evaluate((element) => element === document.querySelector(".intro-word"))).toBe(true);
+    expect(await dot.evaluate((element) => element === document.querySelector(".intro-signal"))).toBe(true);
+    expect(await name.boundingBox(), "ending the intro must not swap or jump the headline").toEqual(settled);
+    expect(await word.boundingBox()).toEqual(settledWord);
+    expect(await dot.boundingBox()).toEqual(settledDot);
+    await expect(page.getByRole("heading", { name: "Babisan Pirapakaran", level: 1 })).toHaveCount(1);
+    await expect(page.getByText("PORTFOLIO", { exact: true })).toBeVisible();
+    await expect(page.getByRole("link", { name: /Cloud lab/ })).toBeVisible();
+  }
+});
+
+test("resizing, direct links, and disabled JavaScript leave a usable landing page", async ({ page, browser }) => {
+  await page.route("**/textures/resend/**", (route) => route.abort());
+  await page.goto("/");
+  await expect(page.getByRole("button", { name: "Skip intro" })).toBeVisible();
+  await page.setViewportSize({ width: 390, height: 844 });
+  await expect(page.locator("html")).not.toHaveAttribute("data-entrance");
+  await expect(page.locator(".intro-firstname")).toHaveCSS("transform", "none");
+  await expect(page.locator(".intro-word")).toBeVisible();
+  await page.goto("/#projects");
+  await expect(page.locator(".site-intro")).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "Things I’ve built." })).toBeInViewport();
+  await page.goto("/infrastructure");
+  await expect(page.locator("html")).not.toHaveAttribute("data-entrance");
+  await expect(page.getByRole("link", { name: /Cloud lab/ })).toBeVisible();
+  const context = await browser.newContext({ javaScriptEnabled: false });
+  try {
+    const plainPage = await context.newPage();
+    await plainPage.goto("http://127.0.0.1:3012/");
+    await expect(plainPage.getByRole("heading", { name: "Babisan Pirapakaran", level: 1 })).toBeVisible();
+    await expect(plainPage.getByRole("link", { name: "Explore my work", exact: true })).toBeVisible();
+  } finally { await context.close(); }
+});
+
+test("delayed hydration restores the homepage and never starts a late entrance", async ({ page }) => {
+  await page.route("**/textures/resend/**", (route) => route.abort());
+  let release!: () => void;
+  const gate = new Promise<void>((resolve) => { release = resolve; });
+  await page.route("**/_next/static/chunks/*.js", async (route) => { await gate; await route.continue(); });
+  await page.clock.install({ time: 0 });
+  await page.clock.pauseAt(0);
+  try {
+    await page.goto("/", { waitUntil: "commit" });
+    await expect(page.locator("html")).toHaveAttribute("data-entrance", "pending");
+    await expect(page.locator(".intro-firstname")).toBeHidden();
+    await page.clock.runFor(4100);
+    await expect(page.locator("html")).toHaveAttribute("data-entrance", "ready");
+    await expect(page.locator(".intro-firstname")).toBeVisible();
+    await page.evaluate(() => document.fonts.ready);
+    const restored = await page.locator(".intro-firstname").boundingBox();
+    release();
+    await expect(page.locator(".cube-figure")).toHaveAttribute("data-renderer", "fallback");
+    await expect(page.locator("html")).not.toHaveAttribute("data-entrance");
+    await expect(page.locator(".site-intro")).toHaveCount(0);
+    expect(await page.locator(".intro-firstname").boundingBox()).toEqual(restored);
+  } finally { release(); }
+});
+
 test("the opening can be skipped by button or keyboard and respects reduced motion", async ({ page }) => {
   // The intro remains dismissible even when cube assets fail; avoid software shader compilation here.
   await page.route("**/textures/resend/**", (route) => route.abort());

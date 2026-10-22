@@ -15,8 +15,10 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" data-scroll-behavior="smooth">
+    <html lang="en" data-scroll-behavior="smooth" suppressHydrationWarning>
       <body>
+        {/* This tiny parser-run guard must execute before the server-rendered hero paints. */}
+        <script id="portfolio-entrance" dangerouslySetInnerHTML={{ __html: `if(location.pathname==="/"&&!location.hash&&!matchMedia("(prefers-reduced-motion: reduce)").matches){document.documentElement.dataset.entrance="pending";setTimeout(function(){if(document.documentElement.dataset.entrance==="pending")document.documentElement.dataset.entrance="ready"},4000)}` }} />
         <a className="skip-link" href="#main">Skip to content</a>
         <SiteIntro />
         {children}
