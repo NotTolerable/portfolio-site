@@ -4,7 +4,7 @@ import { cubicBezier } from "motion";
 import { createFaceMaterials } from "./cube-textures";
 import { CubeOrbit, type OrbitInput } from "./cube-orbit";
 import { createCubeParticles } from "./cube-particles";
-import { CUBE_ENTRANCE_DURATION, IMPACT_BEATS, entranceBeat, entrancePoseTime } from "./entrance-timeline";
+import { CUBE_ENTRANCE_DURATION, IMPACT_BEATS, entranceBeat, entrancePose } from "./entrance-timeline";
 import { applyTurn, createCubies, createScrambleSequence, createTurnSequence, FACE_NORMALS, hasSticker, type Cubie, type ScrambleMove } from "./rubik-state";
 
 export type CubeInput = OrbitInput & {
@@ -72,6 +72,7 @@ export async function createCubeScene(canvas: HTMLCanvasElement, input: CubeInpu
   function syncTransform(cubie: Cubie) {
     const object = objects.get(cubie)!;
     object.position.fromArray(cubie.position);
+    object.scale.setScalar(1);
     basis.forEach((vector, i) => vector.fromArray(cubie.basis[i]));
     rotationMatrix.makeBasis(basis[0], basis[1], basis[2]);
     object.quaternion.setFromRotationMatrix(rotationMatrix);
@@ -164,6 +165,10 @@ export async function createCubeScene(canvas: HTMLCanvasElement, input: CubeInpu
     camera.zoom = Math.min(1.06, width / height * 1.06);
     camera.updateProjectionMatrix();
     updateScroll(input.reduced ? 0 : input.scroll);
+    const center = view.position.clone().project(camera);
+    const box = canvas.getBoundingClientRect();
+    document.documentElement.style.setProperty("--impact-x", `${box.left + (center.x + 1) * box.width / 2}px`);
+    document.documentElement.style.setProperty("--impact-y", `${box.top + (1 - center.y) * box.height / 2}px`);
     paint();
   }
 
@@ -200,24 +205,26 @@ export async function createCubeScene(canvas: HTMLCanvasElement, input: CubeInpu
         }
         dirty = true;
       }
-      const orientation = orbit.update(input, delta, automatic && beat < 0);
+      const orientation = orbit.update(input, delta, automatic && !entering);
       const scroll = input.reduced ? 0 : Math.max(0, Math.min(1, input.scroll));
       if (scroll !== previousScroll || wasEntering || entering || (automatic && scroll > 0)) updateScroll(scroll);
       if (entering) {
-        const poseTime = entrancePoseTime(entranceElapsed);
-        const progress = THREE.MathUtils.clamp((poseTime - 100) / 1540, 0, 1);
-        const remaining = Math.pow(1 - progress, 3);
-        arrival.rotation.set(.28 * remaining, -.85 * remaining, -.2 * remaining);
-        const punch = IMPACT_BEATS.reduce((amount, impact) => amount + (entranceElapsed >= impact.end ? .035 * Math.exp(-Math.pow((entranceElapsed - impact.end - 90) / 140, 2)) : 0), 0);
-        arrival.scale.setScalar(1 - .26 * remaining + punch);
-        arrival.position.y = -.35 * remaining;
+        const { compress, spread, recoil, settle } = entrancePose(entranceElapsed);
+        arrival.rotation.set(-.12 * recoil, .25 * recoil, -.13 * recoil);
+        // A hard squash at contact becomes a wide, low ink-like splat before rupture.
+        arrival.scale.set(1 + compress * .48 + settle, 1 - compress * .77 + settle, 1 + compress * .22 + settle);
+        arrival.position.copy(cameraRight).multiplyScalar(recoil * .42);
+        arrival.position.addScaledVector(cameraUp, -compress * .24);
         cubies.forEach((cubie, index) => {
-          const t = THREE.MathUtils.clamp((poseTime - 120 - index * 9) / 1200, 0, 1);
-          const distance = Math.pow(1 - t, 3);
           syncTransform(cubie);
           const object = objects.get(cubie)!;
-          object.position.multiplyScalar(1 + .9 * distance);
-          entranceEuler.set(.2 * distance * cubie.position[1], -.28 * distance * cubie.position[0], .16 * distance);
+          const phase = index * 2.39996;
+          const outward = .72 + (index % 5) * .12;
+          object.position.multiplyScalar(1 + spread * .32);
+          object.position.x += Math.cos(phase) * spread * outward + recoil * .25;
+          object.position.y += Math.sin(phase) * spread * outward + spread * (index % 3 - 1) * .65;
+          object.position.z += Math.sin(phase * 1.7) * spread * .65;
+          entranceEuler.set(Math.sin(phase) * spread * 1.3, Math.cos(phase) * spread * 1.6, (index % 2 ? 1 : -1) * spread * .9);
           entranceRotation.setFromEuler(entranceEuler);
           object.quaternion.multiply(entranceRotation);
         });
@@ -244,6 +251,13 @@ export async function createCubeScene(canvas: HTMLCanvasElement, input: CubeInpu
     frame = requestAnimationFrame(tick);
   }
 
+  // Prepare both impact and normal programs before the hit, avoiding a first-use
+  // shader compilation hitch at contact. compile() also visits hidden edge cages.
+  const warmup = new THREE.Mesh(geometry, inkMaterial);
+  scene.add(warmup);
+  renderer.compile(scene, camera);
+  scene.remove(warmup);
+
   const observer = new ResizeObserver(resize);
   observer.observe(canvas);
   const intersection = new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; });
@@ -265,6 +279,8 @@ export async function createCubeScene(canvas: HTMLCanvasElement, input: CubeInpu
       faces.dispose();
       particles.dispose();
       renderer.dispose();
+      document.documentElement.style.removeProperty("--impact-x");
+      document.documentElement.style.removeProperty("--impact-y");
     },
   };
 }

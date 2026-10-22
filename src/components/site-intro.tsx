@@ -69,101 +69,91 @@ export function SiteIntro() {
         animations.push(element.animate(frames, { duration, delay, easing, fill: "both" }));
       };
 
-      // The blade occupies the actual headline's bounds and resolves into its letters.
-      const box = identity.getBoundingClientRect();
-      const nameBox = name.getBoundingClientRect(), surnameBox = surname.getBoundingClientRect();
-      const bladeAxis = box.top + box.height * .47;
-      const nameOffset = bladeAxis - nameBox.top - nameBox.height / 2;
-      const surnameOffset = bladeAxis - surnameBox.top - surnameBox.height / 2;
-      const scale = Math.min(.94, (window.innerWidth - 48) / box.width);
-      const mobileScale = window.innerWidth < 761 ? Math.min(1.45, (window.innerWidth - 48) / box.width) : scale;
-      const x = (window.innerWidth - box.width * mobileScale) / 2 - box.left;
-      const y = window.innerHeight * .45 - box.height * mobileScale / 2 - box.top;
-      animate(identity, [
-        { transform: `translate(${x}px, ${y}px) rotate(-16deg) scale(${mobileScale})`, offset: 0 },
-        { transform: `translate(${x}px, ${y}px) rotate(-10deg) scale(${mobileScale})`, offset: .35 },
-        { transform: "none", offset: 1 },
-      ], 1700, 0);
-      const blade = document.querySelector(".name-blade");
-      if (blade) animate(blade, [{ clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0 0 0)" }], 260);
-      document.querySelectorAll("[data-blade-fragment]").forEach((fragment, index) => {
-        animate(fragment, [
-          { opacity: 1, transform: "none", offset: 0 },
-          { opacity: 1, transform: "none", offset: .52 },
-          { opacity: 0, transform: `translate(${(index - 6) * 4}px, ${index % 2 === 0 ? -70 : 70}px)`, offset: 1 },
-        ], 1250, index * 12, "cubic-bezier(.3,0,.2,1)");
-      });
-      const spine = document.querySelector("[data-blade-spine]");
-      if (spine) animate(spine, [{ opacity: 0 }, { opacity: .8, offset: .2 }, { opacity: 0 }], 1250);
+      // The real text arrives early, takes the hit with the page, then settles.
       name.querySelectorAll("span").forEach((letter, index) => {
         animate(letter, [
-          { opacity: 0, transform: `translateY(${nameOffset}px) scaleY(.025)` },
-          { opacity: 1, transform: "translateY(-2px) scaleY(1.02)", offset: .75 },
+          { opacity: 0, transform: "translateY(36px)" },
           { opacity: 1, transform: "none" },
-        ], 900, 640 + index * 38);
+        ], 680, 100 + index * 22);
       });
-      animate(surname, [
-        { opacity: 0, transform: `translateY(${surnameOffset}px) scaleY(.035)`, clipPath: "inset(40% 100% 40% 0)" },
-        { opacity: 1, transform: "none", clipPath: "inset(0 0 0 0)" },
-      ], 1050, 850);
-      animate(signal, [{ opacity: 0, transform: "scale(0)" }, { opacity: 1, transform: "none" }], 700, 600);
+      animate(surname, [{ opacity: 0, transform: "translateY(24px)" }, { opacity: 1, transform: "none" }], 750, 200);
+      animate(signal, [{ opacity: 0, transform: "scale(0)" }, { opacity: 1, transform: "none" }], 500, 120);
 
-      // Change the whole composition's palette on the same held beats as the cube.
-      const palette: Keyframe[] = [{ offset: 0, filter: "grayscale(1)" }];
+      const palette: Keyframe[] = [{ offset: 0, filter: "none" }];
       const camera: Keyframe[] = [{ offset: 0, translate: "0px 0px" }];
       IMPACT_BEATS.forEach((beat) => {
-        if (beat.paper) palette.push(
-          { offset: (beat.start - 1) / ENTRANCE_DURATION, filter: "grayscale(1)" },
-          { offset: beat.start / ENTRANCE_DURATION, filter: "grayscale(1) invert(1)" },
-          { offset: (beat.end - 1) / ENTRANCE_DURATION, filter: "grayscale(1) invert(1)" },
-          { offset: beat.end / ENTRANCE_DURATION, filter: "grayscale(1)" },
+        palette.push(
+          { offset: (beat.start - 1) / ENTRANCE_DURATION, filter: "none" },
+          { offset: beat.start / ENTRANCE_DURATION, filter: beat.paper ? "grayscale(1) invert(1)" : "grayscale(1) contrast(1.6)" },
+          { offset: (beat.end - 1) / ENTRANCE_DURATION, filter: beat.paper ? "grayscale(1) invert(1)" : "grayscale(1) contrast(1.6)" },
+          { offset: beat.end / ENTRANCE_DURATION, filter: "none" },
         );
         camera.push(
           { offset: (beat.start - 1) / ENTRANCE_DURATION, translate: "0px 0px" },
-          { offset: beat.start / ENTRANCE_DURATION, translate: `${beat.direction * 4}px -2px` },
-          { offset: (beat.end - 1) / ENTRANCE_DURATION, translate: `${beat.direction * 4}px -2px` },
-          { offset: (beat.end + 80) / ENTRANCE_DURATION, translate: "0px 0px" },
+          { offset: beat.start / ENTRANCE_DURATION, translate: `${beat.direction * 9}px ${beat.direction * -4}px` },
+          { offset: (beat.end - 1) / ENTRANCE_DURATION, translate: `${beat.direction * 6}px ${beat.direction * -2}px` },
+          { offset: beat.end / ENTRANCE_DURATION, translate: "0px 0px" },
         );
       });
-      palette.push({ offset: .92, filter: "grayscale(1)" }, { offset: 1, filter: "none" });
-      camera.push({ offset: 1, translate: "0px 0px" });
-      document.querySelectorAll(".intro-sticky, .site-header").forEach((element) => {
-        animate(element, palette, ENTRANCE_DURATION, 0, "linear");
-      });
-      document.querySelectorAll(".intro-inner, .site-header").forEach((element) => {
-        animate(element, camera, ENTRANCE_DURATION, 0, "linear");
-      });
+      palette.push({ offset: 1, filter: "none" });
+      camera.push({ offset: .37, translate: "3px 1px" }, { offset: .42, translate: "-2px 0px" }, { offset: .5, translate: "0px 0px" }, { offset: 1, translate: "0px 0px" });
+      document.querySelectorAll(".intro-sticky, .site-header").forEach((element) => animate(element, palette, ENTRANCE_DURATION, 0, "linear"));
+      document.querySelectorAll(".intro-inner, .site-header").forEach((element) => animate(element, camera, ENTRANCE_DURATION, 0, "linear"));
       document.querySelectorAll<HTMLElement>("[data-entrance-reveal]").forEach((element) => {
-        const cube = element.dataset.entranceReveal === "cube";
-        if (cube) {
-          animate(element, [{ opacity: 0 }, { opacity: 1 }], 200, 100);
-          animate(element, [{ transform: "translate(55px, 32px) scale(.88)" }, { transform: "none" }], 1700, 120);
+        if (element.dataset.entranceReveal === "cube") {
+          animate(element, [{ opacity: 0 }, { opacity: 1 }], 180);
           return;
         }
         animate(element, [
-          { opacity: 0, transform: "translateY(16px)" },
+          { opacity: 0, transform: "translateY(12px)" },
           { opacity: getComputedStyle(element).opacity, transform: "none" },
-        ], 900, element.dataset.entranceReveal === "navigation" ? 280 : 500);
+        ], 700, element.dataset.entranceReveal === "navigation" ? 60 : 240);
       });
-      document.querySelectorAll("[data-entrance-effect]").forEach((element) => {
-        const effect = element.getAttribute("data-entrance-effect")!;
-        if (effect.startsWith("panel-")) {
-          const beat = IMPACT_BEATS[Number(effect.slice(-1))];
-          animate(element, [
-            { opacity: 0, transform: `translateX(${beat.direction * -18}px)`, offset: 0 },
-            { opacity: .85, transform: `translateX(${beat.direction * -18}px)`, offset: .001 },
-            { opacity: .85, transform: `translateX(${beat.direction * 18}px)`, offset: .999 },
-            { opacity: 0, transform: `translateX(${beat.direction * 18}px)`, offset: 1 },
-          ], beat.end - beat.start, beat.start, "linear");
-        } else {
-          animate(element, [
-            { opacity: 0, transform: "translate(36px, -12px)" },
-            { opacity: effect === "field" ? .3 : .55, transform: "none", offset: .28 },
-            { opacity: .16, transform: "translate(-18px, 6px)", offset: .72 },
-            { opacity: 0, transform: "translate(-35px, 12px)" },
-          ], 2350, 0);
-        }
+      const effect = (selector: string, frames: Keyframe[], duration: number, delay = 0, easing = "linear") => {
+        document.querySelectorAll(selector).forEach((element) => animate(element, frames, duration, delay, easing));
+      };
+      const windowed = (start: number, end: number, opacity = 1) => [
+        { opacity: 0, offset: 0 }, { opacity, offset: start / ENTRANCE_DURATION },
+        { opacity, offset: end / ENTRANCE_DURATION }, { opacity: 0, offset: Math.min(1, (end + 60) / ENTRANCE_DURATION) },
+        { opacity: 0, offset: 1 },
+      ];
+      // Each impact uses a different hand-drawn silhouette, not one repeated flash.
+      IMPACT_BEATS.forEach((beat, index) => {
+        effect(`[data-entrance-effect="cut-${index}"]`, [
+          { opacity: 0, offset: 0 }, { opacity: 1, offset: .001 },
+          { opacity: 1, offset: .999 }, { opacity: 0, offset: 1 },
+        ], beat.end - beat.start, beat.start);
       });
+      effect('[data-entrance-effect="charge"]', [
+        { opacity: 0, transform: "translate(-270px, -160px) scale(.65)" },
+        { opacity: .5, offset: .58 }, { opacity: 1, transform: "none", offset: .99 }, { opacity: 0 },
+      ], 310, 230, "cubic-bezier(.7,0,1,1)");
+      [0, 1, 2].forEach((index) => effect(`[data-entrance-effect="lightning-${index}"]`, [
+        { opacity: 0, transform: `scale(.82) rotate(${-7 + index * 3}deg)`, offset: 0 },
+        { opacity: 1, transform: "scale(.96) rotate(-2deg)", offset: .08 },
+        { opacity: .85, transform: "scale(1.03) rotate(1deg)", offset: .4 },
+        { opacity: .32, transform: "scale(1.1) rotate(3deg)", offset: .75 },
+        { opacity: 0, transform: "scale(1.16) rotate(5deg)" },
+      ], 330 + index * 80, 540 + index * 110, "cubic-bezier(.2,.8,.3,1)"));
+      effect('[data-entrance-effect="ink"]', [
+        { opacity: 0, transform: "scale(.1) rotate(-12deg)" },
+        { opacity: .96, transform: "scale(1) rotate(0deg)", offset: .14 },
+        { opacity: .6, transform: "scale(1.2) rotate(2deg)", offset: .45 },
+        { opacity: 0, transform: "scale(1.35) rotate(3deg)" },
+      ], 650, 660, "cubic-bezier(.1,.8,.2,1)");
+      effect('[data-entrance-effect="debris"]', [
+        { opacity: 0, transform: "scale(.3)" }, { opacity: .85, transform: "scale(.8)", offset: .15 },
+        { opacity: .4, transform: "scale(1.5)", offset: .5 }, { opacity: 0, transform: "scale(1.9)" },
+      ], 1050, 760, "cubic-bezier(.1,.8,.3,1)");
+      effect('[data-entrance-effect="wake"]', [
+        { opacity: 0, transform: "scale(.3) rotate(-15deg)" }, { opacity: .8, offset: .1 },
+        { opacity: 0, transform: "scale(1.7) rotate(6deg)" },
+      ], 530, 740, "cubic-bezier(.1,.8,.2,1)");
+      effect('[data-entrance-effect="speed"]', windowed(440, 810, .65), ENTRANCE_DURATION);
+      effect('[data-entrance-effect="afterimage"]', [
+        { opacity: 0, transform: "scale(1.3)" }, { opacity: .3, offset: .3 },
+        { opacity: 0, transform: "scale(.45)" },
+      ], 650, 1260);
       // A single clock makes sharp palette changes coincide with the held scene poses.
       const startTime = performance.now();
       animations.forEach((animation) => { animation.startTime = startTime; });

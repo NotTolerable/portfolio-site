@@ -16,9 +16,9 @@ export function PortfolioIntro() {
   const nextY = useTransform(scrollYProgress, [0.42, 1], [45, 0]);
   return (
     <section ref={section} className="intro-scroll" aria-labelledby="intro-title">
+      <EntranceField />
       <div className="intro-sticky">
         <CubeRay />
-        <EntranceField />
         <div className="intro-grid" data-entrance-reveal="ambient" aria-hidden="true" />
         <svg className="intro-dust" data-entrance-reveal="ambient" viewBox="0 0 1440 1000" preserveAspectRatio="none" aria-hidden="true">{Array.from({ length: 110 }, (_, i) => <circle key={i} cx={(i * 977 + 43) % 1440} cy={(i * 613 + 127) % 1000} r={0.5 + (i % 4) * 0.2} fill="currentColor" opacity={0.15 + (i % 3) * 0.12} />)}</svg>
         <div className="intro-inner shell">
@@ -28,11 +28,6 @@ export function PortfolioIntro() {
               <span className="section-index" data-entrance-reveal="detail">0x00 / SOFTWARE ENGINEERING</span>
             </div>
             <h1 id="intro-title" data-entrance-part="identity" aria-label="Babisan Pirapakaran">
-              <svg className="name-blade" viewBox="0 0 1200 180" preserveAspectRatio="none" aria-hidden="true" focusable="false">
-                <defs><clipPath id="name-blade-profile"><path d="M0 96 78 86Q590 54 1114 77L1200 85 1112 87Q590 65 80 97Z" /></clipPath></defs>
-                <g clipPath="url(#name-blade-profile)">{Array.from({ length: 12 }, (_, i) => <rect key={i} data-blade-fragment={i} x={i * 100} y="0" width="101" height="180" fill="currentColor" />)}</g>
-                <path data-blade-spine="" d="M80 86Q590 54 1114 77L1200 85" stroke="currentColor" strokeWidth=".8" fill="none" />
-              </svg>
               <span className="intro-firstname" data-entrance-part="name">{Array.from("Babisan").map((letter, index) => <span key={index}>{letter}</span>)}</span>{" "}<br className="intro-name-break" /><span className="intro-surname" data-entrance-part="surname">Pirapakaran</span>
             </h1>
           </motion.div>

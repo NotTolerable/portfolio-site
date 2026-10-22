@@ -67,10 +67,14 @@ p { line-height: 1.75; }
 .intro-overline { display: flex; align-items: center; gap: 14px; height: 16px; margin-bottom: 28px; }
 .intro-overline .section-index { font-size: 9px; }
 .intro-signal { display: inline-block; flex-shrink: 0; width: 4px; height: 4px; border-radius: 50%; background: #c1d8e4; box-shadow: 0 0 18px #a3c3d326; }
-.intro-cinema { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; color: #e9e9e9; pointer-events: none; visibility: hidden; }
-.intro-cinema [data-entrance-effect] { opacity: 0; transform-origin: center; }
-.name-blade { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; color: #f4f4f4; visibility: hidden; overflow: visible; }
-html[data-entrance="running"] :is(.intro-cinema, .name-blade) { visibility: visible; }
+.intro-cinema { position: fixed; inset: 0; z-index: 45; color: #e9e9e9; pointer-events: none; visibility: hidden; overflow: clip; contain: strict; }
+.intro-cinema [data-entrance-effect] { opacity: 0; transform-origin: 0 0; }
+.impact-speed { position: absolute; inset: 0; width: 100%; height: 100%; }
+.impact-origin { position: absolute; left: var(--impact-x, calc(50% + 45px)); top: var(--impact-y, 56%); width: min(130vw, 1400px); aspect-ratio: 13 / 9; transform: translate(-50%, -50%); }
+.impact-origin > svg { width: 100%; height: 100%; display: block; }
+.impact-paper { color: #030305; }
+.impact-dark { color: #eee8e9; }
+html[data-entrance="running"] .intro-cinema { visibility: visible; }
 .intro-firstname, .intro-surname { display: inline-block; transform-origin: 0 0; }
 .intro-firstname > span { display: inline-block; transform-origin: 50% 50%; }
 .intro-surname { transform-origin: 50% 50%; }
@@ -311,7 +315,7 @@ html[data-entrance="running"] :is([data-entrance-reveal], [data-entrance-reveal]
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
-  .site-intro, html[data-entrance="running"] :is(.intro-cinema, .name-blade) { display: none; }
+  .site-intro, html[data-entrance="running"] .intro-cinema { display: none; }
   html[data-entrance] :is([data-entrance-part], [data-entrance-reveal]) { visibility: visible; }
   .intro-scroll { height: 100svh; min-height: 800px; }
   .intro-sticky { position: relative; }

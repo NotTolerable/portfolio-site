@@ -165,7 +165,7 @@ test("the entrance settles the real headline, cube, and dot without replacing th
     const canvas = await page.locator(".cube-stage canvas").elementHandle();
     const dot = await page.locator(".intro-signal").elementHandle();
     if (!name || !letter || !canvas || !dot) throw new Error("Missing permanent hero elements");
-    await page.evaluate(() => document.getAnimations().filter((animation) => animation.timeline === document.timeline).forEach((animation) => { animation.pause(); animation.currentTime = 420; }));
+    await page.evaluate(() => document.getAnimations().filter((animation) => animation.timeline === document.timeline).forEach((animation) => { animation.pause(); animation.currentTime = 120; }));
     const entering = await letter.boundingBox();
     if (!entering) throw new Error("Name missing during entrance");
     await page.evaluate(() => document.getAnimations().filter((animation) => animation.timeline === document.timeline).forEach((animation) => { animation.currentTime = 2600; }));
@@ -187,7 +187,7 @@ test("the entrance settles the real headline, cube, and dot without replacing th
   }
 });
 
-test("blade resolves into the name across coordinated page-wide impact beats", async ({ page }) => {
+test("one rapid strike cuts the entire page while its electrical drawings change", async ({ page }) => {
   await page.route("**/textures/resend/**", (route) => route.abort());
   await page.clock.install({ time: 0 });
   await page.clock.pauseAt(0);
@@ -196,35 +196,68 @@ test("blade resolves into the name across coordinated page-wide impact beats", a
     await page.goto("/");
     await expect(page.locator("html")).toHaveAttribute("data-entrance", "running");
     const setFrame = async (time: number) => page.evaluate((t) => document.getAnimations().filter((animation) => animation.timeline === document.timeline).forEach((animation) => { animation.pause(); animation.currentTime = t; }), time);
-    await setFrame(260);
-    await expect(page.locator(".name-blade")).toBeVisible();
-    expect(await page.locator(".intro-firstname > span").first().evaluate((element) => Number(getComputedStyle(element).opacity))).toBe(0);
-    for (const time of [650, 1780]) {
+    await setFrame(430);
+    await expect(page.locator('[data-entrance-effect="charge"]')).not.toHaveCSS("opacity", "0");
+    // Contact / negative / rupture / negative happen in a single sub-300 ms burst.
+    for (const [time, cut, paper] of [[560, 0, true], [630, 1, false], [700, 2, true], [770, 3, false]] as const) {
       await setFrame(time);
-      await expect(page.locator(".intro-sticky")).toHaveCSS("filter", /invert\(1\)/);
-      await expect(page.locator(".site-header")).toHaveCSS("filter", /invert\(1\)/);
+      await expect(page.locator(".intro-sticky")).toHaveCSS("filter", paper ? /invert\(1\)/ : /contrast\(1.6\)/);
+      await expect(page.locator(".site-header")).toHaveCSS("filter", paper ? /invert\(1\)/ : /contrast\(1.6\)/);
+      await expect(page.locator(`[data-entrance-effect="cut-${cut}"]`)).toHaveCSS("opacity", "1");
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     }
-    await setFrame(1180);
-    await expect(page.locator(".intro-sticky")).toHaveCSS("filter", "grayscale(1)");
-    await expect(page.locator(".site-header")).toHaveCSS("filter", "grayscale(1)");
+    await setFrame(1050);
+    await expect(page.locator(".intro-sticky")).toHaveCSS("filter", "none");
+    await expect(page.locator('[data-entrance-effect="ink"]')).not.toHaveCSS("opacity", "0");
     await page.keyboard.press("Escape");
     await expect(page.locator(".intro-sticky")).toHaveCSS("filter", "none");
     await expect(page.locator(".site-header")).toHaveCSS("filter", "none");
-    await expect(page.locator(".name-blade")).toBeHidden();
+    await expect(page.locator(".intro-cinema")).toBeHidden();
     await expect(page.getByRole("heading", { name: "Babisan Pirapakaran", level: 1 })).toBeVisible();
   }
 });
 
-test("skipping during cube assembly restores a stable interactive cube", async ({ page }) => {
+test("the hit squashes and bursts the real cube, then reconstructs its exact paused pose", async ({ page }) => {
+  // Keep the whole canvas in view: element screenshots resize a shorter viewport,
+  // which deliberately dismisses the entrance before the scene can be sampled.
+  await page.setViewportSize({ width: 1280, height: 900 });
   await page.clock.install({ time: 0 });
   await page.clock.pauseAt(0);
   await page.goto("/");
   await expect(page.locator(".cube-figure")).toHaveAttribute("data-renderer", "webgl", { timeout: 20000 });
   await expect(page.locator("html")).toHaveAttribute("data-entrance", "running");
-  // Hold the surrounding DOM at its destination to isolate the scene's assembly.
+  // Isolate WebGL from decorative layers: removing a filter changes Chrome's
+  // compositing of SVG gradients by a few RGB levels, even with no cube movement.
+  await page.addStyleTag({ content: ".site-header, .site-intro, .intro-cinema, .cube-ray, .intro-grid, .intro-dust, .intro-identity, .intro-copy, .intro-next, .intro-footer { visibility: hidden !important; }" });
+  await page.evaluate(() => document.getAnimations().filter((a) => a.timeline === document.timeline).forEach((a) => { a.pause(); a.currentTime = 2600; }));
+  await page.getByRole("group", { name: /Interactive black cube/ }).focus();
+  await page.keyboard.press(" ");
+  const canvas = page.locator(".cube-stage canvas");
+  await page.clock.runFor(32);
+  const initial = await canvas.screenshot();
+  await expect(page.locator("html")).toHaveAttribute("data-entrance", "running");
+  await page.clock.runFor(758);
+  const flattened = await canvas.screenshot();
+  expect(flattened.equals(initial), "the hit must physically deform the rendered cube").toBe(false);
+  await page.clock.runFor(310);
+  const burst = await canvas.screenshot();
+  expect(burst.equals(flattened), "cubelets must move outward after the squash").toBe(false);
+  await page.clock.runFor(1300);
+  expect((await canvas.screenshot()).equals(initial), "reassembly must restore the original exact cube pose and materials").toBe(true);
+  await page.clock.runFor(400);
+  expect((await canvas.screenshot()).equals(initial), "the restored paused cube must stay stable after entrance cleanup").toBe(true);
+});
+
+test("skipping during cube deformation restores a stable interactive cube", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.clock.install({ time: 0 });
+  await page.clock.pauseAt(0);
+  await page.goto("/");
+  await expect(page.locator(".cube-figure")).toHaveAttribute("data-renderer", "webgl", { timeout: 20000 });
+  await expect(page.locator("html")).toHaveAttribute("data-entrance", "running");
+  // Hold the surrounding DOM at its destination to isolate the scene's deformation.
   await page.evaluate(() => document.getAnimations().filter((animation) => animation.timeline === document.timeline).forEach((animation) => { animation.pause(); animation.currentTime = 2600; }));
-  await page.clock.runFor(650);
+  await page.clock.runFor(790);
   const canvas = page.locator(".cube-stage canvas");
   const assembling = await canvas.screenshot();
   await page.keyboard.press("Escape");
@@ -233,7 +266,7 @@ test("skipping during cube assembly restores a stable interactive cube", async (
   await page.keyboard.press(" ");
   await page.clock.runFor(64);
   const settled = await canvas.screenshot();
-  expect(settled.equals(assembling), "skipping must finish the physical cube assembly").toBe(false);
+  expect(settled.equals(assembling), "skipping must finish the physical cube deformation").toBe(false);
   await page.clock.runFor(1000);
   expect((await canvas.screenshot()).equals(settled), "paused cubelets must not keep assembling or drift after skip").toBe(true);
   await page.keyboard.press("ArrowRight");
