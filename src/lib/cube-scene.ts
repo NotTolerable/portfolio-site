@@ -4,7 +4,7 @@ import { cubicBezier } from "motion";
 import { createFaceMaterials } from "./cube-textures";
 import { CubeOrbit, type OrbitInput } from "./cube-orbit";
 import { createCubeParticles } from "./cube-particles";
-import { CUBE_ENTRANCE_DURATION, IMPACT_BEATS, SLICE_STARTS, entranceBeat, entrancePose } from "./entrance-timeline";
+import { CUBE_ENTRANCE_DURATION, SLICE_STARTS, entrancePose, entranceOffset } from "./entrance-timeline";
 import { applyTurn, createCubies, createScrambleSequence, createTurnSequence, FACE_NORMALS, hasSticker, type Cubie, type ScrambleMove } from "./rubik-state";
 
 export type CubeInput = OrbitInput & {
@@ -38,14 +38,6 @@ export async function createCubeScene(canvas: HTMLCanvasElement, input: CubeInpu
   const geometry = new RoundedBoxGeometry(0.99, 0.99, 0.99, 5, 0.075);
   const material = new THREE.MeshMatcapMaterial({ matcap: faces.materials[4].matcap, color: 0x777777, toneMapped: false });
   const surfaces = [...faces.materials, material];
-  const inkMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff, toneMapped: false });
-  // A clean cage traces each cubie; the bevel tessellation stays out of the ink drawing.
-  const edgeBox = new THREE.BoxGeometry(.997, .997, .997);
-  const edgeGeometry = new THREE.EdgesGeometry(edgeBox);
-  edgeBox.dispose();
-  const edgeMaterial = new THREE.LineBasicMaterial({ color: 0x000000, toneMapped: false, transparent: true, opacity: .85 });
-  const meshMaterials = new Map<THREE.Mesh, THREE.Material | THREE.Material[]>();
-  const outlines: THREE.LineSegments[] = [];
   surfaces.forEach((surface) => { surface.transparent = true; });
   const view = new THREE.Group();
   view.rotation.set(0.03, -0.17, -0.12);
@@ -82,23 +74,20 @@ export async function createCubeScene(canvas: HTMLCanvasElement, input: CubeInpu
     const object = new THREE.Group();
     const faceMaterials = FACE_NORMALS.map((normal, index) => hasSticker(cubie, normal) ? faces.materials[index] : material);
     const mesh = new THREE.Mesh(geometry, faceMaterials);
-    const outline = new THREE.LineSegments(edgeGeometry, edgeMaterial);
-    outline.renderOrder = 2;
-    outline.visible = false;
-    mesh.add(outline);
-    outlines.push(outline);
-    meshMaterials.set(mesh, faceMaterials);
     object.add(mesh);
     objects.set(cubie, object);
     syncTransform(cubie);
     group.add(object);
   }
 
-  // These three restrained highlights lie on the actual separation planes.
+  // Both boundaries on each axis are sliced, releasing every visible cubelet.
   const sliceCorners = [
     [[-1.505, -.5, 1.505], [1.505, -.5, 1.505], [1.505, -.5, -1.505], [-1.505, -.5, -1.505]],
+    [[-1.505, .5, 1.505], [1.505, .5, 1.505], [1.505, .5, -1.505], [-1.505, .5, -1.505]],
     [[.5, -1.505, 1.505], [.5, 1.505, 1.505], [.5, 1.505, -1.505], [.5, -1.505, -1.505]],
+    [[-.5, -1.505, 1.505], [-.5, 1.505, 1.505], [-.5, 1.505, -1.505], [-.5, -1.505, -1.505]],
     [[-1.505, 1.505, -.5], [1.505, 1.505, -.5], [1.505, -1.505, -.5], [-1.505, -1.505, -.5]],
+    [[-1.505, 1.505, .5], [1.505, 1.505, .5], [1.505, -1.505, .5], [-1.505, -1.505, .5]],
   ];
   const sliceLines = sliceCorners.map((corners) => {
     const positions = new Float32Array(81 * 3);
@@ -129,7 +118,6 @@ export async function createCubeScene(canvas: HTMLCanvasElement, input: CubeInpu
   let previousScroll = -1;
   let animationTime = 0;
   let wasEntering = false;
-  let previousBeat = -1;
   const entranceRotation = new THREE.Quaternion();
   const entranceEuler = new THREE.Euler();
 
@@ -212,15 +200,6 @@ export async function createCubeScene(canvas: HTMLCanvasElement, input: CubeInpu
       const automatic = !input.paused && !input.reduced;
       const entranceElapsed = input.entranceStartedAt === null ? CUBE_ENTRANCE_DURATION : now - input.entranceStartedAt;
       const entering = !input.reduced && input.scroll === 0 && entranceElapsed < CUBE_ENTRANCE_DURATION;
-      const beat = entering ? entranceBeat(entranceElapsed) : -1;
-      if (beat !== previousBeat) {
-        const paper = beat >= 0 && IMPACT_BEATS[beat].paper;
-        meshMaterials.forEach((original, mesh) => { mesh.material = paper ? inkMaterial : original; });
-        outlines.forEach((outline) => { outline.visible = beat >= 0; });
-        edgeMaterial.color.set(paper ? 0x000000 : 0xffffff);
-        previousBeat = beat;
-        dirty = true;
-      }
       if (automatic) animationTime += delta;
       if (input.reduced && active) { finishTurn(); dirty = true; }
       if (automatic && !entering) {
@@ -241,22 +220,28 @@ export async function createCubeScene(canvas: HTMLCanvasElement, input: CubeInpu
       const scroll = input.reduced ? 0 : Math.max(0, Math.min(1, input.scroll));
       if (scroll !== previousScroll || wasEntering || entering || (automatic && scroll > 0)) updateScroll(scroll);
       if (entering) {
-        const [a, b, c] = entrancePose(entranceElapsed);
-        arrival.rotation.set(.025 * a, -.045 * b, .025 * c);
-        arrival.scale.setScalar(1 - .14 * Math.max(a, b, c));
+        const cuts = entrancePose(entranceElapsed);
+        const spread = cuts.reduce((sum, cut) => sum + cut, 0) / cuts.length;
+        // A small physical recoil supplies impact while text and background stay still.
+        const recoil = SLICE_STARTS.reduce((sum, start) => {
+          const t = (entranceElapsed - start) / 170;
+          return sum + (t > 0 && t < 1 ? Math.sin(t * Math.PI) * Math.exp(-3 * t) * .018 : 0);
+        }, 0);
+        arrival.rotation.set(.035 * spread, -.065 * spread, .025 * spread);
+        arrival.scale.setScalar(1 - .25 * spread + recoil);
         arrival.position.set(0, 0, 0);
-        cubies.forEach((cubie) => {
+        cubies.forEach((cubie, index) => {
           syncTransform(cubie);
           const object = objects.get(cubie)!;
-          const lower = cubie.position[1] === -1, right = cubie.position[0] === 1, back = cubie.position[2] === -1;
-          // Each slab moves coherently. Nothing shatters or changes the Rubik model.
-          entranceEuler.set((back ? 1 : -.35) * c * .018, (right ? 1 : -.4) * b * .025, (lower ? 1 : -.35) * a * .025);
+          const offset = entranceOffset(cubie.position, cuts);
+          object.position.x += offset[0];
+          object.position.y += offset[1];
+          object.position.z += offset[2];
+          // Each piece has its own slight orientation; gaps remain clear and orderly.
+          const phase = index * 2.39996;
+          entranceEuler.set(Math.sin(phase) * spread * .06, Math.cos(phase) * spread * .07, Math.sin(phase * .7) * spread * .045);
           entranceRotation.setFromEuler(entranceEuler);
-          object.position.applyQuaternion(entranceRotation);
           object.quaternion.premultiply(entranceRotation);
-          object.position.x += (lower ? .43 : -.14) * a + (right ? .19 : -.09) * b;
-          object.position.y += (lower ? -.22 : .11) * a + (back ? .34 : -.12) * c;
-          object.position.z += (right ? .38 : -.14) * b + (back ? -.19 : .07) * c;
         });
         dirty = true;
       } else if (wasEntering) {
@@ -291,12 +276,8 @@ export async function createCubeScene(canvas: HTMLCanvasElement, input: CubeInpu
     frame = requestAnimationFrame(tick);
   }
 
-  // Prepare both impact and normal programs before the hit, avoiding a first-use
-  // shader compilation hitch at contact. compile() also visits hidden edge cages.
-  const warmup = new THREE.Mesh(geometry, inkMaterial);
-  scene.add(warmup);
+  // Prepare normal, seam, and particle programs before the first slice.
   renderer.compile(scene, camera);
-  scene.remove(warmup);
 
   const observer = new ResizeObserver(resize);
   observer.observe(canvas);
@@ -312,9 +293,6 @@ export async function createCubeScene(canvas: HTMLCanvasElement, input: CubeInpu
       observer.disconnect();
       intersection.disconnect();
       geometry.dispose();
-      edgeGeometry.dispose();
-      edgeMaterial.dispose();
-      inkMaterial.dispose();
       sliceLines.forEach((line) => { line.geometry.dispose(); line.material.dispose(); });
       material.dispose();
       faces.dispose();

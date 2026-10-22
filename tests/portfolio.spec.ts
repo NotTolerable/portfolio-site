@@ -187,7 +187,7 @@ test("the entrance settles the real headline, cube, and dot without replacing th
   }
 });
 
-test("precise slices cross the composition with clean page-wide impact cuts", async ({ page }) => {
+test("slices retain a stable page palette throughout the entrance", async ({ page }) => {
   await page.route("**/textures/resend/**", (route) => route.abort());
   await page.clock.install({ time: 0 });
   await page.clock.pauseAt(0);
@@ -198,11 +198,11 @@ test("precise slices cross the composition with clean page-wide impact cuts", as
     const setFrame = async (time: number) => page.evaluate((t) => document.getAnimations().filter((animation) => animation.timeline === document.timeline).forEach((animation) => { animation.pause(); animation.currentTime = t; }), time);
     await setFrame(430);
     await expect(page.locator('[data-slice-stroke="0"]')).not.toHaveCSS("opacity", "0");
-    // Four restrained palette cuts punctuate the fast, staggered slices.
-    for (const [time, paper] of [[500, false], [580, true], [655, false], [745, true]] as const) {
+    // Contact and recovery must never invert, brighten, or recolor the page.
+    for (const time of [440, 500, 540, 580, 655, 745, 900, 1200, 1800, 2400]) {
       await setFrame(time);
-      await expect(page.locator(".intro-sticky")).toHaveCSS("filter", paper ? /invert\(1\)/ : /contrast\(1.15\)/);
-      await expect(page.locator(".site-header")).toHaveCSS("filter", paper ? /invert\(1\)/ : /contrast\(1.15\)/);
+      await expect(page.locator(".intro-sticky")).toHaveCSS("filter", "none");
+      await expect(page.locator(".site-header")).toHaveCSS("filter", "none");
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     }
     await setFrame(1050);
@@ -216,7 +216,7 @@ test("precise slices cross the composition with clean page-wide impact cuts", as
   }
 });
 
-test("the cuts separate real cube sections, then reconstruct their exact paused pose", async ({ page }) => {
+test("the cuts separate individual cubelets, then reconstruct their exact paused pose", async ({ page }) => {
   // Keep the whole canvas in view: element screenshots resize a shorter viewport,
   // which deliberately dismisses the entrance before the scene can be sampled.
   await page.setViewportSize({ width: 1280, height: 900 });
@@ -225,8 +225,7 @@ test("the cuts separate real cube sections, then reconstruct their exact paused 
   await page.goto("/");
   await expect(page.locator(".cube-figure")).toHaveAttribute("data-renderer", "webgl", { timeout: 20000 });
   await expect(page.locator("html")).toHaveAttribute("data-entrance", "running");
-  // Isolate WebGL from decorative layers: removing a filter changes Chrome's
-  // compositing of SVG gradients by a few RGB levels, even with no cube movement.
+  // Isolate WebGL from decorative SVG and HTML layers in these pixel comparisons.
   await page.addStyleTag({ content: ".site-header, .site-intro, .intro-cinema, .cube-ray, .intro-grid, .intro-dust, .intro-identity, .intro-copy, .intro-next, .intro-footer { visibility: hidden !important; }" });
   await page.evaluate(() => document.getAnimations().filter((a) => a.timeline === document.timeline).forEach((a) => { a.pause(); a.currentTime = 2600; }));
   await page.getByRole("group", { name: /Interactive black cube/ }).focus();
@@ -237,10 +236,10 @@ test("the cuts separate real cube sections, then reconstruct their exact paused 
   await expect(page.locator("html")).toHaveAttribute("data-entrance", "running");
   await page.clock.runFor(758);
   const sliced = await canvas.screenshot();
-  expect(sliced.equals(initial), "the cuts must physically offset the rendered cube sections").toBe(false);
+  expect(sliced.equals(initial), "the cuts must physically offset the rendered cubelets").toBe(false);
   await page.clock.runFor(310);
   const opened = await canvas.screenshot();
-  expect(opened.equals(sliced), "successive slices must displace additional cube sections").toBe(false);
+  expect(opened.equals(sliced), "successive slices must displace additional cubelets").toBe(false);
   await page.clock.runFor(1300);
   expect((await canvas.screenshot()).equals(initial), "reassembly must restore the original exact cube pose and materials").toBe(true);
   await page.clock.runFor(400);

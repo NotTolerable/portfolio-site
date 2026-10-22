@@ -1,3 +1,5 @@
+import { SLICE_STARTS } from "@/lib/entrance-timeline";
+
 // A few precise lines carry the sequence; timing and depth supply the detail.
 const perimeterCuts = [
   { left: "24%", top: "22%", angle: "-14deg" },
@@ -9,7 +11,7 @@ const perimeterCuts = [
 export function EntranceField() {
   return (
     <div className="intro-cinema" aria-hidden="true">
-      {[0, 1, 2].map((index) => (
+      {SLICE_STARTS.map((_, index) => (
         <div className={`screen-slice screen-slice-${index}`} key={index}>
           <svg viewBox="-1000 -20 2000 40" preserveAspectRatio="none" fill="none">
             <g data-slice-stroke={index}>
@@ -31,7 +33,6 @@ export function EntranceField() {
           </svg>
         </div>
       ))}
-      <div className="slice-shutter" data-entrance-shutter="" />
     </div>
   );
 }
