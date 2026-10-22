@@ -243,7 +243,7 @@ export async function createCubeScene(canvas: HTMLCanvasElement, input: CubeInpu
       if (entering) {
         const [a, b, c] = entrancePose(entranceElapsed);
         arrival.rotation.set(.025 * a, -.045 * b, .025 * c);
-        arrival.scale.setScalar(1 - .08 * Math.max(a, b, c));
+        arrival.scale.setScalar(1 - .14 * Math.max(a, b, c));
         arrival.position.set(0, 0, 0);
         cubies.forEach((cubie) => {
           syncTransform(cubie);
