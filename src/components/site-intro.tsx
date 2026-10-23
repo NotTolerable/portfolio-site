@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { ENTRANCE_DURATION, setEntranceStart } from "@/lib/entrance-timeline";
+import { prepareNameInk } from "@/lib/name-ink";
 
 const easeOut = "cubic-bezier(.16,1,.3,1)";
 
@@ -15,12 +16,14 @@ export function SiteIntro() {
     const listeners = new AbortController();
     const animations: Animation[] = [];
     const timers: number[] = [];
+    const inkCleanup: (() => void)[] = [];
     let finished = false;
     const finish = () => {
       finished = true;
       timers.forEach(window.clearTimeout);
       animations.forEach((animation) => animation.cancel());
       animations.length = 0;
+      inkCleanup.forEach((cleanup) => cleanup());
       setEntranceStart(null);
       listeners.abort();
       delete root.dataset.entrance;
@@ -55,16 +58,8 @@ export function SiteIntro() {
         animations.push(element.animate(frames, { duration, delay, easing, fill: "both" }));
       };
 
-      // A small ink drawing is the only illustrative effect in this entrance.
-      document.querySelectorAll<SVGPathElement>(".brand-mark path").forEach((path, index) => {
-        const length = path.getTotalLength();
-        animate(path, [
-          { strokeDasharray: `${length} ${length}`, strokeDashoffset: length },
-          { strokeDasharray: `${length} ${length}`, strokeDashoffset: 0 },
-        ], 420, 40 + index * 70, "cubic-bezier(.3,0,.2,1)");
-      });
-      animate(name, [{ opacity: 0, transform: "translateY(18px)" }, { opacity: 1, transform: "none" }], 720, 60);
-      animate(surname, [{ opacity: 0, transform: "translateY(14px)" }, { opacity: 1, transform: "none" }], 720, 140);
+      inkCleanup.push(prepareNameInk(name, "name-first", 70, animate));
+      inkCleanup.push(prepareNameInk(surname, "name-last", 880, animate));
       animate(signal, [{ opacity: 0 }, { opacity: 1 }], 320, 80);
       document.querySelectorAll<HTMLElement>("[data-entrance-reveal]").forEach((element) => {
         const part = element.dataset.entranceReveal;
@@ -89,6 +84,7 @@ export function SiteIntro() {
       finished = true;
       timers.forEach(window.clearTimeout);
       animations.forEach((animation) => animation.cancel());
+      inkCleanup.forEach((cleanup) => cleanup());
       setEntranceStart(null);
       delete root.dataset.entrance;
       listeners.abort();

@@ -26,7 +26,7 @@ export function PortfolioIntro() {
               <span className="section-index" data-entrance-reveal="detail">0x00 / SOFTWARE ENGINEERING</span>
             </div>
             <h1 id="intro-title" data-entrance-part="identity" aria-label="Babisan Pirapakaran">
-              <span className="intro-firstname" data-entrance-part="name">Babisan</span>{" "}<br className="intro-name-break" /><span className="intro-surname" data-entrance-part="surname">Pirapakaran</span>
+              <span className="intro-firstname" data-entrance-part="name"><span className="name-ink-text">Babisan</span></span>{" "}<br className="intro-name-break" /><span className="intro-surname" data-entrance-part="surname"><span className="name-ink-text">Pirapakaran</span></span>
             </h1>
           </motion.div>
           <motion.div className="intro-copy" style={{ opacity: reduced ? 1 : nameOpacity }}>

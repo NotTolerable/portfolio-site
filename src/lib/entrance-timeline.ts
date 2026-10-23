@@ -1,5 +1,5 @@
-// One short clock coordinates the headline reveal and intact cube's arrival.
-export const ENTRANCE_DURATION = 1200;
+// One shared clock coordinates the name ink drawing and intact cube's arrival.
+export const ENTRANCE_DURATION = 3000;
 export const CUBE_ENTRANCE_DURATION = 900;
 
 export function entrancePose(elapsed: number) {
