@@ -161,19 +161,18 @@ test("the entrance settles the real headline, cube, and dot without replacing th
     await page.goto("/");
     await expect(page.locator("html")).toHaveAttribute("data-entrance", "running");
     const name = await page.locator(".intro-firstname").elementHandle();
-    const letter = await page.locator(".intro-firstname > span").first().elementHandle();
     const canvas = await page.locator(".cube-stage canvas").elementHandle();
     const dot = await page.locator(".intro-signal").elementHandle();
-    if (!name || !letter || !canvas || !dot) throw new Error("Missing permanent hero elements");
-    await page.evaluate(() => document.getAnimations().filter((animation) => animation.timeline === document.timeline).forEach((animation) => { animation.pause(); animation.currentTime = 120; }));
-    const entering = await letter.boundingBox();
+    if (!name || !canvas || !dot) throw new Error("Missing permanent hero elements");
+    await page.evaluate(() => document.getAnimations().filter((animation) => animation.timeline === document.timeline).forEach((animation) => { animation.pause(); animation.currentTime = 80; }));
+    const entering = await name.boundingBox();
     if (!entering) throw new Error("Name missing during entrance");
-    await page.evaluate(() => document.getAnimations().filter((animation) => animation.timeline === document.timeline).forEach((animation) => { animation.currentTime = 2600; }));
-    const settled = await letter.boundingBox();
+    await page.evaluate(() => document.getAnimations().filter((animation) => animation.timeline === document.timeline).forEach((animation) => { animation.currentTime = 1200; }));
+    const settled = await name.boundingBox();
     if (!settled) throw new Error("Missing settled headline");
-    expect(entering.y - settled.y).toBeGreaterThan(20);
+    expect(entering.y - settled.y).toBeGreaterThan(6);
     const settledName = await name.boundingBox(), settledDot = await dot.boundingBox();
-    await page.clock.runFor(2600);
+    await page.clock.runFor(1200);
     await expect(page.locator(".site-intro")).toHaveCount(0);
     expect(await name.evaluate((element) => element === document.querySelector("#intro-title .intro-firstname"))).toBe(true);
     expect(await canvas.evaluate((element) => element === document.querySelector(".cube-stage canvas"))).toBe(true);
@@ -183,40 +182,37 @@ test("the entrance settles the real headline, cube, and dot without replacing th
     await expect(page.getByRole("heading", { name: "Babisan Pirapakaran", level: 1 })).toHaveCount(1);
     await expect(page.getByText("PORTFOLIO", { exact: true })).toHaveCount(0);
     await expect(page.getByRole("link", { name: /Cloud lab/ })).toBeVisible();
-    await expect(page.locator(".intro-cinema:visible")).toHaveCount(0);
+    await expect(page.locator(".intro-cinema, [data-slice-stroke]")).toHaveCount(0);
   }
 });
 
-test("slices retain a stable page palette throughout the entrance", async ({ page }) => {
-  await page.route("**/textures/resend/**", (route) => route.abort());
+test("the short entrance finishes while cube assets are still loading", async ({ page }) => {
+  let release!: () => void;
+  const gate = new Promise<void>((resolve) => { release = resolve; });
+  await page.route("**/textures/resend/**", async (route) => { await gate; await route.abort(); });
   await page.clock.install({ time: 0 });
   await page.clock.pauseAt(0);
-  for (const width of [1280, 390]) {
-    await page.setViewportSize({ width, height: 900 });
-    await page.goto("/");
+  try {
+    await page.goto("/", { waitUntil: "domcontentloaded" });
     await expect(page.locator("html")).toHaveAttribute("data-entrance", "running");
-    const setFrame = async (time: number) => page.evaluate((t) => document.getAnimations().filter((animation) => animation.timeline === document.timeline).forEach((animation) => { animation.pause(); animation.currentTime = t; }), time);
-    await setFrame(430);
-    await expect(page.locator('[data-slice-stroke="0"]')).not.toHaveCSS("opacity", "0");
-    // Contact and recovery must never invert, brighten, or recolor the page.
-    for (const time of [440, 500, 540, 580, 655, 745, 900, 1200, 1800, 2400]) {
-      await setFrame(time);
+    await expect(page.locator(".cube-figure")).toHaveAttribute("data-renderer", "loading");
+    for (const time of [150, 450, 850, 1200]) {
+      await page.evaluate((t) => document.getAnimations().filter((a) => a.timeline === document.timeline).forEach((a) => { a.pause(); a.currentTime = t; }), time);
       await expect(page.locator(".intro-sticky")).toHaveCSS("filter", "none");
       await expect(page.locator(".site-header")).toHaveCSS("filter", "none");
-      expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     }
-    await setFrame(1050);
-    await expect(page.locator(".intro-sticky")).toHaveCSS("filter", "none");
-    await expect(page.locator('[data-slice-seam="1"]')).not.toHaveCSS("opacity", "0");
-    await page.keyboard.press("Escape");
-    await expect(page.locator(".intro-sticky")).toHaveCSS("filter", "none");
-    await expect(page.locator(".site-header")).toHaveCSS("filter", "none");
-    await expect(page.locator(".intro-cinema")).toBeHidden();
+    await page.clock.runFor(1250);
+    await expect(page.locator(".site-intro")).toHaveCount(0);
+    await expect(page.locator(".cube-figure")).toHaveAttribute("data-renderer", "loading");
     await expect(page.getByRole("heading", { name: "Babisan Pirapakaran", level: 1 })).toBeVisible();
-  }
+    await expect(page.locator(".intro-cinema, [data-slice-stroke]")).toHaveCount(0);
+    release();
+    await expect(page.locator(".cube-figure")).toHaveAttribute("data-renderer", "fallback");
+    await expect(page.locator(".site-intro")).toHaveCount(0);
+  } finally { release(); }
 });
 
-test("the cuts separate individual cubelets, then reconstruct their exact paused pose", async ({ page }) => {
+test("the intact cube settles once and stays stable when paused", async ({ page }) => {
   // Keep the whole canvas in view: element screenshots resize a shorter viewport,
   // which deliberately dismisses the entrance before the scene can be sampled.
   await page.setViewportSize({ width: 1280, height: 900 });
@@ -227,50 +223,45 @@ test("the cuts separate individual cubelets, then reconstruct their exact paused
   await expect(page.locator("html")).toHaveAttribute("data-entrance", "running");
   // Isolate WebGL from decorative SVG and HTML layers in these pixel comparisons.
   await page.addStyleTag({ content: ".site-header, .site-intro, .intro-cinema, .cube-ray, .intro-grid, .intro-dust, .intro-identity, .intro-copy, .intro-next, .intro-footer { visibility: hidden !important; }" });
-  await page.evaluate(() => document.getAnimations().filter((a) => a.timeline === document.timeline).forEach((a) => { a.pause(); a.currentTime = 2600; }));
+  await page.evaluate(() => document.getAnimations().filter((a) => a.timeline === document.timeline).forEach((a) => { a.pause(); a.currentTime = 1200; }));
   await page.getByRole("group", { name: /Interactive black cube/ }).focus();
   await page.keyboard.press(" ");
   const canvas = page.locator(".cube-stage canvas");
-  await page.clock.runFor(32);
-  const initial = await canvas.screenshot();
+  await page.clock.runFor(240);
+  const arriving = await canvas.screenshot();
   await expect(page.locator("html")).toHaveAttribute("data-entrance", "running");
-  await page.clock.runFor(758);
-  const sliced = await canvas.screenshot();
-  expect(sliced.equals(initial), "the cuts must physically offset the rendered cubelets").toBe(false);
-  await page.clock.runFor(310);
-  const opened = await canvas.screenshot();
-  expect(opened.equals(sliced), "successive slices must displace additional cubelets").toBe(false);
-  await page.clock.runFor(1300);
-  expect((await canvas.screenshot()).equals(initial), "reassembly must restore the original exact cube pose and materials").toBe(true);
-  await page.clock.runFor(400);
-  expect((await canvas.screenshot()).equals(initial), "the restored paused cube must stay stable after entrance cleanup").toBe(true);
+  await page.clock.runFor(720);
+  const settled = await canvas.screenshot();
+  expect(settled.equals(arriving), "the intact cube must settle into its normal view").toBe(false);
+  await page.clock.runFor(500);
+  expect((await canvas.screenshot()).equals(settled), "finishing the entrance must not jump or move a paused cube").toBe(true);
 });
 
-test("skipping during cube deformation restores a stable interactive cube", async ({ page }) => {
+test("skipping the gentle cube arrival leaves it stable and interactive", async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.clock.install({ time: 0 });
   await page.clock.pauseAt(0);
   await page.goto("/");
   await expect(page.locator(".cube-figure")).toHaveAttribute("data-renderer", "webgl", { timeout: 20000 });
   await expect(page.locator("html")).toHaveAttribute("data-entrance", "running");
-  // Hold the surrounding DOM at its destination to isolate the scene's deformation.
-  await page.evaluate(() => document.getAnimations().filter((animation) => animation.timeline === document.timeline).forEach((animation) => { animation.pause(); animation.currentTime = 2600; }));
-  await page.clock.runFor(790);
+  // Hold the surrounding DOM at its destination to isolate the scene's arrival.
+  await page.evaluate(() => document.getAnimations().filter((animation) => animation.timeline === document.timeline).forEach((animation) => { animation.pause(); animation.currentTime = 1200; }));
+  await page.clock.runFor(300);
   const canvas = page.locator(".cube-stage canvas");
-  const assembling = await canvas.screenshot();
+  const arriving = await canvas.screenshot();
   await page.keyboard.press("Escape");
   const stage = page.getByRole("group", { name: /Interactive black cube/ });
   await stage.focus();
   await page.keyboard.press(" ");
   await page.clock.runFor(64);
   const settled = await canvas.screenshot();
-  expect(settled.equals(assembling), "skipping must finish the physical cube deformation").toBe(false);
+  expect(settled.equals(arriving), "skipping must finish the cube arrival").toBe(false);
   await page.clock.runFor(1000);
-  expect((await canvas.screenshot()).equals(settled), "paused cubelets must not keep assembling or drift after skip").toBe(true);
+  expect((await canvas.screenshot()).equals(settled), "a paused cube must not drift after skip").toBe(true);
   await page.keyboard.press("ArrowRight");
   await page.clock.runFor(32);
   expect((await canvas.screenshot()).equals(settled), "manual rotation must still work after an interrupted entrance").toBe(false);
-  await expect(page.locator(".intro-cinema:visible")).toHaveCount(0);
+  await expect(page.locator(".intro-cinema")).toHaveCount(0);
 });
 
 test("resizing, direct links, and disabled JavaScript leave a usable landing page", async ({ page, browser }) => {
@@ -322,26 +313,25 @@ test("delayed hydration restores the homepage and never starts a late entrance",
 });
 
 test("the opening can be skipped by button or keyboard and respects reduced motion", async ({ page }) => {
+  // Hold the short deadline while exercising each dismissal independently.
+  await page.clock.install({ time: 0 });
+  await page.clock.pauseAt(0);
   // The intro remains dismissible even when cube assets fail; avoid software shader compilation here.
   await page.route("**/textures/resend/**", (route) => route.abort());
   await page.goto("/");
-  await expect(page.locator(".cube-figure")).toHaveAttribute("data-renderer", "fallback");
   const skip = page.getByRole("button", { name: "Skip intro" });
   await expect(skip).toBeVisible();
   await skip.click();
   await expect(page.locator(".site-intro")).toHaveCount(0);
   await page.goto("/");
-  await expect(page.locator(".cube-figure")).toHaveAttribute("data-renderer", "fallback");
   await expect(skip).toBeVisible();
   await page.keyboard.press("Escape");
   await expect(page.locator(".site-intro")).toHaveCount(0);
   await page.goto("/");
-  await expect(page.locator(".cube-figure")).toHaveAttribute("data-renderer", "fallback");
   await page.keyboard.press("Tab");
   await expect(page.locator(".site-intro")).toHaveCount(0);
   await expect(page.getByRole("link", { name: "Skip to content" })).toBeFocused();
   await page.goto("/");
-  await expect(page.locator(".cube-figure")).toHaveAttribute("data-renderer", "fallback");
   await page.mouse.wheel(0, 80);
   await expect(page.locator(".site-intro")).toHaveCount(0);
   await page.goto("/");
@@ -360,7 +350,7 @@ test("a missing cube material keeps the static fallback and page usable", async 
   page.on("pageerror", (error) => errors.push(error.message));
   await page.route("**/textures/resend/roughness-3.png", (route) => route.abort());
   await page.goto("/");
-  await expect(page.locator(".cube-figure")).toHaveAttribute("data-renderer", "fallback");
+  await expect(page.locator(".cube-figure")).toHaveAttribute("data-renderer", "fallback", { timeout: 20000 });
   await expect(page.getByRole("img", { name: "Static preview of a black geometric cube." })).toBeVisible();
   await expect(page.getByRole("link", { name: "Explore my work", exact: true })).toBeVisible();
   expect(errors).toEqual([]);

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { ENTRANCE_DURATION, SLICE_STARTS, setEntranceStart } from "@/lib/entrance-timeline";
+import { ENTRANCE_DURATION, setEntranceStart } from "@/lib/entrance-timeline";
 
 const easeOut = "cubic-bezier(.16,1,.3,1)";
 
@@ -16,12 +16,9 @@ export function SiteIntro() {
     const animations: Animation[] = [];
     const timers: number[] = [];
     let finished = false;
-    let rendererObserver: MutationObserver | undefined;
     const finish = () => {
       finished = true;
       timers.forEach(window.clearTimeout);
-      rendererObserver?.disconnect();
-      rendererObserver = undefined;
       animations.forEach((animation) => animation.cancel());
       animations.length = 0;
       setEntranceStart(null);
@@ -43,22 +40,11 @@ export function SiteIntro() {
 
     async function start() {
       if (media.matches || window.location.pathname !== "/" || window.location.hash || window.scrollY > 10 || root.dataset.entrance === "ready") { finish(); return; }
-      const cube = document.querySelector(".cube-figure");
-      const rendererReady = new Promise<void>((resolve) => {
-        if (!cube || cube.getAttribute("data-renderer") !== "loading") { resolve(); return; }
-        rendererObserver = new MutationObserver(() => {
-          if (cube.getAttribute("data-renderer") !== "loading") { rendererObserver?.disconnect(); resolve(); }
-        });
-        rendererObserver.observe(cube, { attributes: true, attributeFilter: ["data-renderer"] });
-        // Slow or unavailable WebGL must not hold the homepage behind a loader.
-        timers.push(window.setTimeout(resolve, 1200));
-      });
-      await Promise.all([
-        rendererReady,
-        Promise.race([document.fonts.ready, new Promise((resolve) => { timers.push(window.setTimeout(resolve, 500)); })]),
+      // Let text appear as soon as its fonts are ready; never wait for WebGL.
+      await Promise.race([
+        document.fonts.ready,
+        new Promise((resolve) => { timers.push(window.setTimeout(resolve, 500)); }),
       ]);
-      rendererObserver?.disconnect();
-      rendererObserver = undefined;
       if (finished) return;
       const identity = document.querySelector<HTMLElement>('[data-entrance-part="identity"]');
       const name = document.querySelector<HTMLElement>('[data-entrance-part="name"]');
@@ -69,57 +55,28 @@ export function SiteIntro() {
         animations.push(element.animate(frames, { duration, delay, easing, fill: "both" }));
       };
 
-      // Reveal the permanent headline while the cube carries the slicing motion.
-      name.querySelectorAll("span").forEach((letter, index) => {
-        animate(letter, [
-          { opacity: 0, transform: "translateY(36px)" },
-          { opacity: 1, transform: "none" },
-        ], 680, 100 + index * 22);
+      // A small ink drawing is the only illustrative effect in this entrance.
+      document.querySelectorAll<SVGPathElement>(".brand-mark path").forEach((path, index) => {
+        const length = path.getTotalLength();
+        animate(path, [
+          { strokeDasharray: `${length} ${length}`, strokeDashoffset: length },
+          { strokeDasharray: `${length} ${length}`, strokeDashoffset: 0 },
+        ], 420, 40 + index * 70, "cubic-bezier(.3,0,.2,1)");
       });
-      animate(surname, [{ opacity: 0, transform: "translateY(24px)" }, { opacity: 1, transform: "none" }], 750, 200);
-      animate(signal, [{ opacity: 0, transform: "scale(0)" }, { opacity: 1, transform: "none" }], 500, 120);
-
+      animate(name, [{ opacity: 0, transform: "translateY(18px)" }, { opacity: 1, transform: "none" }], 720, 60);
+      animate(surname, [{ opacity: 0, transform: "translateY(14px)" }, { opacity: 1, transform: "none" }], 720, 140);
+      animate(signal, [{ opacity: 0 }, { opacity: 1 }], 320, 80);
       document.querySelectorAll<HTMLElement>("[data-entrance-reveal]").forEach((element) => {
-        if (element.dataset.entranceReveal === "cube") {
-          animate(element, [{ opacity: 0 }, { opacity: 1 }], 180);
+        const part = element.dataset.entranceReveal;
+        if (part === "cube" || part === "ambient") {
+          animate(element, [{ opacity: 0 }, { opacity: getComputedStyle(element).opacity }], 650, part === "cube" ? 100 : 0);
           return;
         }
         animate(element, [
-          { opacity: 0, transform: "translateY(12px)" },
+          { opacity: 0, transform: "translateY(8px)" },
           { opacity: getComputedStyle(element).opacity, transform: "none" },
-        ], 700, element.dataset.entranceReveal === "navigation" ? 60 : element.dataset.entranceReveal === "copy" ? 800 : 240);
+        ], 550, part === "navigation" ? 0 : part === "copy" ? 250 : 300);
       });
-      const effect = (selector: string, frames: Keyframe[], duration: number, delay = 0, easing = "linear") => {
-        document.querySelectorAll(selector).forEach((element) => animate(element, frames, duration, delay, easing));
-      };
-      SLICE_STARTS.forEach((start, index) => {
-        const reverse = index % 2 === 1;
-        const closed = reverse ? "inset(0 0 0 100%)" : "inset(0 100% 0 0)";
-        // Fast leading edge, a short contact hold, then a fine receding trace.
-        effect(`[data-slice-stroke="${index}"]`, [
-          { opacity: 0, clipPath: closed, offset: 0 },
-          { opacity: 1, clipPath: closed, offset: .04, easing: "cubic-bezier(.55,0,.85,1)" },
-          { opacity: 1, clipPath: reverse ? "inset(0 0 0 50%)" : "inset(0 50% 0 0)", offset: 90 / 430 },
-          { opacity: 1, clipPath: "inset(0 0 0 0)", offset: .35 },
-          { opacity: .65, clipPath: "inset(0 0 0 0)", offset: .5 },
-          { opacity: 0, clipPath: reverse ? "inset(0 100% 0 0)" : "inset(0 0 0 100%)" },
-        ], 430, start - 90, "linear");
-        effect(`[data-slice-seam="${index}"]`, [
-          { opacity: 0, transform: "scaleY(.1)", offset: 0 },
-          { opacity: .6, transform: "scaleY(1)", offset: .12 },
-          { opacity: .2, transform: "scaleY(2)", offset: .4 },
-          { opacity: 0, transform: "scaleY(.2)" },
-        ], 1150 + index * 70, start, easeOut);
-      });
-      document.querySelectorAll("[data-slice-peripheral]").forEach((element, index) => {
-        animate(element, [
-          { opacity: 0, strokeDashoffset: 1, offset: 0 },
-          { opacity: .45, strokeDashoffset: 0, offset: .32 },
-          { opacity: .18, strokeDashoffset: 0, offset: .55 },
-          { opacity: 0, strokeDashoffset: -1 },
-        ], 430, 450 + index * 85, "cubic-bezier(.3,0,.2,1)");
-      });
-      // DOM strokes and cube motion use one clock; the page palette stays stable.
       const startTime = performance.now();
       animations.forEach((animation) => { animation.startTime = startTime; });
       setEntranceStart(startTime);
@@ -131,8 +88,6 @@ export function SiteIntro() {
     return () => {
       finished = true;
       timers.forEach(window.clearTimeout);
-      rendererObserver?.disconnect();
-      rendererObserver = undefined;
       animations.forEach((animation) => animation.cancel());
       setEntranceStart(null);
       delete root.dataset.entrance;

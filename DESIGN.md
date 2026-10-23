@@ -1,6 +1,6 @@
 # Babisan Pirapakaran — Personal systems portfolio
 
-Status: approved direction, implemented. Updated: 2026-10-22.
+Status: approved direction, implemented. Updated: 2026-10-23.
 
 The owner requested a personal software engineering portfolio with a low-level, code-like feel, very restrained color, a distinct opening composition, and scroll-driven particle effects inspired by [Viszen](https://viszen.tech/). This supersedes the earlier Resend page layout and violet theme. A later refinement restores a serif specifically for the personal identity and subtle glass controls. The previous page reference is [archived](docs/references/resend-style-reference.md).
 
@@ -15,7 +15,7 @@ The owner requested a personal software engineering portfolio with a low-level, 
 
 ## Page structure
 
-1. A roughly 2.6-second anime-inspired entrance with simple, precise artwork and detailed, fluid choreography. Six fine tapered slices travel across the viewport along both internal boundaries of all three cube axes; quieter peripheral cuts extend the motion through the screen. Seams briefly catch the light, then all 26 cubelets separate into an orderly, centered lattice with slight individual rotations. Successive cuts overlap, hold briefly at contact, and pull precisely back together with staggered easing. Keep the page's ink-black background, text colors, and material shading stable throughout: no full-page flashes, inversion, contrast pulses, dark shutter, or temporary flat cube materials. Build impact through accelerating strokes, local seam highlights, brief cube pose holds, subtle physical recoil, and visible gaps between every piece. The name, navigation, and copy reveal in place while the surrounding composition stays still. Keep off-white/blue-gray artwork, the actual headline/canvas, settled layout, and existing intro skip/reduced-motion/direct-link/no-replay behavior.
+1. A short, roughly 1.2-second entrance with a very restrained anime-inspired ink finish. The small existing cube-outline logo draws in once, the two name words ease up by only 14–18 pixels, navigation/copy fade into place, and the intact cube makes a gentle tilt/scale arrival while its regular rotation continues. Keep the page palette stable and the homepage usable immediately. No slicing, impact frames, flashes, cube breakup, full-screen effects, blur passes, extra particles, or new animation libraries. All added DOM animation uses opacity/transforms apart from the two tiny logo paths. The WebGL entrance moves one parent group; no cubelet transforms or extra scene geometry. Do not wait for WebGL or textures before revealing text. Keep the actual headline/canvas, settled layout, skip controls, reduced-motion handling, direct-section access, and no replay on internal navigation.
 2. A short, native-scroll deconstruction sequence. The opening text recedes, cubelets separate/fade, and a soft blue-gray particle cloud morphs into a generic processor silhouette. A personal transition line leads into the work. The project link skips this sequence directly.
 3. Two substantial project entries for the confirmed governance checker and computer-vision mock interview project. Original SVG subject illustrations are labeled concept illustrations, never represented as actual project screenshots. Native expandable notes expose known project context; detailed case studies remain pending owner evidence.
 4. A personal about section with systems/performance, GPU/CUDA, and cloud/infra explicitly framed as interests to explore.
@@ -30,7 +30,7 @@ The owner requested a personal software engineering portfolio with a low-level, 
 - Scroll controls a separate, reversible visual transformation. It must never mutate the logical cube state. Scrolling back reconstructs the same pose while animation is paused. The particle cloud retains its subtle automatic drift and rotation.
 - Use one point-cloud draw call and a small line-segment overlay within the existing WebGL renderer. Interpolate from a cube surface through a dispersed cloud to a generic processor motif on the GPU. Use about 6,800 points on desktop and 3,400 on small screens, with a capped device pixel ratio.
 - Keep the broad soft ray behind the intro, integrated into the cool tint without hard lines or artificial cone edges.
-- Ambient dust is subtle and static. The larger particle transition is scroll-driven. No pointer trails, continuous strobing, wheel interception, or forced section snapping. Entrance impact comes from cube and slice motion; the page palette stays stable.
+- Ambient dust is subtle and static. The larger particle transition is scroll-driven. No pointer trails, continuous strobing, wheel interception, or forced section snapping. The short opening uses restrained motion and keeps the page palette stable.
 
 ## Accessibility and performance
 

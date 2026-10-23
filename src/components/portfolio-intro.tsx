@@ -4,7 +4,6 @@ import { useRef } from "react";
 import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
 import { HeroCube } from "./hero-cube";
 import { CubeRay } from "./cube-ray";
-import { EntranceField } from "./entrance-field";
 
 export function PortfolioIntro() {
   const section = useRef<HTMLElement>(null);
@@ -16,7 +15,6 @@ export function PortfolioIntro() {
   const nextY = useTransform(scrollYProgress, [0.42, 1], [45, 0]);
   return (
     <section ref={section} className="intro-scroll" aria-labelledby="intro-title">
-      <EntranceField />
       <div className="intro-sticky">
         <CubeRay />
         <div className="intro-grid" data-entrance-reveal="ambient" aria-hidden="true" />
@@ -28,7 +26,7 @@ export function PortfolioIntro() {
               <span className="section-index" data-entrance-reveal="detail">0x00 / SOFTWARE ENGINEERING</span>
             </div>
             <h1 id="intro-title" data-entrance-part="identity" aria-label="Babisan Pirapakaran">
-              <span className="intro-firstname" data-entrance-part="name">{Array.from("Babisan").map((letter, index) => <span key={index}>{letter}</span>)}</span>{" "}<br className="intro-name-break" /><span className="intro-surname" data-entrance-part="surname">Pirapakaran</span>
+              <span className="intro-firstname" data-entrance-part="name">Babisan</span>{" "}<br className="intro-name-break" /><span className="intro-surname" data-entrance-part="surname">Pirapakaran</span>
             </h1>
           </motion.div>
           <motion.div className="intro-copy" style={{ opacity: reduced ? 1 : nameOpacity }}>

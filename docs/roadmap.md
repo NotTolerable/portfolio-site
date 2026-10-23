@@ -1,6 +1,6 @@
 # Roadmap
 
-Updated: 2026-10-22. Current phase: deployed portfolio with content/design refinements pending.
+Updated: 2026-10-23. Current phase: deployed portfolio with content/design refinements pending.
 
 ## 1. Establish project context
 
@@ -35,7 +35,7 @@ Updated: 2026-10-22. Current phase: deployed portfolio with content/design refin
 - [x] Restore the cube’s original column, enlarge it slightly, add a visible ray, and ease faster idle direction changes.
 - [x] Rewrite the copy as a relaxed personal portfolio and add a quick first-load greeting.
 - [x] Introduce the name-led systems theme, asymmetric project entries, expandable notes, and a reversible cube-to-particle scroll transition.
-- [x] Replace the earlier entrance effects with precise viewport/cube slicing, individual separation of all 26 cubelets, a stable page palette without flashes, local contact/recoil, fading seam traces, and fluid staggered recovery; keep the artwork simple and preserve continuity, skip controls, reduced motion, direct links, and resize handling.
+- [x] Replace the intensive opening effects with a short logo ink drawing, gentle name/content reveal, and intact cube tilt; keep rendering lightweight, content independent of WebGL readiness, and existing accessibility/skip behavior.
 - [x] Refine identity with a serif name, original cube-outline mark and BP, no underscore suffixes/index branding, and selective glass depth on controls.
 - [x] Refine glass with static frosting and rim highlights; remove the cube/hologram overlay while retaining automatic animation and requiring drag/keyboard input for manual steering.
 - [ ] Complete owner-verified project case studies, source links, resume, and contact details.
