@@ -4,7 +4,7 @@ import { cubicBezier } from "motion";
 import { createFaceMaterials } from "./cube-textures";
 import { CubeOrbit, type OrbitInput } from "./cube-orbit";
 import { createCubeParticles } from "./cube-particles";
-import { CUBE_ENTRANCE_DURATION, entrancePose } from "./entrance-timeline";
+import { CUBE_ENTRANCE_DURATION, beginCubePreparation, entrancePose } from "./entrance-timeline";
 import { applyTurn, createCubies, createScrambleSequence, createTurnSequence, FACE_NORMALS, hasSticker, type Cubie, type ScrambleMove } from "./rubik-state";
 
 export type CubeInput = OrbitInput & {
@@ -12,16 +12,13 @@ export type CubeInput = OrbitInput & {
   reduced: boolean;
   scroll: number;
   entranceStartedAt: number | null;
+  entranceActive: boolean;
 };
 
 const easeLayerTurn = cubicBezier(0.42, 0, 0.58, 1);
 
 export async function createCubeScene(canvas: HTMLCanvasElement, input: CubeInput) {
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: "high-performance" });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75));
-  renderer.setClearColor(0x000000, 0);
-  renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1;
+  let renderer!: THREE.WebGLRenderer;
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 50);
   camera.position.set(4.8, 3.4, 5.8);
@@ -29,9 +26,17 @@ export async function createCubeScene(canvas: HTMLCanvasElement, input: CubeInpu
 
   let faces: Awaited<ReturnType<typeof createFaceMaterials>>;
   try {
-    faces = await createFaceMaterials(renderer.capabilities.getMaxAnisotropy());
+    faces = await createFaceMaterials(async () => {
+      await beginCubePreparation();
+      renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: "high-performance" });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75));
+      renderer.setClearColor(0x000000, 0);
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1;
+      return renderer.capabilities.getMaxAnisotropy();
+    });
   } catch (error) {
-    renderer.dispose();
+    renderer?.dispose();
     throw error;
   }
   // Rounded solid blocks match the source cube, without raised sticker plates.
@@ -157,7 +162,7 @@ export async function createCubeScene(canvas: HTMLCanvasElement, input: CubeInpu
     const delta = previousTime === null ? 0 : Math.min((now - previousTime) / 1000, 0.05);
     previousTime = now;
     if (visible && !document.hidden) {
-      const automatic = !input.paused && !input.reduced;
+      const automatic = !input.paused && !input.reduced && !input.entranceActive;
       const entranceElapsed = input.entranceStartedAt === null ? CUBE_ENTRANCE_DURATION : now - input.entranceStartedAt;
       const entering = !input.reduced && input.scroll === 0 && entranceElapsed < CUBE_ENTRANCE_DURATION;
       if (automatic) animationTime += delta;
@@ -207,7 +212,7 @@ export async function createCubeScene(canvas: HTMLCanvasElement, input: CubeInpu
   }
 
   // Prepare the existing cube and particle programs before rendering.
-  renderer.compile(scene, camera);
+  await renderer.compileAsync(scene, camera);
 
   const observer = new ResizeObserver(resize);
   observer.observe(canvas);

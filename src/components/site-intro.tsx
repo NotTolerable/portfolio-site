@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { ENTRANCE_DURATION, setEntranceStart } from "@/lib/entrance-timeline";
+import { ENTRANCE_DURATION, reserveEntranceDrawing, setEntranceStart } from "@/lib/entrance-timeline";
 import { prepareNameInk } from "@/lib/name-ink";
+import { OpeningPaper } from "./opening-paper";
 import { preparePageInk } from "@/lib/page-ink";
 
 const easeOut = "cubic-bezier(.16,1,.3,1)";
@@ -50,10 +51,10 @@ export function SiteIntro() {
 
     async function start() {
       if (media.matches || window.location.pathname !== "/" || window.location.hash || window.scrollY > 10 || root.dataset.entrance === "ready") { finish(); return; }
-      // Let text appear as soon as its fonts are ready; never wait for WebGL.
-      await Promise.race([
-        document.fonts.ready,
-        new Promise((resolve) => { timers.push(window.setTimeout(resolve, 500)); }),
+      // Wait briefly for assets, and keep heavy GPU setup outside active drawing.
+      await Promise.all([
+        Promise.race([document.fonts.ready, new Promise((resolve) => { timers.push(window.setTimeout(resolve, 500)); })]),
+        reserveEntranceDrawing(new Promise((resolve) => { timers.push(window.setTimeout(resolve, 900)); }), listeners.signal),
       ]);
       if (finished) return;
       // Start on a live document timeline, after the browser has had a paint
@@ -104,6 +105,5 @@ export function SiteIntro() {
     };
   }, []);
 
-  if (!playing) return null;
-  return <div className="site-intro"><button type="button" className="opening-skip" onClick={() => skip.current()}>Skip intro <span aria-hidden="true">↗</span></button></div>;
+  return <><OpeningPaper />{playing && <div className="site-intro"><button type="button" className="opening-skip" onClick={() => skip.current()}>Skip intro <span aria-hidden="true">↗</span></button></div>}</>;
 }

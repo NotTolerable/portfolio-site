@@ -79,7 +79,7 @@ function createSurfaceMaps(kind: number) {
   return canvases;
 }
 
-export async function createFaceMaterials(anisotropy: number) {
+export async function createFaceMaterials(prepareRenderer: () => Promise<number>) {
   const loader = new THREE.TextureLoader();
   const names = ["reflection-5", "roughness-2", "roughness-3", "roughness-4", "studio-light", "surface-grain", "terrazzo"];
   const loaded = await Promise.allSettled(names.map((name) => loader.loadAsync(`/textures/resend/${name}.png`)));
@@ -88,6 +88,13 @@ export async function createFaceMaterials(anisotropy: number) {
     throw new Error("Cube material assets unavailable");
   }
   const source = loaded.map((result) => (result as PromiseFulfilledResult<THREE.Texture>).value);
+  let anisotropy: number;
+  try {
+    anisotropy = await prepareRenderer();
+  } catch (error) {
+    source.forEach((texture) => texture.dispose());
+    throw error;
+  }
   source.forEach((texture) => { texture.colorSpace = THREE.SRGBColorSpace; texture.anisotropy = Math.min(anisotropy, 8); });
   const grain = source[5].clone();
   grain.colorSpace = THREE.NoColorSpace;

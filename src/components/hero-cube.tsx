@@ -4,47 +4,67 @@ import { useEffect, useRef, useState } from "react";
 import type { MotionValue } from "motion/react";
 import type { CubeInput } from "@/lib/cube-scene";
 import { CubeDrawing } from "./cube-drawing";
-import { subscribeEntrance } from "@/lib/entrance-timeline";
+import { CUBE_REVEAL_START, markCubePrepared, subscribeEntrance } from "@/lib/entrance-timeline";
 
 export function HeroCube({ scrollProgress }: { scrollProgress?: MotionValue<number> }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const sceneRef = useRef<{ dispose(): void } | null>(null);
-  const input = useRef<CubeInput>({ paused: false, pressed: false, reduced: false, x: 0, y: 0, scroll: 0, entranceStartedAt: null });
+  const input = useRef<CubeInput>({ paused: false, pressed: false, reduced: false, x: 0, y: 0, scroll: 0, entranceStartedAt: null, entranceActive: true });
   const drag = useRef<{ pointerId: number; x: number; y: number } | null>(null);
+  const [prepared, setPrepared] = useState(false);
   const [mode, setMode] = useState<"loading" | "webgl" | "fallback">("loading");
 
   useEffect(() => {
     let active = true;
-    let requested = false;
+    let shown = false;
+    let revealRequested = false;
+    let revealTimer: number | undefined;
     const media = window.matchMedia("(prefers-reduced-motion: reduce)");
     const syncProgress = (progress: number) => { input.current.scroll = input.current.reduced ? 0 : progress; };
     const syncPreference = () => { input.current.reduced = media.matches; syncProgress(scrollProgress?.get() ?? 0); };
     syncPreference();
     media.addEventListener("change", syncPreference);
     const unsubscribe = scrollProgress?.on("change", syncProgress);
-    function initialize() {
-      const entrance = document.documentElement.dataset.entrance;
-      if (!active || requested || entrance === "pending" || entrance === "running") return;
-      requested = true;
-      import("@/lib/cube-scene").then(async ({ createCubeScene }) => {
-        if (!active || !canvasRef.current) return;
-        try {
-          const scene = await createCubeScene(canvasRef.current, input.current);
-          if (!active) { scene.dispose(); return; }
-          sceneRef.current = scene;
-          input.current.entranceStartedAt = performance.now();
-          setMode("webgl");
-        } catch {
-          if (active) setMode("fallback");
-        }
-      }).catch(() => { if (active) setMode("fallback"); });
+    function reveal() {
+      if (!active || shown) return;
+      revealRequested = true;
+      input.current.entranceActive = false;
+      if (!sceneRef.current) return;
+      shown = true;
+      window.clearTimeout(revealTimer);
+      input.current.entranceStartedAt = performance.now();
+      setMode("webgl");
     }
-    // Creating a graphics context can block for seconds on software renderers.
-    // Let the lettering finish (or be skipped) before starting that work. The
-    // CSS cube remains visible; reduced motion/direct links initialize normally.
-    const unsubscribeEntrance = subscribeEntrance(() => { queueMicrotask(initialize); });
+    const unsubscribeEntrance = subscribeEntrance((time) => {
+      if (time !== null) {
+        input.current.entranceActive = true;
+        revealTimer = window.setTimeout(reveal, Math.max(0, time + CUBE_REVEAL_START - performance.now()));
+      } else {
+        queueMicrotask(() => {
+          const entrance = document.documentElement.dataset.entrance;
+          if (entrance !== "pending" && entrance !== "running") reveal();
+        });
+      }
+    });
+    // Prepare the first frame before drawing when assets arrive promptly. The
+    // ready scene holds its pose until the final crossfade, then rotates at once.
+    import("@/lib/cube-scene").then(async ({ createCubeScene }) => {
+      if (!active || !canvasRef.current) return;
+      try {
+        const scene = await createCubeScene(canvasRef.current, input.current);
+        if (!active) { scene.dispose(); return; }
+        sceneRef.current = scene;
+        setPrepared(true);
+        markCubePrepared();
+        if (revealRequested) reveal();
+      } catch {
+        markCubePrepared();
+        if (active) setMode("fallback");
+      }
+    }).catch(() => { markCubePrepared(); if (active) setMode("fallback"); });
     return () => {
       active = false;
+      window.clearTimeout(revealTimer);
       media.removeEventListener("change", syncPreference);
       unsubscribe?.();
       unsubscribeEntrance();
@@ -59,7 +79,7 @@ export function HeroCube({ scrollProgress }: { scrollProgress?: MotionValue<numb
   }
 
   return (
-    <figure className="cube-figure" data-renderer={mode}>
+    <figure className="cube-figure" data-renderer={mode} data-prepared={prepared}>
       <div className="cube-stage" tabIndex={mode === "webgl" ? 0 : -1} role={mode === "webgl" ? "group" : "img"} aria-label={mode === "webgl" ? "Interactive black cube with six mixed textures. Rotates and scrambles automatically. Drag or use arrow keys to rotate. Press Space to pause or resume animation. Scroll to deconstruct the cube into particles." : "Static preview of a black geometric cube."}
         onKeyDown={(event) => {
           if (mode !== "webgl") return;

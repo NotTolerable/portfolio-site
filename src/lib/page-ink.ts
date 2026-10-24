@@ -21,6 +21,11 @@ export function preparePageInk(animate: Animate) {
   document.body.append(overlay);
   const cleanup = () => overlay.remove();
   try {
+    const paper = document.querySelector(".opening-paper");
+    if (paper) {
+      paper.querySelectorAll<SVGPathElement>("[data-paper-brush]").forEach((path, index) => inkPath(path, animate, 1700, [180, 500, 900][index]));
+      animate(paper, [{ opacity: 1 }, { opacity: 0 }], 220, 2480);
+    }
     const sketch = svgNode("g", { fill: "none", stroke: "#a6bbc6", "stroke-linecap": "round", "stroke-linejoin": "round", "data-page-sketch": "" });
     overlay.append(sketch);
     // Loose, curved animation-layout marks live in the margins and negative

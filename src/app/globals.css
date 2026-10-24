@@ -99,7 +99,10 @@ p { line-height: 1.75; }
 .intro-footer { position: absolute; inset: auto 0 35px; display: flex; justify-content: space-between; align-items: center; color: #90a4b0; font: 8px var(--font-commit-mono); letter-spacing: .06em; z-index: 2; pointer-events: none; }
 .scroll-instruction > span { display: inline-block; font-size: 14px; margin-left: 14px; }
 .intro-copy .intro-greeting { margin-top: 16px; }
-/* The actual hero elements enter their permanent positions; there is no cover screen. */
+/* The paper is present before hydration; it disappears with every skip/failsafe. */
+.opening-paper { display: none; position: fixed; inset: 0; width: 100%; height: 100%; z-index: 70; mix-blend-mode: difference; pointer-events: none; }
+html:is([data-entrance="pending"], [data-entrance="running"]) .opening-paper { display: block; }
+html[data-entrance="pending"] .opening-paper [data-paper-brush] { visibility: hidden; }
 html[data-entrance="pending"] :is([data-entrance-part], [data-entrance-reveal]):where(:not([data-entrance-part="identity"])) { visibility: hidden; }
 .site-intro { position: fixed; inset: auto 0 0; z-index: 80; pointer-events: none; }
 .opening-skip { position: absolute; right: max(24px, calc((100vw - 1200px) / 2)); bottom: 25px; display: inline-flex; align-items: center; gap: 18px; min-height: 44px; padding: 12px 0 12px 16px; border: 0; background: #090d10b3; border-radius: 6px; color: #b8cbd7; font: 10px var(--font-commit-mono); pointer-events: auto; }
@@ -303,7 +306,7 @@ html[data-entrance="pending"] :is([data-entrance-part], [data-entrance-reveal]):
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
-  .site-intro { display: none; }
+  .site-intro, html[data-entrance] .opening-paper { display: none; }
   html[data-entrance] :is([data-entrance-part], [data-entrance-reveal]) { visibility: visible; }
   .intro-scroll { height: 100svh; min-height: 800px; }
   .intro-sticky { position: relative; }
