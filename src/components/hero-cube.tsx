@@ -14,24 +14,34 @@ export function HeroCube({ scrollProgress }: { scrollProgress?: MotionValue<numb
 
   useEffect(() => {
     let active = true;
+    let requested = false;
     const media = window.matchMedia("(prefers-reduced-motion: reduce)");
     const syncProgress = (progress: number) => { input.current.scroll = input.current.reduced ? 0 : progress; };
     const syncPreference = () => { input.current.reduced = media.matches; syncProgress(scrollProgress?.get() ?? 0); };
     syncPreference();
     media.addEventListener("change", syncPreference);
     const unsubscribe = scrollProgress?.on("change", syncProgress);
-    const unsubscribeEntrance = subscribeEntrance((time) => { input.current.entranceStartedAt = time; });
-    import("@/lib/cube-scene").then(async ({ createCubeScene }) => {
-      if (!active || !canvasRef.current) return;
-      try {
-        const scene = await createCubeScene(canvasRef.current, input.current);
-        if (!active) { scene.dispose(); return; }
-        sceneRef.current = scene;
-        setMode("webgl");
-      } catch {
-        if (active) setMode("fallback");
-      }
-    }).catch(() => { if (active) setMode("fallback"); });
+    function initialize() {
+      const entrance = document.documentElement.dataset.entrance;
+      if (!active || requested || entrance === "pending" || entrance === "running") return;
+      requested = true;
+      import("@/lib/cube-scene").then(async ({ createCubeScene }) => {
+        if (!active || !canvasRef.current) return;
+        try {
+          const scene = await createCubeScene(canvasRef.current, input.current);
+          if (!active) { scene.dispose(); return; }
+          sceneRef.current = scene;
+          input.current.entranceStartedAt = performance.now();
+          setMode("webgl");
+        } catch {
+          if (active) setMode("fallback");
+        }
+      }).catch(() => { if (active) setMode("fallback"); });
+    }
+    // Creating a graphics context can block for seconds on software renderers.
+    // Let the lettering finish (or be skipped) before starting that work. The
+    // CSS cube remains visible; reduced motion/direct links initialize normally.
+    const unsubscribeEntrance = subscribeEntrance(() => { queueMicrotask(initialize); });
     return () => {
       active = false;
       media.removeEventListener("change", syncPreference);

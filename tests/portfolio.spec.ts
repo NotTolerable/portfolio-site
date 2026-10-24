@@ -1,8 +1,15 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { ENTRANCE_DURATION } from "../src/lib/entrance-timeline";
 
 test.use({ viewport: { width: 1280, height: 900 } });
+
+async function startClockedIntro(page: Page) {
+  await page.evaluate(() => document.fonts.ready);
+  // Advance the two paint opportunities used by the entrance's real-frame gate.
+  await page.clock.runFor(50);
+  await expect(page.locator("html")).toHaveAttribute("data-entrance", "running");
+}
 
 test("portfolio projects have accessible notes and link to the cloud plan", async ({ page }) => {
   const errors: string[] = [];
@@ -138,7 +145,7 @@ test("a failed WebGL initialization keeps an accessible static cube", async ({ p
     } as typeof original;
   });
   await page.goto("/");
-  await expect(page.locator(".cube-figure")).toHaveAttribute("data-renderer", "fallback");
+  await expect(page.locator(".cube-figure")).toHaveAttribute("data-renderer", "fallback", { timeout: 20000 });
   await expect(page.getByRole("img", { name: "Static preview of a black geometric cube." })).toBeVisible();
   await expect(page.locator(".cube-figure button, .cube-figure figcaption")).toHaveCount(0);
   await expect(page.getByRole("link", { name: "Explore my work", exact: true })).toBeVisible();
@@ -153,6 +160,24 @@ test("the kinetic intro clears and does not replay on internal navigation", asyn
   await expect(page.locator(".site-intro")).toHaveCount(0);
 });
 
+test("the lettering advances on the real browser clock before graphics startup", async ({ page }) => {
+  await page.goto("/", { waitUntil: "domcontentloaded" });
+  await expect(page.locator("html")).toHaveAttribute("data-entrance", "running");
+  const sample = () => page.evaluate(() => ({
+    time: performance.now(),
+    timeline: Number(document.timeline.currentTime),
+    remaining: [...document.querySelectorAll(".name-ink mask path")].reduce((sum, path) => sum + Number.parseFloat(getComputedStyle(path).strokeDashoffset), 0),
+  }));
+  const before = await sample();
+  expect(before.timeline, "the compositor must have started before the intro clock").toBeGreaterThan(0);
+  await page.waitForTimeout(220);
+  const after = await sample();
+  expect(after.remaining, "real time must reveal strokes without manually seeking animations").toBeLessThan(before.remaining);
+  expect(after.timeline).toBeGreaterThan(before.timeline);
+  expect(after.time - before.time, "graphics initialization must not block these frames").toBeLessThan(1000);
+  await expect(page.locator(".cube-figure")).toHaveAttribute("data-renderer", "loading");
+});
+
 test("the name draws through strokes and settles without replacing or shifting the headline", async ({ page }) => {
   await page.route("**/textures/resend/**", (route) => route.abort());
   await page.clock.install({ time: 0 });
@@ -160,7 +185,7 @@ test("the name draws through strokes and settles without replacing or shifting t
   for (const width of [1280, 390]) {
     await page.setViewportSize({ width, height: 900 });
     await page.goto("/");
-    await expect(page.locator("html")).toHaveAttribute("data-entrance", "running");
+    await startClockedIntro(page);
     const name = await page.locator(".intro-firstname").elementHandle();
     const canvas = await page.locator(".cube-stage canvas").elementHandle();
     const dot = await page.locator(".intro-signal").elementHandle();
@@ -210,7 +235,7 @@ test("the name drawing finishes while cube assets are still loading", async ({ p
   await page.clock.pauseAt(0);
   try {
     await page.goto("/", { waitUntil: "domcontentloaded" });
-    await expect(page.locator("html")).toHaveAttribute("data-entrance", "running");
+    await startClockedIntro(page);
     await expect(page.locator(".cube-figure")).toHaveAttribute("data-renderer", "loading");
     for (const time of [150, 850, 1800, ENTRANCE_DURATION]) {
       await page.evaluate((t) => document.getAnimations().filter((a) => a.timeline === document.timeline).forEach((a) => { a.pause(); a.currentTime = t; }), time);
@@ -228,57 +253,57 @@ test("the name drawing finishes while cube assets are still loading", async ({ p
   } finally { release(); }
 });
 
-test("the intact cube settles once and stays stable when paused", async ({ page }) => {
-  // Keep the whole canvas in view: element screenshots resize a shorter viewport,
-  // which deliberately dismisses the entrance before the scene can be sampled.
-  await page.setViewportSize({ width: 1280, height: 900 });
+test("graphics initialization waits for the lettering, then the intact cube settles and pauses", async ({ page }) => {
+  await page.addInitScript(() => {
+    const original = HTMLCanvasElement.prototype.getContext;
+    HTMLCanvasElement.prototype.getContext = function (this: HTMLCanvasElement, ...args: Parameters<typeof original>) {
+      if (String(args[0]).includes("webgl")) document.documentElement.dataset.graphicsStarted = "true";
+      return original.apply(this, args);
+    } as typeof original;
+  });
   await page.clock.install({ time: 0 });
   await page.clock.pauseAt(0);
   await page.goto("/");
+  await startClockedIntro(page);
+  await expect(page.locator("html")).not.toHaveAttribute("data-graphics-started");
+  await expect(page.locator(".cube-figure")).toHaveAttribute("data-renderer", "loading");
+  await page.clock.runFor(ENTRANCE_DURATION);
+  await expect(page.locator(".site-intro")).toHaveCount(0);
   await expect(page.locator(".cube-figure")).toHaveAttribute("data-renderer", "webgl", { timeout: 20000 });
-  await expect(page.locator("html")).toHaveAttribute("data-entrance", "running");
-  // Isolate WebGL from decorative SVG and HTML layers in these pixel comparisons.
-  await page.addStyleTag({ content: ".site-header, .site-intro, .intro-cinema, .cube-ray, .intro-grid, .intro-dust, .intro-identity, .intro-copy, .intro-next, .intro-footer { visibility: hidden !important; }" });
-  await page.evaluate(() => document.getAnimations().filter((a) => a.timeline === document.timeline).forEach((a) => { a.pause(); a.currentTime = 1200; }));
+  await expect(page.locator("html")).toHaveAttribute("data-graphics-started", "true");
+  // Isolate WebGL from decorative SVG and HTML layers in pixel comparisons.
+  await page.addStyleTag({ content: ".site-header, .site-intro, .cube-ray, .intro-grid, .intro-dust, .intro-identity, .intro-copy, .intro-next, .intro-footer { visibility: hidden !important; }" });
   await page.getByRole("group", { name: /Interactive black cube/ }).focus();
   await page.keyboard.press(" ");
   const canvas = page.locator(".cube-stage canvas");
   await page.clock.runFor(240);
   const arriving = await canvas.screenshot();
-  await expect(page.locator("html")).toHaveAttribute("data-entrance", "running");
   await page.clock.runFor(720);
   const settled = await canvas.screenshot();
   expect(settled.equals(arriving), "the intact cube must settle into its normal view").toBe(false);
-  await page.clock.runFor(ENTRANCE_DURATION - 960);
-  await expect(page.locator(".site-intro")).toHaveCount(0);
-  expect((await canvas.screenshot()).equals(settled), "finishing the entrance must not jump or move a paused cube").toBe(true);
+  await page.clock.runFor(500);
+  expect((await canvas.screenshot()).equals(settled), "a paused cube must stay still after settling").toBe(true);
 });
 
-test("skipping the gentle cube arrival leaves it stable and interactive", async ({ page }) => {
-  await page.setViewportSize({ width: 1280, height: 900 });
+test("skipping the lettering initializes the cube and leaves manual rotation working", async ({ page }) => {
   await page.clock.install({ time: 0 });
   await page.clock.pauseAt(0);
   await page.goto("/");
-  await expect(page.locator(".cube-figure")).toHaveAttribute("data-renderer", "webgl", { timeout: 20000 });
-  await expect(page.locator("html")).toHaveAttribute("data-entrance", "running");
-  // Hold the surrounding DOM at its destination to isolate the scene's arrival.
-  await page.evaluate(() => document.getAnimations().filter((animation) => animation.timeline === document.timeline).forEach((animation) => { animation.pause(); animation.currentTime = 1200; }));
-  await page.clock.runFor(300);
-  const canvas = page.locator(".cube-stage canvas");
-  const arriving = await canvas.screenshot();
+  await startClockedIntro(page);
+  await expect(page.locator(".cube-figure")).toHaveAttribute("data-renderer", "loading");
   await page.keyboard.press("Escape");
+  await expect(page.locator(".cube-figure")).toHaveAttribute("data-renderer", "webgl", { timeout: 20000 });
   const stage = page.getByRole("group", { name: /Interactive black cube/ });
   await stage.focus();
   await page.keyboard.press(" ");
-  await page.clock.runFor(64);
+  await page.clock.runFor(1000);
+  const canvas = page.locator(".cube-stage canvas");
   const settled = await canvas.screenshot();
-  expect(settled.equals(arriving), "skipping must finish the cube arrival").toBe(false);
   await page.clock.runFor(1000);
   expect((await canvas.screenshot()).equals(settled), "a paused cube must not drift after skip").toBe(true);
   await page.keyboard.press("ArrowRight");
   await page.clock.runFor(32);
   expect((await canvas.screenshot()).equals(settled), "manual rotation must still work after an interrupted entrance").toBe(false);
-  await expect(page.locator(".intro-cinema")).toHaveCount(0);
 });
 
 test("resizing, direct links, and disabled JavaScript leave a usable landing page", async ({ page, browser }) => {
@@ -336,23 +361,28 @@ test("the opening can be skipped by button or keyboard and respects reduced moti
   // The intro remains dismissible even when cube assets fail; avoid software shader compilation here.
   await page.route("**/textures/resend/**", (route) => route.abort());
   await page.goto("/");
+  await startClockedIntro(page);
   const skip = page.getByRole("button", { name: "Skip intro" });
   await expect(skip).toBeVisible();
   await skip.click();
   await expect(page.locator(".site-intro, .name-ink, [data-ink]")).toHaveCount(0);
   await expect(page.locator(".name-ink-text").first()).toHaveCSS("opacity", "1");
   await page.goto("/");
+  await startClockedIntro(page);
   await expect(skip).toBeVisible();
   await page.keyboard.press("Escape");
   await expect(page.locator(".site-intro")).toHaveCount(0);
   await page.goto("/");
+  await startClockedIntro(page);
   await page.keyboard.press("Tab");
   await expect(page.locator(".site-intro")).toHaveCount(0);
   await expect(page.getByRole("link", { name: "Skip to content" })).toBeFocused();
   await page.goto("/");
+  await startClockedIntro(page);
   await page.mouse.wheel(0, 80);
   await expect(page.locator(".site-intro")).toHaveCount(0);
   await page.goto("/");
+  await startClockedIntro(page);
   await expect(skip).toBeVisible();
   await page.emulateMedia({ reducedMotion: "reduce" });
   await expect(page.locator(".site-intro")).toHaveCount(0);
@@ -386,7 +416,7 @@ test("scroll morphs the cube into still particles and reverses without losing it
   await page.keyboard.press(" ");
   await page.keyboard.press("ArrowRight");
   await page.evaluate(() => document.fonts.ready);
-  await page.waitForTimeout(400);
+  await page.waitForTimeout(1000);
   const canvas = page.locator(".cube-stage canvas");
   const before = await canvas.screenshot();
   await page.evaluate(() => window.scrollTo({ top: 520, behavior: "instant" }));

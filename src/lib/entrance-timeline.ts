@@ -1,4 +1,4 @@
-// One shared clock coordinates the name ink drawing and intact cube's arrival.
+// Entrance timings and the completion signal that defers graphics startup.
 export const ENTRANCE_DURATION = 3000;
 export const CUBE_ENTRANCE_DURATION = 900;
 

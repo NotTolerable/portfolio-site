@@ -16,11 +16,13 @@ export function SiteIntro() {
     const listeners = new AbortController();
     const animations: Animation[] = [];
     const timers: number[] = [];
+    const frames: number[] = [];
     const inkCleanup: (() => void)[] = [];
     let finished = false;
     const finish = () => {
       finished = true;
       timers.forEach(window.clearTimeout);
+      frames.forEach(window.cancelAnimationFrame);
       animations.forEach((animation) => animation.cancel());
       animations.length = 0;
       inkCleanup.forEach((cleanup) => cleanup());
@@ -49,6 +51,15 @@ export function SiteIntro() {
         new Promise((resolve) => { timers.push(window.setTimeout(resolve, 500)); }),
       ]);
       if (finished) return;
+      // Start on a live document timeline, after the browser has had a paint
+      // opportunity. Starting a timer before its compositor is ready can consume
+      // the entire entrance without displaying a single intermediate frame.
+      await new Promise<void>((resolve) => {
+        frames.push(requestAnimationFrame(() => {
+          frames.push(requestAnimationFrame(() => resolve()));
+        }));
+      });
+      if (finished) return;
       const identity = document.querySelector<HTMLElement>('[data-entrance-part="identity"]');
       const name = document.querySelector<HTMLElement>('[data-entrance-part="name"]');
       const surname = document.querySelector<HTMLElement>('[data-entrance-part="surname"]');
@@ -73,7 +84,8 @@ export function SiteIntro() {
         ], 550, part === "navigation" ? 0 : part === "copy" ? 250 : 300);
       });
       const startTime = performance.now();
-      animations.forEach((animation) => { animation.startTime = startTime; });
+      const animationTime = document.timeline.currentTime ?? startTime;
+      animations.forEach((animation) => { animation.startTime = animationTime; });
       setEntranceStart(startTime);
       root.dataset.entrance = "running";
       setPlaying(true);
@@ -83,6 +95,7 @@ export function SiteIntro() {
     return () => {
       finished = true;
       timers.forEach(window.clearTimeout);
+      frames.forEach(window.cancelAnimationFrame);
       animations.forEach((animation) => animation.cancel());
       inkCleanup.forEach((cleanup) => cleanup());
       setEntranceStart(null);
