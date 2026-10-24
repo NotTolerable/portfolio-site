@@ -1,5 +1,5 @@
 // Entrance timings and the completion signal that defers graphics startup.
-export const ENTRANCE_DURATION = 3000;
+export const ENTRANCE_DURATION = 3400;
 export const CUBE_ENTRANCE_DURATION = 900;
 
 export function entrancePose(elapsed: number) {

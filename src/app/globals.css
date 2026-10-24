@@ -89,12 +89,9 @@ p { line-height: 1.75; }
 .cube-stage canvas { display: block; width: 100%; height: 100%; opacity: 0; transition: opacity 400ms; }
 .cube-figure[data-renderer="webgl"] canvas { opacity: 1; }
 .cube-figure:not([data-renderer="webgl"]) .cube-stage { cursor: default; }
-.cube-fallback { position: absolute; top: 49%; left: 67%; width: 200px; height: 200px; margin: -100px; transform-style: preserve-3d; transform: rotateX(-24deg) rotateY(-38deg) rotateZ(-8deg); pointer-events: none; }
+.cube-fallback { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; transition: opacity 400ms; }
 .cube-figure[data-renderer="webgl"] .cube-fallback { opacity: 0; }
-.fallback-face { position: absolute; width: 200px; height: 200px; border: 1px solid #586a74; background-color: #151c20; background-image: linear-gradient(90deg, transparent 32%, #3b494e 33%, transparent 34%, transparent 65%, #3b494e 66%, transparent 67%), linear-gradient(0deg, transparent 32%, #3b494e 33%, transparent 34%, transparent 65%, #3b494e 66%, transparent 67%); }
-.fallback-face.front { transform: translateZ(100px); }
-.fallback-face.top { transform: rotateX(90deg) translateZ(100px); background-color: #262f34; }
-.fallback-face.right { transform: rotateY(90deg) translateZ(100px); background-color: #0c1114; }
+.opening-drawing { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 60; pointer-events: none; overflow: hidden; }
 .intro-next { position: absolute; bottom: 16%; left: 0; z-index: 2; pointer-events: none; }
 .intro-next > p { font-size: clamp(40px, 5.2vw, 70px); letter-spacing: -.06em; line-height: 1.12; margin-top: 20px; }
 .intro-next > p > span { color: var(--accent); }
@@ -233,7 +230,6 @@ html[data-entrance="pending"] :is([data-entrance-part], [data-entrance-reveal]):
   .intro-copy .intro-greeting { font-size: 14px; margin-bottom: 8px; }
   .intro-work-link { margin-top: 17px; font-size: 10px; gap: 27px; }
   .cube-stage:focus-visible { outline-offset: -5px; }
-  .cube-fallback { left: 50%; transform: scale(.85) rotateX(-24deg) rotateY(-38deg) rotateZ(-8deg); }
   .intro-footer { bottom: 25px; font-size: 7px; }
   .intro-footer > span:last-child { display: none; }
   .scroll-instruction { font-size: 6px; }

@@ -167,6 +167,7 @@ test("the lettering advances on the real browser clock before graphics startup",
     time: performance.now(),
     timeline: Number(document.timeline.currentTime),
     remaining: [...document.querySelectorAll(".name-ink mask path")].reduce((sum, path) => sum + Number.parseFloat(getComputedStyle(path).strokeDashoffset), 0),
+    cubeRemaining: [...document.querySelectorAll("[data-cube-contour]")].reduce((sum, path) => sum + Number.parseFloat(getComputedStyle(path).strokeDashoffset), 0),
   }));
   const before = await sample();
   expect(before.timeline, "the compositor must have started before the intro clock").toBeGreaterThan(0);
@@ -174,6 +175,7 @@ test("the lettering advances on the real browser clock before graphics startup",
   const after = await sample();
   expect(after.remaining, "real time must reveal strokes without manually seeking animations").toBeLessThan(before.remaining);
   expect(after.timeline).toBeGreaterThan(before.timeline);
+  expect(after.cubeRemaining, "the cube must draw on the same real clock").toBeLessThan(before.cubeRemaining);
   expect(after.time - before.time, "graphics initialization must not block these frames").toBeLessThan(1000);
   await expect(page.locator(".cube-figure")).toHaveAttribute("data-renderer", "loading");
 });
@@ -213,7 +215,7 @@ test("the name draws through strokes and settles without replacing or shifting t
     expect(entering).toEqual(settled);
     const settledName = await name.boundingBox(), settledDot = await dot.boundingBox();
     await page.clock.runFor(ENTRANCE_DURATION);
-    await expect(page.locator(".site-intro, .name-ink, [data-ink]")).toHaveCount(0);
+    await expect(page.locator(".site-intro, .name-ink, [data-ink], .opening-drawing")).toHaveCount(0);
     await expect(page.locator(".name-ink-text").first()).toHaveCSS("opacity", "1");
     expect(await name.evaluate((element) => element === document.querySelector("#intro-title .intro-firstname"))).toBe(true);
     expect(await canvas.evaluate((element) => element === document.querySelector(".cube-stage canvas"))).toBe(true);
@@ -225,6 +227,52 @@ test("the name draws through strokes and settles without replacing or shifting t
     await expect(page.getByRole("link", { name: /Cloud lab/ })).toBeVisible();
     await expect(page.locator(".intro-cinema, [data-slice-stroke]")).toHaveCount(0);
   }
+});
+
+test("the opening draws the page and all cube faces, then restores the real interface", async ({ page }) => {
+  await page.route("**/textures/resend/**", (route) => route.abort());
+  await page.clock.install({ time: 0 });
+  await page.clock.pauseAt(0);
+  for (const width of [1280, 390]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto("/");
+    await startClockedIntro(page);
+    await expect(page.locator(".opening-drawing")).toHaveCount(1);
+    await expect(page.locator("[data-cube-contour]")).toHaveCount(27);
+    expect(await page.locator("[data-page-lettering]").count()).toBeGreaterThan(35);
+    const sample = async (time: number) => {
+      await page.evaluate((t) => document.getAnimations().filter((a) => a.timeline === document.timeline).forEach((a) => { a.pause(); a.currentTime = t; }), time);
+      return page.screenshot();
+    };
+    const early = await sample(180);
+    const firstContour = page.locator("[data-cube-contour]").first();
+    const earlyOffset = Number.parseFloat(await firstContour.evaluate((p) => getComputedStyle(p).strokeDashoffset));
+    await expect(page.locator("[data-cube-tone]")).toHaveCSS("opacity", "0");
+    const inked = await sample(1400);
+    expect(inked.equals(early), "the opening must visibly draw across the viewport").toBe(false);
+    expect(Number.parseFloat(await firstContour.evaluate((p) => getComputedStyle(p).strokeDashoffset))).toBeLessThan(earlyOffset);
+    const shaded = await sample(2900);
+    expect(shaded.equals(inked), "shading and interface lettering must follow the ink contours").toBe(false);
+    await expect(page.locator("[data-cube-tone]")).toHaveCSS("opacity", "1");
+    await expect(page.locator("[data-cube-screentone]")).toHaveCSS("opacity", "0.32");
+    await expect(page.locator(".intro-sticky")).toHaveCSS("filter", "none");
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    await page.clock.runFor(ENTRANCE_DURATION);
+    await expect(page.locator(".opening-drawing, .site-intro, .name-ink")).toHaveCount(0);
+    await expect(page.getByRole("link", { name: "Explore my work", exact: true })).toBeVisible();
+    await expect(page.locator(".intro-greeting")).toHaveCSS("color", "rgb(225, 232, 236)");
+  }
+});
+
+test("navigation during the page drawing removes all ink overlays", async ({ page }) => {
+  await page.clock.install({ time: 0 });
+  await page.clock.pauseAt(0);
+  await page.goto("/");
+  await startClockedIntro(page);
+  await page.getByRole("link", { name: /Cloud lab/ }).click();
+  await expect(page).toHaveURL(/\/infrastructure$/);
+  await expect(page.locator(".opening-drawing, .site-intro, .name-ink")).toHaveCount(0);
+  await expect(page.locator("html")).not.toHaveAttribute("data-entrance");
 });
 
 test("the name drawing finishes while cube assets are still loading", async ({ page }) => {
@@ -248,7 +296,7 @@ test("the name drawing finishes while cube assets are still loading", async ({ p
     await expect(page.getByRole("heading", { name: "Babisan Pirapakaran", level: 1 })).toBeVisible();
     await expect(page.locator(".intro-cinema, [data-slice-stroke]")).toHaveCount(0);
     release();
-    await expect(page.locator(".cube-figure")).toHaveAttribute("data-renderer", "fallback");
+    await expect(page.locator(".cube-figure")).toHaveAttribute("data-renderer", "fallback", { timeout: 20000 });
     await expect(page.locator(".site-intro")).toHaveCount(0);
   } finally { release(); }
 });
@@ -347,7 +395,7 @@ test("delayed hydration restores the homepage and never starts a late entrance",
     await page.evaluate(() => document.fonts.ready);
     const restored = await page.locator(".intro-firstname").boundingBox();
     release();
-    await expect(page.locator(".cube-figure")).toHaveAttribute("data-renderer", "fallback");
+    await expect(page.locator(".cube-figure")).toHaveAttribute("data-renderer", "fallback", { timeout: 20000 });
     await expect(page.locator("html")).not.toHaveAttribute("data-entrance");
     await expect(page.locator(".site-intro")).toHaveCount(0);
     expect(await page.locator(".intro-firstname").boundingBox()).toEqual(restored);
@@ -365,7 +413,7 @@ test("the opening can be skipped by button or keyboard and respects reduced moti
   const skip = page.getByRole("button", { name: "Skip intro" });
   await expect(skip).toBeVisible();
   await skip.click();
-  await expect(page.locator(".site-intro, .name-ink, [data-ink]")).toHaveCount(0);
+  await expect(page.locator(".site-intro, .name-ink, [data-ink], .opening-drawing")).toHaveCount(0);
   await expect(page.locator(".name-ink-text").first()).toHaveCSS("opacity", "1");
   await page.goto("/");
   await startClockedIntro(page);

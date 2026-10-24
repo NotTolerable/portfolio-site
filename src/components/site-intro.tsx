@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { ENTRANCE_DURATION, setEntranceStart } from "@/lib/entrance-timeline";
 import { prepareNameInk } from "@/lib/name-ink";
+import { preparePageInk } from "@/lib/page-ink";
 
 const easeOut = "cubic-bezier(.16,1,.3,1)";
 
@@ -35,6 +36,10 @@ export function SiteIntro() {
     const dismiss = (event: KeyboardEvent) => {
       if (event.key === "Escape" || event.key === "Tab") finish();
     };
+    const followLink = (event: MouseEvent) => {
+      if (event.target instanceof Element && event.target.closest("a[href]")) finish();
+    };
+    window.addEventListener("click", followLink, { signal: listeners.signal });
     const preferenceChanged = () => { if (media.matches) finish(); };
     window.addEventListener("keydown", dismiss, { signal: listeners.signal });
     window.addEventListener("wheel", finish, { passive: true, signal: listeners.signal });
@@ -71,17 +76,12 @@ export function SiteIntro() {
 
       inkCleanup.push(prepareNameInk(name, "name-first", 70, animate));
       inkCleanup.push(prepareNameInk(surname, "name-last", 880, animate));
+      inkCleanup.push(preparePageInk(animate));
       animate(signal, [{ opacity: 0 }, { opacity: 1 }], 320, 80);
       document.querySelectorAll<HTMLElement>("[data-entrance-reveal]").forEach((element) => {
         const part = element.dataset.entranceReveal;
-        if (part === "cube" || part === "ambient") {
-          animate(element, [{ opacity: 0 }, { opacity: getComputedStyle(element).opacity }], 650, part === "cube" ? 100 : 0);
-          return;
-        }
-        animate(element, [
-          { opacity: 0, transform: "translateY(8px)" },
-          { opacity: getComputedStyle(element).opacity, transform: "none" },
-        ], 550, part === "navigation" ? 0 : part === "copy" ? 250 : 300);
+        if (part === "cube" || part === "navigation" || part === "copy" || part === "detail") return;
+        animate(element, [{ opacity: 0 }, { opacity: getComputedStyle(element).opacity }], 1200, 1500);
       });
       const startTime = performance.now();
       const animationTime = document.timeline.currentTime ?? startTime;

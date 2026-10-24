@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { MotionValue } from "motion/react";
 import type { CubeInput } from "@/lib/cube-scene";
+import { CubeDrawing } from "./cube-drawing";
 import { subscribeEntrance } from "@/lib/entrance-timeline";
 
 export function HeroCube({ scrollProgress }: { scrollProgress?: MotionValue<number> }) {
@@ -91,7 +92,7 @@ export function HeroCube({ scrollProgress }: { scrollProgress?: MotionValue<numb
         onPointerCancel={(event) => { if (drag.current?.pointerId === event.pointerId) endDrag(); }}
         onLostPointerCapture={endDrag}
       >
-        <div className="cube-fallback" aria-hidden="true"><div className="fallback-face front" /><div className="fallback-face top" /><div className="fallback-face right" /></div>
+        <CubeDrawing />
         <canvas ref={canvasRef} aria-hidden="true" />
       </div>
     </figure>
