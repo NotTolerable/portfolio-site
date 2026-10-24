@@ -8,7 +8,7 @@ import type { StreetInput } from "@/lib/night-street";
 const captions = [
   { title: "FOLLOW THE QUESTION.", text: <>There’s always another <em>layer</em> underneath.</> },
   { title: "MAKE SOMETHING REAL.", text: <>A little curiosity. A first line of <em>code</em>. Something to build.</> },
-  { title: "TAKE A CLOSER LOOK.", text: <>Two personal projects. Different problems. A little of how I <em>think</em>.</> },
+  { title: "TAKE A CLOSER LOOK.", text: <>Three personal projects. Different problems. A little of how I <em>think</em>.</> },
 ];
 
 export function WorldHero() {

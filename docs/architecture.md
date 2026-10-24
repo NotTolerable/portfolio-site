@@ -10,7 +10,7 @@ The owner approved a real, street-level comic journey with a character, keeping 
 
 ## Current experience
 
-- Server-rendered HTML provides the complete name, engineering introduction, project dossiers, personal chapter, interest tabs, cloud-plan link and footer. `src/lib/projects.ts` contains confirmed project facts. Missing source/contact/resume links remain omitted.
+- Server-rendered HTML provides the complete name, engineering introduction, project dossiers, experience ledger, personal chapter, interest tabs, cloud-plan link and footer. `src/lib/projects.ts` contains resume-backed project facts; `src/lib/experience.ts` contains the owner-supplied professional history and grouped game server work and other builds. Missing source/contact/resume links remain omitted.
 - The `bp` header, self-hosted Barlow Condensed, Inter and JetBrains Mono retain the night-city identity. `ComicEntrance` briefly reveals the actual content without waiting for graphics or blocking navigation.
 - `WorldHero` renders the street poster immediately, then progressively imports `night-street.ts`. A paused GSAP timeline and ScrollTrigger map native scrolling to mutable scene progress, comic captions, chapter navigation and an SVG panel exit. No scroll interception or React frame-by-frame state updates are used. Scene readiness refreshes the scroll measurements.
 - `night-street.ts` constructs real street/building geometry, façade details, cables, signs, lamps and skyline. Static meshes merge by material; windows use instancing. `engraved-material.ts` adds antialiased, light-dependent hatching to lit surfaces. The camera and character advance through world-space coordinates rather than reframing a background image.
@@ -19,6 +19,7 @@ The owner approved a real, street-level comic journey with a character, keeping 
 - Primary-pointer dragging and Left/Right keys adjust the view; hover does not steer. Touch retains `pan-y` and releases on cancellation/lost capture. Rain and neon bloom have toggles. Pause/Space freezes automatic atmosphere and character animation; explicit scroll/drag input remains usable.
 - Hidden/offscreen scenes skip GPU draws. Paused scenes avoid identical draws. Geometry, textures, materials, render targets, mixer, observers, renderer and GSAP timelines are disposed on unmount. Initial reduced motion retains a static poster without creating WebGL. A later preference change disables automatic motion and removes the scroll sequence.
 - The poster is rendered directly from the scene, not used as its texture. Failed WebGL/model loading or lost context retains that image, semantic content and project navigation. Without JavaScript the static opening, projects and native notes still work.
+- `ExperienceSection` renders professional/contract roles, grouped multiplayer infrastructure and development, additional builds and education in semantic server-rendered articles and lists. The header links directly to `/#experience`. Raw source PDFs and personal phone/email details are not shipped. AI-assisted client websites are labeled accordingly.
 - Motion provides restrained content reveals with `initial={false}`. The personal-interest tabs use proper tab/tabpanel semantics, roving focus and Left/Right/Home/End keys.
 - `/infrastructure` remains an explicitly proposed AWS architecture walkthrough and distinguishes this Vercel portfolio from the planned static showcase.
 
@@ -48,7 +49,7 @@ Terraform for infrastructure and GitHub Actions for build/deployment were sugges
 ## Decisions still needed
 
 - Further features beyond the current street journey, project notes, personal interests, and architecture diagram.
-- Owner-verified case-study content and publishable source, resume, and contact destinations.
+- Public case-study evidence and source/resume/contact destinations.
 - Any custom domain and hosting budget changes; hosting details for the separate showcase.
 - Infrastructure-as-code and deployment approach.
 - Whether any feature requires an API, external service, or stored data.
@@ -64,6 +65,7 @@ Record approved consequential choices in [decisions](decisions/README.md), then 
 - `src/lib/engraved-material.ts`: surface hatching.
 - `src/lib/ink-world.ts`: dormant prior image-based renderer, retained with its archive.
 - `src/components/comic-entrance.tsx`: once-per-document headline reveal coordination; no WebGL readiness dependency.
+- `src/components/experience-section.tsx` / `src/lib/experience.ts`: professional summaries, grouped multiplayer systems work, client builds and education.
 - `src/components/interest-tabs.tsx`: accessible personal-interest exploration.
 - `src/components/project-visual.tsx` / `src/lib/projects.ts`: original subject illustrations and confirmed project metadata.
 - `src/components/infrastructure-flow.tsx`: proposed AWS architecture interaction.

@@ -12,7 +12,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Babisan Pirapakaran — Software Engineer",
   description:
-    "Hey, I’m Babisan. A few projects, some things I’m learning, and an interest in systems, GPU computing, and cloud infrastructure.",
+    "Babisan Pirapakaran — software engineer and Waterloo Computational Mathematics student. Platforms, infrastructure, game server operations and low-latency systems.",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

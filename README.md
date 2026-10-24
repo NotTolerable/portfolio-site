@@ -30,7 +30,8 @@ Browser checks require installed Google Chrome. They start a separate production
 - An immediate semantic introduction, self-hosted Barlow Condensed / Inter / JetBrains Mono, and a direct project link that skips the journey.
 - Bounded drag/arrow camera controls, rain/glow toggles and keyboard pause. Capped resolution, batched geometry, instanced windows and adaptive effects manage GPU cost. Offscreen/hidden scenes stop drawing.
 - A scene-rendered poster for loading, reduced motion and failed graphics/model downloads. Content and native project notes remain usable without JavaScript.
-- Two personal-project dossiers with original subject illustrations. Detailed contributions, source/demo links and measured results await owner-provided evidence. Systems, GPU and cloud remain learning interests.
+- Three resume-backed project dossiers for Verilly, Behaviourly and Axiom, with original subject illustrations. Public source/demo links and reproducible results remain pending.
+- A complete experience ledger spanning the 407 ETR internship, freelance/contract development, grouped multiplayer infrastructure and development, AI-assisted client builds, public plugins and education. Raw resumes and personal contact details are not published. GPU/CUDA remains an exploration interest.
 - A clearly labeled `/infrastructure` planning route for a separate static AWS showcase. The actual portfolio runs on Vercel.
 
 See [character and scene provenance](docs/assets/street-character.md). Previous [image-city](src/archive/image-city/README.md) and [cube](src/archive/cube-portfolio/README.md) designs are archived and do not load on the active route.

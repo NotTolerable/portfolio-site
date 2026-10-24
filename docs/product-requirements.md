@@ -6,12 +6,12 @@ Status: initial portfolio deployed; content and design review continues. Updated
 
 Create an impressive software engineering portfolio whose primary purpose is helping the owner find a job. Primary visitors are recruiters, hiring managers, and engineers evaluating the owner's work.
 
-The owner is interested in infrastructure, low-latency systems, GPU/CUDA programming, and low-level engineering, alongside cloud and container technologies such as Docker and Kubernetes. These are target interests, not claims of demonstrated expertise.
+The owner is interested in infrastructure, low-latency systems, GPU/CUDA programming, and low-level engineering, alongside cloud and container technologies such as Docker and Kubernetes. Distinguish these interests from the experience documented below; GPU/CUDA expertise is not established.
 
 ## Confirmed starting point
 
-- Existing projects: an AI governance compliance checker and an AI mock interview project involving computer vision.
-- No projects in the target systems/GPU/infrastructure areas have been identified yet.
+- Resume-confirmed projects: Axiom (C++20 low-latency multi-venue trading), Verilly (AI compliance verification), and Behaviourly (multimodal mock-interview analysis).
+- Demonstrated experience now includes a 407 ETR platforms/infrastructure internship, freelance development, dedicated game server operations, and Axiom. GPU/CUDA remains an exploration interest.
 - The main portfolio is animated and interactive, built with Next.js and TypeScript, and deployed on Vercel with GitHub-connected production builds. See [architecture](architecture.md) for the current hosting details.
 - A Cloud / Infrastructure entry should navigate to a separate static showcase demonstrating cloud hosting and explaining its actual infrastructure.
 - Visual direction: a cinematic anime/game-inspired **night city** with high-quality graphics and smooth performance, following [DESIGN.md](../DESIGN.md). The owner referenced Samana Studio’s comic/anime social work and Igloo’s immersive quality, authorized a complete redesign of layout, typography, and color, and clarified that a circuit-board city and floating-garden direction are not wanted.
@@ -21,6 +21,8 @@ The owner is interested in infrastructure, low-latency systems, GPU/CUDA program
 - Use real street geometry, a rigged fictional character, inked shading, coordinated camera motion, native scroll progression, and responsive layouts. Keep core content available before graphics initialize and when WebGL/JavaScript are unavailable. Reduced motion retains a polished static scene; automatic effects can be paused. Do not claim universal frame rates or present concept artwork as actual project output.
 - Preserve honest project descriptions, keyboard-accessible project notes, and the planned Cloud / Infrastructure route. Engineering interests must remain distinct from demonstrated project experience. Omit missing resume/contact/source destinations.
 - Keep the main portfolio distinct from the planned static infrastructure showcase.
+- The owner supplied a resume and extended experience notes and requested all experience be represented. Describe the earlier Minecraft-related work as **game server** development/operations and professionalize the tasks without changing their meaning or inflating seniority. Cover professional, freelance, contract, independent, volunteer, client-web and plugin work. Separate AI-assisted website delivery from personally authored code.
+- Publish professional summaries, not the source PDFs or their personal phone/email details. The owner confirmed that the resume governs employment dates. Group the game server work by technical responsibility; omit individual game server names and volunteer/ownership/job titles for those projects. Emphasize infrastructure, Java development, performance diagnostics, anti-cheat engineering and documented metrics. Keep per-network scale separate from aggregate totals.
 
 ## Visitor needs
 
@@ -35,11 +37,12 @@ The owner is interested in infrastructure, low-latency systems, GPU/CUDA program
 The initial implementation follows this structure:
 
 - Introduction communicating career direction and current experience.
-- Project summaries and technical case studies for the two existing projects.
+- Resume-backed summaries and expandable technical notes for the three confirmed projects.
+- A dedicated Experience section with professional roles, grouped multiplayer infrastructure and development, client websites, public plugins, coursework builds and education.
 - A Cloud / Infrastructure entry linking to the separate static showcase and its architecture walkthrough.
 - Resume, source-code profile, and contact links once owner-provided details are available; omit missing destinations.
 
-The current project entries present confirmed overviews, original concept illustrations, and expandable notes. Illustrations are not actual project screenshots. Deeper case studies, owner contributions, actual screenshots, links, and measured results remain pending. The cloud entry currently opens a clearly labeled planning page until the separate static showcase exists.
+The current project entries present resume-backed implementation summaries, original concept illustrations and expandable notes. Illustrations are not actual project screenshots. Public repositories, actual screenshots, full case studies and reproducible benchmark evidence remain pending. Experience metrics are attributed to the owner-supplied resume/notes, not independently measured site results. The cloud entry currently opens a clearly labeled planning page until the separate static showcase exists.
 
 Potential case-study topics include the problem, personal contribution, architecture, tradeoffs, deployment, and measured results. Include only topics supported by the actual project.
 
@@ -57,7 +60,7 @@ Potential case-study topics include the problem, personal contribution, architec
 
 - Career stage and target opportunities: internships, new-grad roles, or other positions?
 - Which target area should lead the positioning: systems/performance, GPU computing, or infrastructure/platform engineering?
-- What did the owner personally build in each existing project? What code, demos, deployment details, and results are available?
+- What public code, demos, screenshots and reproducible measurements can accompany the resume-backed project summaries?
 - What identity, resume, profile, and contact details should be public?
 - Which further refinements should follow review of the current design?
 - Should a new systems project be developed alongside the portfolio?

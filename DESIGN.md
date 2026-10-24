@@ -21,8 +21,9 @@ The specific [owner reference](https://www.instagram.com/p/De1njZtRl4t/) shows *
 1. The server-rendered opening shows the name and an actual render of this street while the 3D scene prepares. No blocking loader or separate intro film.
 2. Native scrolling moves the character along the street and advances coordinated camera positions. Bordered paper captions punctuate the journey. Chapter buttons revisit positions; the persistent project link skips it entirely. An SVG panel edge closes the scene into the project chapter.
 3. Drag/Left/Right adjust the view within bounds; hover does not steer. Rain, neon glow and pause controls remain compact. Space pauses automatic motion on the focused scene. Touch preserves native vertical scrolling.
-4. Two personal-project dossiers use honest descriptions, original subject illustrations and native expandable notes. Contributions, links and results remain pending owner verification.
-5. A personal chapter, keyboard-accessible interest tabs and a planned AWS ticket complete the portfolio. Systems, GPU/CUDA and cloud are interests, not invented expertise.
+4. Three resume-backed project dossiers use implementation summaries, original subject illustrations and native expandable notes. Full case studies, public code and reproducible results remain pending.
+5. An editorial Experience ledger covers professional/contract work, grouped multiplayer infrastructure and development, additional client/plugin/coursework builds and education. Use readable task lists, clear role/date metadata and restrained cyan accents; avoid individual game server names and project job titles; label AI-assisted client builds.
+6. A personal chapter, keyboard-accessible interest tabs and a planned AWS ticket complete the portfolio. Distinguish demonstrated systems/infrastructure work from future interests such as GPU/CUDA.
 
 ## Rendering and accessibility
 

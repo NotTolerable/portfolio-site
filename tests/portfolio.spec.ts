@@ -29,6 +29,21 @@ test("the portfolio introduces its owner and keeps project notes and cloud plann
   expect(errors).toEqual([]);
 });
 
+test("experience is directly reachable and includes professional, technical game server and AI-assisted work", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/");
+  await page.getByRole("navigation", { name: "Main navigation" }).getByRole("link", { name: /Experience/ }).click();
+  await expect(page).toHaveURL(/#experience$/);
+  const experience = page.locator("#experience");
+  await expect(experience.getByRole("heading", { level: 2 })).toBeInViewport();
+  await expect(experience.getByRole("article", { name: "407 ETR" })).toContainText("160 lifecycle policies");
+  await expect(experience.getByRole("heading", { name: "Anti-cheat & exploit prevention" })).toBeVisible();
+  await expect(experience.getByRole("term").filter({ hasText: "Peak concurrent players" })).toBeVisible();
+  await expect(experience.getByText("Client website · AI-assisted development", { exact: true })).toBeVisible();
+  await expect(experience).not.toContainText(/Minecraft|Volunteer|Network Owner/);
+  await expect(page.getByRole("article", { name: /Axiom.*Low-latency/i })).toBeVisible();
+});
+
 test("interests support roving keyboard navigation and distinguish learning from experience", async ({ page }) => {
   await page.goto("/#about");
   const systems = page.getByRole("tab", { name: "Systems" });

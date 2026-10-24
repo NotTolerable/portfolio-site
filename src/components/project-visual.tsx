@@ -1,11 +1,18 @@
 /** Abstract subject illustrations; these are not screenshots or product UIs. */
-export function ProjectVisual({ kind }: { kind: "governance" | "interview" }) {
+export function ProjectVisual({ kind }: { kind: "governance" | "interview" | "axiom" }) {
   return (
     <div className={`project-visual project-visual-${kind}`} aria-hidden="true">
       <svg viewBox="0 0 600 360" fill="none">
         <defs><pattern id={`grid-${kind}`} width="28" height="28" patternUnits="userSpaceOnUse"><path d="M28 0H0V28" stroke="currentColor" strokeOpacity=".07" /></pattern></defs>
         <rect width="600" height="360" fill={`url(#grid-${kind})`} />
-        {kind === "governance" ? <>
+        {kind === "axiom" ? <>
+          <path d="M70 180h80m300 0h80" stroke="currentColor" strokeWidth="2" />
+          <rect x="150" y="70" width="300" height="220" rx="5" fill="#e4e9df" stroke="currentColor" strokeWidth="2" />
+          <path d="M300 90v180M170 120h260" stroke="currentColor" strokeOpacity=".4" />
+          {[0,1,2,3,4].map((row) => <g key={row}><rect x={190+row*13} y={143+row*24} width={86-row*13} height="10" fill="currentColor" opacity={.25+row*.1} /><rect x="324" y={143+row*24} width={22+row*13} height="10" fill="#a84434" opacity={.35+row*.1} /></g>)}
+          <path d="m82 225 32-24 25 9 30-45 30 12 25-35 20 8 36-42m80 130 24-21 24 7 35-42 25 9 28-40" stroke="currentColor" strokeWidth="1.5" />
+          <circle cx="70" cy="180" r="7" fill="currentColor" /><circle cx="530" cy="180" r="7" fill="currentColor" />
+        </> : kind === "governance" ? <>
           <path d="M80 180h98m244 0h98M300 48v48m0 168v48" stroke="currentColor" strokeOpacity=".35" strokeDasharray="3 7" />
           <rect x="194" y="74" width="212" height="212" rx="8" transform="rotate(12 300 180)" stroke="currentColor" strokeOpacity=".15" />
           <rect x="194" y="74" width="212" height="212" rx="8" transform="rotate(-8 300 180)" stroke="currentColor" strokeOpacity=".25" />
@@ -25,7 +32,7 @@ export function ProjectVisual({ kind }: { kind: "governance" | "interview" }) {
           <circle cx="285" cy="160" r="2.5" fill="currentColor" /><circle cx="315" cy="160" r="2.5" fill="currentColor" />
         </>}
       </svg>
-      <span className="visual-coordinate">{kind === "governance" ? "01 / RULES & REASONING" : "02 / VISION & INTERACTION"}</span>
+      <span className="visual-coordinate">{kind === "governance" ? "01 / RULES & REASONING" : kind === "interview" ? "02 / VISION & INTERACTION" : "03 / MARKET DATA & EXECUTION"}</span>
       <span className="visual-caption">CONCEPT ILLUSTRATION</span>
     </div>
   );

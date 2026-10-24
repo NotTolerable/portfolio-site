@@ -217,3 +217,54 @@ html:not([data-comic-seen]) .hero-introduction { animation: copy-arrive 900ms 25
   .journey-caption { right: 28px; top: 18%; bottom: auto; padding: 21px; width: calc(100% - 70px); }.journey-caption > strong { font-size: 28px; }.journey-caption > p { font-size: 11px; }.journey-chapters { right: 8px; top: 48%; gap: 6px; }.journey-chapters button { padding: 5px 6px; gap: 6px; font-size: 6px; }.journey-chapters button > span { display: none; }
 }
 @media (prefers-reduced-motion: reduce) { .street-journey,.street-journey[data-world="webgl"] { height: auto; min-height: 840px; }.journey-chapters,.journey-caption,.comic-exit { display: none; } }
+/* Editorial experience ledger: readable responsibilities over decorative metrics. */
+.experience-section { background: #111e29; border-block: 1px solid #adccde26; padding-block: 95px; }
+.experience-heading { display: flex; justify-content: space-between; align-items: end; gap: 30px; margin-bottom: 55px; }
+.experience-heading h2 { margin-top: 24px; font: 800 clamp(62px,7.8vw,112px)/.87 var(--font-display); letter-spacing: -.02em; }
+.experience-heading h2 em { color: #98cad8; }
+.experience-heading > p { color: #becbd3; font-size: 12px; }
+.experience-group + .experience-group,.additional-builds { margin-top: 60px; }
+.experience-group-label { font-size: 9px; letter-spacing: .08em; color: #b6cbd7; padding-bottom: 18px; border-bottom: 1px solid #adc8dc4d; }
+.experience-entry { display: grid; grid-template-columns: minmax(150px,.75fr) 2fr; gap: 48px; padding-block: 32px; border-bottom: 1px solid #adc8dc26; }
+.experience-index { display: inline-block; color: #efaa8c; font-size: 10px; margin-bottom: 16px; }
+.experience-period { font-size: 11px; color: #f3efe5; }
+.experience-kind { font-size: 11px; color: #acbecb; max-width: 240px; margin-top: 7px; }
+.experience-content h3 { font: 700 clamp(30px,3.5vw,43px)/1 var(--font-display); }
+.experience-role { color: #9fced9; font-size: 13px; margin-top: 9px; }
+.experience-content ul { margin: 20px 0; padding-left: 18px; display: grid; gap: 10px; max-width: 770px; }
+.experience-content li { padding-left: 5px; font-size: 13px; line-height: 1.85; color: #d1d9dd; }
+.experience-content li::marker { color: #b1d2df; font-size: 9px; }
+.experience-tools { color: #b0c3d0; font-size: 8px; line-height: 2; overflow-wrap: anywhere; }
+.additional-builds-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: #adc8dc36; border: 1px solid #adc8dc36; margin-top: 24px; }
+.additional-builds-grid article { background: #111e29; padding: 30px; }
+.additional-builds-grid .eyebrow { color: #9fc2cf; font-size: 8px; }
+.additional-builds-grid h3 { font: 700 31px/1.1 var(--font-display); margin-block: 17px; }
+.additional-builds-grid article > p:last-child { font-size: 12px; color: #c8d2d8; }
+.education-note { display: grid; grid-template-columns: minmax(150px,.75fr) 2fr; gap: 48px; border-top: 1px solid #adc8dc4d; margin-top: 55px; padding-top: 30px; }
+.education-note > span { color: #b6cbd7; font-size: 9px; }
+.education-note h3 { font: 700 30px/1 var(--font-display); }
+.education-note p { font-size: 12px; color: #c8d2d8; margin-top: 12px; max-width: 740px; }
+@media (max-width: 760px) {
+  .site-header nav { gap: 13px; }.site-header nav a { font-size: 9px; }.site-header nav a:last-child { white-space: nowrap; }
+  .experience-section { padding-block: 60px; }.experience-heading { align-items: start; flex-direction: column; gap: 24px; margin-bottom: 35px; }.experience-heading h2 { font-size: clamp(54px,12.5vw,85px); }.experience-heading > p { font-size: 11px; }
+  .experience-entry { grid-template-columns: 1fr; gap: 15px; padding-block: 28px; }.experience-meta { display: flex; flex-wrap: wrap; align-items: center; column-gap: 15px; row-gap: 5px; }.experience-index { margin: 0; }.experience-period { font-size: 10px; }.experience-kind { flex-basis: 100%; max-width: none; margin-top: 0; font-size: 10px; }.experience-content h3 { font-size: 34px; }.experience-role { font-size: 12px; }.experience-content li { font-size: 12px; padding-left: 2px; }.experience-content ul { gap: 10px; }.experience-tools { font-size: 7px; }
+  .experience-group-label { font-size: 8px; }.experience-group + .experience-group,.additional-builds { margin-top: 40px; }.additional-builds-grid { grid-template-columns: 1fr; }.additional-builds-grid article { padding: 24px; }.additional-builds-grid h3 { font-size: 30px; }.education-note { grid-template-columns: 1fr; gap: 18px; margin-top: 38px; }.education-note h3 { font-size: 28px; }
+}
+.project-entry-2 .project-picture { background: #d5dfdf; }
+.game-server-work { margin-top: 60px; }
+.game-server-heading { display: grid; grid-template-columns: 1.3fr 1fr; gap: 40px; align-items: end; margin-block: 30px; }
+.game-server-heading h3 { font: 700 clamp(31px,3.7vw,48px)/1 var(--font-display); }
+.game-server-heading > p { font-size: 12px; color: #becbd3; max-width: 330px; }
+.server-metrics { display: grid; grid-template-columns: repeat(3,1fr); border: 1px solid #adc8dc4d; margin: 30px 0; }
+.server-metrics > div { display: flex; flex-direction: column; padding: 24px; }
+.server-metrics > div + div { border-left: 1px solid #adc8dc4d; }
+.server-metrics dt { font-size: 11px; color: #d1d9dd; }
+.server-metrics dd { order: -1; font: 700 clamp(46px,6vw,76px)/1 var(--font-display); color: #a7d3df; margin: 0 0 12px; }
+.server-metrics dt > span { display: block; font-size: 9px; color: #b1c3cf; margin-top: 7px; }
+.server-work-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px 45px; }
+.server-work-grid h4 { font: 700 27px/1.1 var(--font-display); margin: 0 0 15px; }
+.server-work-grid article > p { font-size: 13px; color: #d1d9dd; }
+.server-work-grid .experience-tools { display: block; margin-top: 18px; }
+@media (max-width: 760px) {
+  .game-server-work { margin-top: 40px; }.game-server-heading { grid-template-columns: 1fr; gap: 18px; }.game-server-heading h3 { font-size: 34px; }.server-metrics { grid-template-columns: 1fr; }.server-metrics > div { padding: 22px; }.server-metrics > div + div { border-left: 0; border-top: 1px solid #adc8dc4d; }.server-metrics dd { font-size: 56px; }.server-work-grid { grid-template-columns: 1fr; gap: 28px; }.server-work-grid h4 { font-size: 28px; }.server-work-grid article > p { font-size: 12px; }
+}

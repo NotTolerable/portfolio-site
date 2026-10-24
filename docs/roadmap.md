@@ -10,7 +10,7 @@ Updated: 2026-10-24. Current phase: real street/character journey and content re
 ## 2. Agree on positioning and content
 
 - [ ] Identify career stage, target roles, and primary engineering focus.
-- [ ] Review the two existing projects and the owner's contributions.
+- [x] Review the supplied resume and extended experience notes; integrate all roles and the three resume-confirmed projects.
 - [ ] Inventory publishable code, screenshots, demos, and technical evidence.
 - [x] Agree on the latest personal portfolio direction and replace the previous composition following `DESIGN.md`.
 - [ ] Decide whether to develop a systems project alongside the site.
@@ -38,14 +38,16 @@ Updated: 2026-10-24. Current phase: real street/character journey and content re
 - [x] Rebrand the infrastructure planning route while preserving its honest proposed/deployed distinction.
 - [x] Complete production build, lint/types, browser interaction/fallback checks, responsive review, and accessibility verification for the new design.
 - [x] Retain GitHub-connected production publishing on the existing Vercel project/custom domain.
-- [ ] Complete owner-verified project case studies, source links, resume, and contact details.
+- [x] Add the complete experience ledger, professionalize game server responsibilities and label AI-assisted client builds.
+- [x] Follow the owner’s clarification: resume dates, grouped game server work, technical responsibilities and documented scale; omit individual server names and project titles.
+- [ ] Complete public project case studies, reproducible results, source links, resume and contact destinations.
 - [ ] Configure and document the separate AWS showcase when its implementation is authorized.
 
 The earlier systems/cube design was implemented and deployed before this rebrand. Its detailed visual history is retained in the archive and prior decision records.
 
 ## Deferred or undecided
 
-- New low-latency, GPU/CUDA, or infrastructure projects and their scope.
+- Further low-latency/infrastructure projects and GPU/CUDA project scope; Axiom and the supplied infrastructure history are now represented.
 - Benchmarks and performance visualizations, pending projects and real measurements.
 - Container/Kubernetes demos, pending a project with suitable runtime requirements.
 - Any backend, database, analytics, or contact-form service; no current requirement establishes a need.
