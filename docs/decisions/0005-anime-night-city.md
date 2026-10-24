@@ -1,6 +1,6 @@
 # 0005: Anime-inspired night city and lightweight scene rendering
 
-Status: accepted; supersedes the active visual composition in 0004.
+Status: rendering approach superseded by [0006](0006-street-character-journey.md); the night-city palette remains active. Previously superseded the composition in 0004.
 Date: 2026-10-24
 
 ## Context

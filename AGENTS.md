@@ -20,7 +20,7 @@
 
 ## Implementation conventions
 
-- Use Next.js App Router, TypeScript, and npm. Vercel is the initial hosting plan. Three.js implements the lightweight image-based night-city scene, GPU rain, and restrained camera motion; Motion handles content reveals. The previous cube implementation remains archived and off the active route. AWS infrastructure tools remain undecided.
+- Use Next.js App Router, TypeScript, and npm. Vercel is the initial hosting plan. Three.js implements the real street geometry, rigged character, ink shading, reflections, and GPU rain. GSAP coordinates the native-scroll character/camera journey and comic captions; Motion handles content reveals. The owner rejected the previous image-based panorama and explicitly requested a character on the actual street, preserving the night-city palette. The previous cube implementation remains archived and off the active route. AWS infrastructure tools remain undecided.
 - Prefer accessible, semantic markup, responsive layouts, and restrained dependencies.
 - Keep application code, infrastructure configuration, and content responsibilities clear once their structure is defined.
 - Never commit credentials, private environment values, or personal data not intended for publication. Document required configuration with placeholders.

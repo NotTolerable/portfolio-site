@@ -1,13 +1,15 @@
 # Night-city artwork
 
+Status: archived image-based city art. The active street uses real geometry and a [scene-rendered poster](street-character.md).
+
 Created for this portfolio on 2026-10-23 and integrated during the 2026-10-24 rebrand.
 
 - Final project asset: [`public/illustrations/night-city.webp`](../../public/illustrations/night-city.webp).
 - Dimensions: 1536×1024; approximately 283 KB.
 - Method: built-in image generation tool through the `imagegen` skill, then WebP encoding at quality 88 with Sharp. No change to the composition was made during encoding.
 - This is original AI-generated concept artwork, not a photo of the owner’s location, a screenshot of a project, or an environment copied from another studio.
-- The city supplies baked detail/lighting for a lightweight image-based scene. It is not a fully modelled 3D game level. Rain, mist, depth projection, camera movement, and neon grading are implemented separately in Three.js.
-- The hero poster, GPU texture, and concept-art panel share the same URL/cache entry. No raw multi-megabyte PNG is shipped.
+- The archived city supplied baked detail/lighting for a lightweight image-based scene. It is not a fully modelled 3D game level. Rain, mist, depth projection, camera movement, and neon grading were implemented separately in Three.js.
+- The former hero poster, GPU texture, and concept-art panel shared the same URL/cache entry. No raw multi-megabyte PNG is shipped.
 
 ## Final generation prompt
 
@@ -15,6 +17,6 @@ Created for this portfolio on 2026-10-23 and integrated during the 2026-10-24 re
 
 ## Reference scope
 
-The owner referenced [Samana Studio](https://samanastudio.es/), its [Instagram account](https://www.instagram.com/samanastudios/), and [Igloo](https://www.igloo.inc/) for immersive quality and game/comic/anime influence. Samana’s public main site was inspected; the specific social reel was not accessible. The current artwork and implementation are original interpretations of the owner’s clarified night-city brief. No graphics, models, logos, characters, or source code were extracted from these references.
+The owner referenced [Samana Studio](https://samanastudio.es/), its [Instagram account](https://www.instagram.com/samanastudios/), and [Igloo](https://www.igloo.inc/) for immersive quality and game/comic/anime influence. Samana’s public main site was inspected; the specific social reel was not accessible. That artwork and implementation were original interpretations of the owner’s clarified night-city brief. No graphics, models, logos, characters, or source code were extracted from these references.
 
 Barlow Condensed is self-hosted from Fontsource with its [OFL license](../../public/licenses/barlow-condensed-OFL.txt). The archived cube retains separate provenance in [resend-cube.md](resend-cube.md).

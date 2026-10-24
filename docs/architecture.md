@@ -6,21 +6,21 @@ Status: night-city redesign implemented; main portfolio hosted on Vercel; AWS sh
 
 The portfolio is a Next.js App Router application using TypeScript and npm. Vercel hosts [babisanp.com](https://babisanp.com), project `portfolio-site` under `nottolerables-projects`, connected to `NotTolerable/portfolio-site` with `main` as the production branch. No application environment variables, API, or database are required. Credentials and the local `.vercel/` link stay outside Git.
 
-The owner approved a full night-city/anime rebrand; [decision 0005](decisions/0005-anime-night-city.md) supersedes the old active composition. See [DESIGN.md](../DESIGN.md) for the visual source. The old cube is retained in source and the [archive](../src/archive/cube-portfolio/README.md), and its meshes/materials/entrance are not imported by the current homepage.
+The owner approved a real, street-level comic journey with a character, keeping the night-city palette. [Decision 0006](decisions/0006-street-character-journey.md) supersedes the image-based implementation in 0005. See [DESIGN.md](../DESIGN.md). Both earlier [image-city](../src/archive/image-city/README.md) and [cube](../src/archive/cube-portfolio/README.md) compositions are archived.
 
 ## Current experience
 
-- Server-rendered HTML supplies the complete name, introduction, project dossiers, native project notes, personal story, cloud-plan link, and footer. `src/lib/projects.ts` remains the factual project source; no owner contributions, outcomes, technologies, or credentials have been invented.
-- The shared header uses the new `bp` wordmark and Work / The human / Cloud lab links. Barlow Condensed, Inter, and JetBrains Mono are self-hosted. The font license is included in `public/licenses/`.
-- `ComicEntrance` coordinates a short CSS reveal of the actual headline/copy, without hiding the page behind a loader or waiting for WebGL. The persistent layout prevents it replaying after internal navigation. Interaction completes the entrance; reduced-motion CSS disables it. Native CSS still works without hydration.
-- `WorldHero` immediately supplies the server-rendered city poster and progressively imports `ink-world.ts`. The same direct image URL is reused for its texture and the concept-art panel, avoiding duplicate optimized/raw downloads. Readable content and navigation do not depend on graphics readiness.
-- `ink-world.ts` implements an **image-based 2.5D environment**, not a fully modelled city or free-roaming game level. A single original rendered city image provides baked architectural detail and lighting. An 80×48-segment depth-deformed plane, seven low-opacity mist sprites, and one GPU line-segment rain draw call provide depth and atmosphere. There are no real-time building lights, physics simulations, postprocessing chains, or model downloads.
-- The image is an approximately 283 KB, 1536×1024 WebP. [Provenance and the generation prompt](assets/night-city.md) distinguish it from actual project screenshots. Samana/Igloo assets and source code are not embedded.
-- A short native-scroll interval advances the camera and reframes the city; it never intercepts wheel input. Primary-pointer dragging and arrow keys move the view within bounded limits; hover does not steer. Touch keeps native vertical scrolling through `pan-y` and releases the drag on cancel/lost capture. Rain and neon grading have explicit toggles; a visible pause control and Space on the scene hold automatic atmosphere/camera drift.
-- Rendering follows display frames with mutable inputs, without React frame updates. DPR is capped at 1.5 desktop / 1.25 mobile and drops to 1 after 90 sustained slow frames. Rain uses 420 / 180 line segments. Initial reduced motion does not initialize WebGL; a later preference change freezes automatic motion and removes the scroll movement. A paused/still scene stops issuing identical draw calls, and hidden/offscreen scenes skip drawing. Scene geometry, textures, materials, observers, listeners, and renderer resources are disposed on unmount.
-- Failed initialization, image loading, or a lost graphics context leaves the poster/content presentation usable. The site also works without JavaScript. Automatic enhancements never replace the semantic name or project text.
-- Motion supplies restrained content reveals with `initial={false}` so server content remains visible. The personal-interest tabs implement proper tab/tabpanel semantics, roving focus, Left/Right/Home/End keys, and honest learning-interest descriptions.
-- `/infrastructure` retains an interactive, explicitly proposed AWS request path and uses the new identity. It describes the current Vercel portfolio separately from the planned static AWS showcase.
+- Server-rendered HTML provides the complete name, engineering introduction, project dossiers, personal chapter, interest tabs, cloud-plan link and footer. `src/lib/projects.ts` contains confirmed project facts. Missing source/contact/resume links remain omitted.
+- The `bp` header, self-hosted Barlow Condensed, Inter and JetBrains Mono retain the night-city identity. `ComicEntrance` briefly reveals the actual content without waiting for graphics or blocking navigation.
+- `WorldHero` renders the street poster immediately, then progressively imports `night-street.ts`. A paused GSAP timeline and ScrollTrigger map native scrolling to mutable scene progress, comic captions, chapter navigation and an SVG panel exit. No scroll interception or React frame-by-frame state updates are used. Scene readiness refreshes the scroll measurements.
+- `night-street.ts` constructs real street/building geometry, façade details, cables, signs, lamps and skyline. Static meshes merge by material; windows use instancing. `engraved-material.ts` adds antialiased, light-dependent hatching to lit surfaces. The camera and character advance through world-space coordinates rather than reframing a background image.
+- `street-character.ts` loads a small CC0 Kenney skeletal character and idle/run clips, normalizes scale, applies the ink material and blends locomotion from scroll movement. The character is fictional. [License, source and modifications](assets/street-character.md) accompany the model files.
+- Wet pavement uses a 512-pixel desktop / 256-pixel mobile planar reflection updated on alternate frames. A directional shadow, four local lights, GPU line rain, restrained bloom and fog provide atmosphere. DPR is capped at 1.35 desktop / 1 mobile; sustained slow frames reduce DPR and disable reflection/bloom. This is more demanding than the archived image projection, and performance depends on device/browser.
+- Primary-pointer dragging and Left/Right keys adjust the view; hover does not steer. Touch retains `pan-y` and releases on cancellation/lost capture. Rain and neon bloom have toggles. Pause/Space freezes automatic atmosphere and character animation; explicit scroll/drag input remains usable.
+- Hidden/offscreen scenes skip GPU draws. Paused scenes avoid identical draws. Geometry, textures, materials, render targets, mixer, observers, renderer and GSAP timelines are disposed on unmount. Initial reduced motion retains a static poster without creating WebGL. A later preference change disables automatic motion and removes the scroll sequence.
+- The poster is rendered directly from the scene, not used as its texture. Failed WebGL/model loading or lost context retains that image, semantic content and project navigation. Without JavaScript the static opening, projects and native notes still work.
+- Motion provides restrained content reveals with `initial={false}`. The personal-interest tabs use proper tab/tabpanel semantics, roving focus and Left/Right/Home/End keys.
+- `/infrastructure` remains an explicitly proposed AWS architecture walkthrough and distinguishes this Vercel portfolio from the planned static showcase.
 
 ## Separate infrastructure showcase
 
@@ -47,7 +47,7 @@ Terraform for infrastructure and GitHub Actions for build/deployment were sugges
 
 ## Decisions still needed
 
-- Further features beyond the current city scene, project notes, personal interests, and architecture diagram.
+- Further features beyond the current street journey, project notes, personal interests, and architecture diagram.
 - Owner-verified case-study content and publishable source, resume, and contact destinations.
 - Any custom domain and hosting budget changes; hosting details for the separate showcase.
 - Infrastructure-as-code and deployment approach.
@@ -59,12 +59,15 @@ Record approved consequential choices in [decisions](decisions/README.md), then 
 
 - `src/app/`: route markup, shared layout, styles, metadata, and favicon.
 - `src/components/world-hero.tsx`: semantic city section, poster, progressive loading, pointer/keyboard controls, motion preferences, and native scroll input.
-- `src/lib/ink-world.ts`: lightweight Three.js image projection, mist, GPU rain, color grading, adaptive resolution, and resource disposal.
+- `src/lib/night-street.ts`: geometry, lights, GPU rain, reflection/postprocessing, camera/character journey, adaptive quality and disposal.
+- `src/lib/street-character.ts`: licensed model/animation loading and movement blending.
+- `src/lib/engraved-material.ts`: surface hatching.
+- `src/lib/ink-world.ts`: dormant prior image-based renderer, retained with its archive.
 - `src/components/comic-entrance.tsx`: once-per-document headline reveal coordination; no WebGL readiness dependency.
 - `src/components/interest-tabs.tsx`: accessible personal-interest exploration.
 - `src/components/project-visual.tsx` / `src/lib/projects.ts`: original subject illustrations and confirmed project metadata.
 - `src/components/infrastructure-flow.tsx`: proposed AWS architecture interaction.
 - `src/components/reveal.tsx`: reduced-motion-aware content reveals.
 - `src/archive/cube-portfolio/`: snapshots and restoration notes for the prior design; the existing cube helpers/components remain dormant.
-- `tests/portfolio.spec.ts`: current project/cloud navigation, keyboard tabs, scene controls/input, reduced motion, responsive overflow/accessibility, offscreen draw suppression, failed WebGL/image loading, and disabled JavaScript.
+- `tests/portfolio.spec.ts`: current project/cloud navigation, keyboard tabs, scene controls/input, reduced motion, responsive overflow/accessibility, offscreen draw suppression, failed WebGL/model loading, and disabled JavaScript.
 - `tests/cube-orbit.spec.ts` / `tests/rubik-state.spec.ts`: retained verification of the archived cube’s exact state/motion logic.

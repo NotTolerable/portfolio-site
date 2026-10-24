@@ -1,40 +1,40 @@
 # Babisan Pirapakaran — After hours
 
-Status: owner-approved night-city direction, implemented. Updated: 2026-10-24.
+Status: owner-approved street-level comic direction. Updated: 2026-10-24.
 
 ## Approved brief
 
-The owner requested a complete visual rebrand inspired by the immersive, comic/anime and game-like quality of Samana Studio’s work and the visual polish of Igloo. They specifically chose a **night-time city**, high-quality graphics, and smooth performance. The circuit-board city and floating-garden concepts were rejected. The former cube, serif-led systems composition, and paper-splatter entrance are superseded and archived.
+A personal software engineering portfolio with a cinematic, anime/game-inspired **night city**. The owner clarified that a character must stand and move on an actual street, rather than a projected city panorama. Keep the established navy, cyan, amber and restrained vermilion palette, with rain. The circuit-board city, floating garden, earlier cube, serif composition and flashing/splatter entrances are archived directions.
 
-References: [Samana Studio](https://samanastudio.es/), [owner-identified Instagram account](https://www.instagram.com/samanastudios/), [Igloo](https://www.igloo.inc/). The exact social reel was not available through public access; this is an original interpretation of the owner’s description, not a reproduction of a verified reel.
+The specific [owner reference](https://www.instagram.com/p/De1njZtRl4t/) shows **Santioni Spirits / The Notturno Experience**, by [Active Theory](https://activetheory.net/), also available at [Santioni](https://santionispirits.com/). Its public video was inspected: engraved 3D surfaces, illustrated characters, moving cameras, bordered caption boxes and sweeping transitions. Adapt that spatial comic language to an original night street; do not copy its alcohol branding, red/ivory world, character, assets or source.
 
-## Visual identity
+## Identity and composition
 
-- Cinematic, densely detailed anime-inspired city at night: illuminated windows, wet streets, rooftops, atmospheric depth, and restrained moving rain.
-- Deep blue-black foundation `#0b1119`, raised ink surfaces `#101821`, warm paper text `#f3efe5`, pale blue-gray supporting text, and warm vermilion/amber highlights. Project dossiers introduce paper-colored panels as a comic/editorial counterpoint.
-- Self-hosted Barlow Condensed bold/black italic for large expressive headlines, Inter for prose, JetBrains Mono for chapter labels and quiet interface details. The previous Playfair identity belongs to the archived version.
-- Original lowercase `bp` wordmark and small asterisk; no cube logo, underscore, invented credentials, or studio/service-agency positioning.
-- Crisp panel boundaries, selective translucent scene controls, asymmetric chapters, generous spacing, and strong readable typography. Avoid fake code terminals, invented runtime metrics, decorative Japanese text, forced scrolling, flashing frames, or character cameos.
+- Deep ink `#0b1119`, raised surfaces `#101821`, warm paper `#f3efe5`, cyan illumination and warm amber/vermilion accents. Project dossiers use paper panels.
+- Self-hosted Barlow Condensed bold/black italic headlines, Inter prose and JetBrains Mono chapter labels.
+- The `bp` wordmark, owner’s complete name, software engineering identity and direct project link remain clear and personal. No invented experience, metrics, certifications, studio positioning or decorative Japanese text.
+- Real façades, shop windows, cables, awnings, pavement, street furniture and skyline silhouettes create scale. Fine surface hatching and dark edges supply the comic finish. Wet-road reflections and rain share the character’s world space.
+- A fictional CC0 rigged character inhabits the street; it is not a portrait of the owner. See [character provenance](docs/assets/street-character.md).
 
 ## Experience
 
-1. Full-viewport night-city opening with a brief reveal of the actual name and copy, no separate splash or blocking loader. The city poster is server-rendered and immediately available while effects prepare. The complete name, engineering identity, and project link remain semantic HTML.
-2. A small native-scroll camera move adds depth to the scene. Drag/arrow keys shift the view; rain, neon grading, and pause controls are available when WebGL is ready. Space pauses the focused scene. No cursor capture outside a drag or scroll interception.
-3. Selected-work chapter with two personal-project dossiers, original abstract concept illustrations, honest descriptions, and native expandable build notes. Missing case studies remain explicitly in progress.
-4. Personal chapter: engineering curiosity, interest in anime, original city concept art, and an accessible tabbed exploration of systems, GPUs/CUDA, and cloud interests. These are learning interests rather than fabricated expertise.
-5. A vermilion next-chapter ticket links to the planned AWS showcase. The cloud route uses the same typography/palette and retains its interactive proposed architecture.
-6. A compact personal footer. Resume, email, and social destinations remain omitted until supplied by the owner.
+1. The server-rendered opening shows the name and an actual render of this street while the 3D scene prepares. No blocking loader or separate intro film.
+2. Native scrolling moves the character along the street and advances coordinated camera positions. Bordered paper captions punctuate the journey. Chapter buttons revisit positions; the persistent project link skips it entirely. An SVG panel edge closes the scene into the project chapter.
+3. Drag/Left/Right adjust the view within bounds; hover does not steer. Rain, neon glow and pause controls remain compact. Space pauses automatic motion on the focused scene. Touch preserves native vertical scrolling.
+4. Two personal-project dossiers use honest descriptions, original subject illustrations and native expandable notes. Contributions, links and results remain pending owner verification.
+5. A personal chapter, keyboard-accessible interest tabs and a planned AWS ticket complete the portfolio. Systems, GPU/CUDA and cloud are interests, not invented expertise.
 
-## Graphics and performance
+## Rendering and accessibility
 
-The city uses **image-based 2.5D rendering**, not a fully modelled city or playable game level. An original rendered environment supplies baked detail and lighting. A lightly depth-deformed Three.js mesh, layered mist, GPU-driven rain, camera motion, and optional neon grading make the scene interactive without a large environment-model download. See [architecture](docs/architecture.md) and [art provenance/prompt](docs/assets/night-city.md).
+This is a real Three.js scene graph with skeletal character animation and a GSAP camera timeline, not an image projected onto a plane. The still image is a fallback captured from that scene. See [architecture](docs/architecture.md).
 
-- One shared 283 KB WebP is used for the initial poster and WebGL texture. Preserve the direct URL/preload so they share browser caching; do not reintroduce duplicate multi-megabyte downloads.
-- Cap DPR at 1.5 desktop / 1.25 mobile, use 420 / 180 rain streaks, and reduce DPR to 1 after sustained slow frames.
-- Stop GPU draws offscreen/hidden; hold a paused scene without repeated identical draws. Dispose textures, geometry, materials, observers, listeners, and the renderer on unmount.
-- Initial reduced motion keeps the static artwork and does not initialize WebGL. A later preference change updates the scene. If graphics fail, retain the same poster, content, and navigation.
-- Native CSS/scroll animations respect reduced motion. Content remains accessible with JavaScript disabled.
+Batch static geometry by material, instance windows, and animate rain in one GPU draw. Cap DPR at 1.35 desktop / 1 mobile; reduce resolution and disable reflections/bloom after sustained slow frames. Reflections use a small render target at alternate frames. No real-time physics or heavy environment texture downloads.
 
-## Archive
+Stop drawing offscreen or hidden. A paused scene stops repeated identical draws. Dispose scene resources and timelines on unmount. Initial reduced motion does not create WebGL and retains the same street poster; later preference changes remove automatic motion. Graphics/model failure restores the poster and usable content. Native scrolling, semantic content, keyboard navigation and no-JavaScript access remain available. Do not promise universal frame rates.
 
-The previous cube implementation and material provenance remain in the repository. Restore the prior composition from [the archive](src/archive/cube-portfolio/README.md), not by combining incompatible active themes. It is not imported by the current homepage.
+## Archives
+
+- [Former image-based night city](src/archive/image-city/README.md).
+- [Former cube portfolio](src/archive/cube-portfolio/README.md).
+
+Neither is imported into the active scene.

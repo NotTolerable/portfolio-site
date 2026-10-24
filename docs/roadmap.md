@@ -1,6 +1,6 @@
 # Roadmap
 
-Updated: 2026-10-24. Current phase: night-city portfolio and content refinement.
+Updated: 2026-10-24. Current phase: real street/character journey and content refinement.
 
 ## 1. Establish project context
 
@@ -26,12 +26,14 @@ Updated: 2026-10-24. Current phase: night-city portfolio and content refinement.
 - [ ] Record remaining significant technical decisions as agreed.
 - [x] Obtain the user's go-ahead to implement and then rebuild to the new design reference.
 
-## 4. Current night-city rebrand
+## 4. Night-city rebrand
 
 - [x] Confirm the owner’s updated direction: high-quality anime/game-like night city, smooth performance, and a complete visual rebrand.
 - [x] Archive the cube, prior theme, and prior browser checks; preserve source/material provenance for future reuse.
 - [x] Build the new identity, dark city opening, comic/editorial project dossiers, personal chapter, interest tabs, and cloud-plan ticket.
-- [x] Integrate original optimized city artwork with lightweight GPU rain, mist, bounded camera motion, pause/rain/glow controls, and adaptive resolution.
+- [x] Build the initial image-based city interpretation; archive it after the owner requested an actual street and character.
+- [x] Implement real street geometry, a rigged fictional character, inked shading, rain, wet-road reflections and a coordinated GSAP camera journey.
+- [x] Preserve the approved night-city colours and replace the old panorama with a scene-rendered still fallback.
 - [x] Preserve semantic HTML, accessible notes/tabs, reduced-motion still artwork, native touch scrolling, and no-JavaScript content.
 - [x] Rebrand the infrastructure planning route while preserving its honest proposed/deployed distinction.
 - [x] Complete production build, lint/types, browser interaction/fallback checks, responsive review, and accessibility verification for the new design.

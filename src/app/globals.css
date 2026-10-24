@@ -187,3 +187,33 @@ html:not([data-comic-seen]) .hero-introduction { animation: copy-arrive 900ms 25
   .infra-page { padding-top: 115px; }.infra-page h1 { font-size: 88px; }.page-lead { font-size: 17px; }.page-description { font-size: 12px; }.flow-steps { padding: 25px; flex-direction: column; gap: 15px; }.flow-step { flex-direction: column; gap: 15px; }.flow-step button { min-height: 140px; }.flow-step > svg { transform: rotate(90deg); }.flow-description { margin-inline: 25px; min-height: 180px; }.infra-notes { grid-template-columns: 1fr; gap: 28px; margin-top: 55px; }.infra-notes h2 { font-size: 48px; }
 }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation: none !important; transition: none !important; }.world-hero { height: auto; min-height: 840px; }.world-sticky { position: relative; height: max(840px,100svh); }.name-row > span, .hero-introduction { transform: none; opacity: 1; } }
+/* A real street-level sequence, with inked comic captions and native scrolling. */
+.street-journey { height: 100svh; min-height: 840px; }
+.street-journey[data-world="webgl"] { height: 430svh; min-height: 3200px; }
+.street-journey:not([data-world="webgl"]) .journey-chapters { display: none; }
+.street-journey .world-sticky::after { background: linear-gradient(90deg,#07101eaa 0%,#07101e55 28%,#07101e00 56%),linear-gradient(0deg,#07101ebf,transparent 20%); }
+.street-journey .hero-copy { padding-top: clamp(160px,20svh,220px); }
+.street-journey .hero-introduction { max-width: 300px; }
+.journey-caption { position: absolute; z-index: 3; right: 8%; bottom: 23%; width: min(390px, calc(100% - 80px)); padding: 24px 28px; background: #efe9df; color: #1b2229; box-shadow: 7px 8px 0 #040a14a6; visibility: hidden; }
+.journey-caption > span { font-size: 7px; letter-spacing: .08em; }
+.journey-caption > strong { display: block; font: 800 31px/.95 var(--font-display); margin-block: 13px; }
+.journey-caption > p { font-size: 12px; line-height: 1.7; }
+.journey-caption em { color: #a93830; font-style: normal; }
+.journey-caption > svg { position: absolute; inset: 3px; width: calc(100% - 6px); height: calc(100% - 6px); pointer-events: none; }
+.journey-chapters { position: absolute; right: 25px; top: 44%; z-index: 4; display: grid; gap: 9px; }
+.journey-chapters button { display: flex; align-items: center; gap: 10px; background: #07101e80; border: 0; padding: 6px 8px; min-height: 30px; font-size: 7px; }
+.journey-chapters i { width: 4px; height: 4px; border: 1px solid #b7d3e5; transform: rotate(45deg); }
+.journey-chapters button[aria-current="step"] i { background: #f8b78e; border-color: #f8b78e; }
+.journey-toolbar { position: absolute; left: 0; right: 0; bottom: 93px; z-index: 5; display: flex; align-items: center; justify-content: space-between; gap: 25px; width: min(1360px,calc(100% - 96px)); margin-inline: auto; }
+.journey-skip { display: inline-flex; align-items: center; justify-content: space-between; gap: 28px; background: #f3efe5; color: #13212c; padding: 13px 20px; min-height: 46px; font-size: 11px; box-shadow: 4px 4px 0 #ce8c7766; }
+.journey-skip > span { font-size: 20px; }
+.journey-toolbar .world-tools { position: static; }
+.comic-exit { position: absolute; z-index: 2; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+@media (max-width: 1000px) { .journey-toolbar { width: calc(100% - 64px); } }
+@media (max-width: 760px) {
+  .street-journey[data-world="webgl"] { height: 370svh; min-height: 2900px; }.street-journey .hero-copy { padding-top: 120px; }.street-journey .world-sticky::after { background: linear-gradient(180deg,#07101eb0 0%,#07101e66 30%,#07101e00 54%,#07101e55 82%,#07101ef0 100%); }
+  .street-journey .hero-copy h1 { font-size: clamp(62px,19vw,120px); }.street-journey .hero-introduction { margin-top: 14px; }
+  .journey-toolbar { width: calc(100% - 40px); bottom: 90px; gap: 12px; flex-wrap: wrap; }.journey-skip { font-size: 10px; padding: 10px 13px; min-height: 44px; gap: 20px; }.journey-toolbar .world-tools { gap: 5px; }.journey-toolbar .world-tools button { min-width: 36px; padding: 8px; min-height: 40px; gap: 14px; }.journey-toolbar .world-tools button:first-child { font-size: 8px; }
+  .journey-caption { right: 28px; top: 18%; bottom: auto; padding: 21px; width: calc(100% - 70px); }.journey-caption > strong { font-size: 28px; }.journey-caption > p { font-size: 11px; }.journey-chapters { right: 8px; top: 48%; gap: 6px; }.journey-chapters button { padding: 5px 6px; gap: 6px; font-size: 6px; }.journey-chapters button > span { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { .street-journey,.street-journey[data-world="webgl"] { height: auto; min-height: 840px; }.journey-chapters,.journey-caption,.comic-exit { display: none; } }

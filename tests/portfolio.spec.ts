@@ -63,15 +63,16 @@ test("city motion, pause, lighting and rain controls work without loading the ol
   await page.getByRole("button", { name: "Resume scene motion" }).click();
   await expect(page.getByRole("button", { name: "Pause scene motion" })).toHaveAttribute("aria-pressed", "false");
   expect(await canvas.evaluate((c) => (c as HTMLCanvasElement).width / c.clientWidth)).toBeLessThanOrEqual(1.5);
-  expect(requests.filter((r) => r.includes("/textures/resend/") || r.includes("/floating-garden"))).toEqual([]);
+  expect(requests.filter((r) => r.includes("/textures/resend/") || r.includes("/floating-garden") || r.includes("/illustrations/night-city.webp"))).toEqual([]);
   await expect(page.locator(".cube-figure, .site-intro, .opening-paper")).toHaveCount(0);
+  expect(requests.some((r) => r.includes("/models/courier/character.fbx"))).toBe(true);
   expect(errors).toEqual([]);
 });
 
 test("drag and arrow input change the city view; hover does not", async ({ page }) => {
   await page.goto("/"); await ready(page);
   await page.getByRole("button", { name: "Pause scene motion" }).click(); await page.waitForTimeout(1600);
-  const stage = page.getByRole("group", { name: /Interactive night city/ });
+  const stage = page.getByRole("group", { name: /Interactive 3D night street/ });
   const canvas = page.locator(".world-stage canvas");
   const before = await canvas.screenshot();
   await page.mouse.move(800, 450); await page.mouse.move(950, 500, { steps: 8 }); await page.waitForTimeout(250);
@@ -81,6 +82,23 @@ test("drag and arrow input change the city view; hover does not", async ({ page 
   await stage.focus(); await page.keyboard.press("ArrowLeft"); await page.waitForTimeout(1600);
   expect((await canvas.screenshot()).equals(dragged)).toBe(false);
   await page.keyboard.press(" "); await expect(page.getByRole("button", { name: "Pause scene motion" })).toBeVisible();
+});
+
+
+test("scrolling follows the character through real street geometry and returns to the arrival", async ({ page }) => {
+  await page.goto("/"); await ready(page);
+  await page.getByRole("button", { name: "Pause scene motion" }).click();
+  await page.waitForTimeout(1200);
+  const canvas = page.locator(".world-stage canvas"); const arrival = await canvas.screenshot();
+  await page.getByRole("button", { name: "Chapter 3: The build" }).click();
+  await expect(page.locator(".world-hero")).toHaveAttribute("data-chapter", "2");
+  await expect(page.locator(".journey-caption-1")).toBeVisible();
+  await page.waitForTimeout(1600);
+  expect((await canvas.screenshot()).equals(arrival), "the camera must travel beyond its initial street view").toBe(false);
+  await page.getByRole("button", { name: "Chapter 1: Arrival" }).click();
+  await expect(page.locator(".world-hero")).toHaveAttribute("data-chapter", "0");
+  await page.waitForTimeout(1800);
+  await expect(page.locator(".hero-copy")).toHaveCSS("opacity", "1");
 });
 
 test("the scene stops issuing draw calls offscreen", async ({ page }) => {
@@ -128,14 +146,14 @@ test("unavailable WebGL preserves the artwork and project navigation", async ({ 
   });
   await page.goto("/");
   await expect(page.locator(".world-hero")).toHaveAttribute("data-world", "fallback", { timeout: 20000 });
-  await expect(page.getByRole("img", { name: "Illustrated anime city at night." })).toBeVisible();
+  await expect(page.getByRole("img", { name: "Illustrated night street with a character." })).toBeVisible();
   await expect(page.locator(".world-poster")).toHaveCSS("opacity", "1");
   await page.getByRole("link", { name: "Explore my work" }).click(); await expect(page).toHaveURL(/#projects$/);
 });
 
-test("missing city artwork cannot hide the owner, work, or links", async ({ page }) => {
+test("a failed character download preserves the poster, owner and project links", async ({ page }) => {
   const errors: string[] = []; page.on("pageerror", (e) => errors.push(e.message));
-  await page.route("**/illustrations/night-city.webp", (route) => route.abort());
+  await page.route("**/models/courier/character.fbx", (route) => route.abort());
   await page.goto("/");
   await expect(page.locator(".world-hero")).toHaveAttribute("data-world", "fallback", { timeout: 20000 });
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
