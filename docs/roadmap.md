@@ -40,7 +40,8 @@ Updated: 2026-10-24. Current phase: real street/character journey and content re
 - [x] Retain GitHub-connected production publishing on the existing Vercel project/custom domain.
 - [x] Add the complete experience ledger, professionalize game server responsibilities and label AI-assisted client builds.
 - [x] Follow the owner’s clarification: resume dates, grouped game server work, technical responsibilities and documented scale; omit individual server names and project titles.
-- [ ] Complete public project case studies, reproducible results, source links, resume and contact destinations.
+- [x] Publish the owner-supplied resume PDF with an embedded `/resume` page, new-tab buttons and download controls.
+- [ ] Complete public project case studies, reproducible results, source links and additional contact destinations.
 - [ ] Configure and document the separate AWS showcase when its implementation is authorized.
 
 The earlier systems/cube design was implemented and deployed before this rebrand. Its detailed visual history is retained in the archive and prior decision records.

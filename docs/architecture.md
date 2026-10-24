@@ -10,7 +10,7 @@ The owner approved a real, street-level comic journey with a character, keeping 
 
 ## Current experience
 
-- Server-rendered HTML provides the complete name, engineering introduction, project dossiers, experience ledger, personal chapter, interest tabs, cloud-plan link and footer. `src/lib/projects.ts` contains resume-backed project facts; `src/lib/experience.ts` contains the owner-supplied professional history and grouped game server work and other builds. Missing source/contact/resume links remain omitted.
+- Server-rendered HTML provides the complete name, engineering introduction, project dossiers, experience ledger, personal chapter, interest tabs, cloud-plan link and footer. `src/lib/projects.ts` contains resume-backed project facts; `src/lib/experience.ts` contains the owner-supplied professional history and grouped game server work and other builds. Unconfigured source/contact links remain omitted; the resume is available at `/resume`.
 - The `bp` header, self-hosted Barlow Condensed, Inter and JetBrains Mono retain the night-city identity. `ComicEntrance` briefly reveals the actual content without waiting for graphics or blocking navigation.
 - `WorldHero` renders the street poster immediately, then progressively imports `night-street.ts`. A paused GSAP timeline and ScrollTrigger map native scrolling to mutable scene progress, comic captions, chapter navigation and an SVG panel exit. No scroll interception or React frame-by-frame state updates are used. Scene readiness refreshes the scroll measurements.
 - `night-street.ts` constructs real street/building geometry, façade details, cables, signs, lamps and skyline. Static meshes merge by material; windows use instancing. `engraved-material.ts` adds antialiased, light-dependent hatching to lit surfaces. The camera and character advance through world-space coordinates rather than reframing a background image.
@@ -19,8 +19,9 @@ The owner approved a real, street-level comic journey with a character, keeping 
 - Primary-pointer dragging and Left/Right keys adjust the view; hover does not steer. Touch retains `pan-y` and releases on cancellation/lost capture. Rain and neon bloom have toggles. Pause/Space freezes automatic atmosphere and character animation; explicit scroll/drag input remains usable.
 - Hidden/offscreen scenes skip GPU draws. Paused scenes avoid identical draws. Geometry, textures, materials, render targets, mixer, observers, renderer and GSAP timelines are disposed on unmount. Initial reduced motion retains a static poster without creating WebGL. A later preference change disables automatic motion and removes the scroll sequence.
 - The poster is rendered directly from the scene, not used as its texture. Failed WebGL/model loading or lost context retains that image, semantic content and project navigation. Without JavaScript the static opening, projects and native notes still work.
-- `ExperienceSection` renders professional/contract roles, grouped multiplayer infrastructure and development, additional builds and education in semantic server-rendered articles and lists. The header links directly to `/#experience`. Raw source PDFs and personal phone/email details are not shipped. AI-assisted client websites are labeled accordingly.
+- `ExperienceSection` renders professional/contract roles, grouped multiplayer infrastructure and development, additional builds and education in semantic server-rendered articles and lists. The header links directly to `/#experience`. The extended source notes remain private. The owner separately authorized publishing the supplied resume PDF in full. AI-assisted client websites are labeled accordingly.
 - Motion provides restrained content reveals with `initial={false}`. The personal-interest tabs use proper tab/tabpanel semantics, roving focus and Left/Right/Home/End keys.
+- `/resume` is a server-rendered page with a native PDF object, accessible fallback/direct-file links and a download action. The exact owner-supplied PDF is self-hosted at `public/documents/Babisan-Pirapakaran-Resume.pdf`. Header and Experience links open `/resume` in a new tab. No client PDF-rendering library or external document service is required.
 - `/infrastructure` remains an explicitly proposed AWS architecture walkthrough and distinguishes this Vercel portfolio from the planned static showcase.
 
 ## Separate infrastructure showcase
@@ -49,7 +50,7 @@ Terraform for infrastructure and GitHub Actions for build/deployment were sugges
 ## Decisions still needed
 
 - Further features beyond the current street journey, project notes, personal interests, and architecture diagram.
-- Public case-study evidence and source/resume/contact destinations.
+- Public case-study evidence and source/contact destinations.
 - Any custom domain and hosting budget changes; hosting details for the separate showcase.
 - Infrastructure-as-code and deployment approach.
 - Whether any feature requires an API, external service, or stored data.
@@ -58,6 +59,7 @@ Record approved consequential choices in [decisions](decisions/README.md), then 
 
 ## Module boundaries
 
+- `src/app/resume/page.tsx` / `public/documents/`: public resume viewer and owner-authorized PDF.
 - `src/app/`: route markup, shared layout, styles, metadata, and favicon.
 - `src/components/world-hero.tsx`: semantic city section, poster, progressive loading, pointer/keyboard controls, motion preferences, and native scroll input.
 - `src/lib/night-street.ts`: geometry, lights, GPU rain, reflection/postprocessing, camera/character journey, adaptive quality and disposal.

@@ -31,7 +31,7 @@ Browser checks require installed Google Chrome. They start a separate production
 - Bounded drag/arrow camera controls, rain/glow toggles and keyboard pause. Capped resolution, batched geometry, instanced windows and adaptive effects manage GPU cost. Offscreen/hidden scenes stop drawing.
 - A scene-rendered poster for loading, reduced motion and failed graphics/model downloads. Content and native project notes remain usable without JavaScript.
 - Three resume-backed project dossiers for Verilly, Behaviourly and Axiom, with original subject illustrations. Public source/demo links and reproducible results remain pending.
-- A complete experience ledger spanning the 407 ETR internship, freelance/contract development, grouped multiplayer infrastructure and development, AI-assisted client builds, public plugins and education. Raw resumes and personal contact details are not published. GPU/CUDA remains an exploration interest.
+- A complete experience ledger spanning the 407 ETR internship, freelance/contract development, grouped multiplayer infrastructure and development, AI-assisted client builds, public plugins and education. The owner-authorized resume is embedded at `/resume` with PDF/download links; extended experience notes remain private. GPU/CUDA remains an exploration interest.
 - A clearly labeled `/infrastructure` planning route for a separate static AWS showcase. The actual portfolio runs on Vercel.
 
 See [character and scene provenance](docs/assets/street-character.md). Previous [image-city](src/archive/image-city/README.md) and [cube](src/archive/cube-portfolio/README.md) designs are archived and do not load on the active route.
@@ -40,4 +40,4 @@ See [character and scene provenance](docs/assets/street-character.md). Previous 
 
 See [DESIGN.md](DESIGN.md), [product requirements](docs/product-requirements.md), [architecture](docs/architecture.md), [roadmap](docs/roadmap.md), and [decisions](docs/decisions/README.md).
 
-Contact details, a resume, and public profile/project-source links are not configured. Supply publishable destinations before adding those links. Environment files, account credentials, dependencies, build output, and browser artifacts are ignored by Git.
+The supplied resume is public at `/resume`. Additional contact and public profile/project-source links are not configured. Supply publishable destinations before adding those links. Environment files, account credentials, dependencies, build output, and browser artifacts are ignored by Git.

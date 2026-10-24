@@ -22,7 +22,7 @@ The owner is interested in infrastructure, low-latency systems, GPU/CUDA program
 - Preserve honest project descriptions, keyboard-accessible project notes, and the planned Cloud / Infrastructure route. Engineering interests must remain distinct from demonstrated project experience. Omit missing resume/contact/source destinations.
 - Keep the main portfolio distinct from the planned static infrastructure showcase.
 - The owner supplied a resume and extended experience notes and requested all experience be represented. Describe the earlier Minecraft-related work as **game server** development/operations and professionalize the tasks without changing their meaning or inflating seniority. Cover professional, freelance, contract, independent, volunteer, client-web and plugin work. Separate AI-assisted website delivery from personally authored code.
-- Publish professional summaries, not the source PDFs or their personal phone/email details. The owner confirmed that the resume governs employment dates. Group the game server work by technical responsibility; omit individual game server names and volunteer/ownership/job titles for those projects. Emphasize infrastructure, Java development, performance diagnostics, anti-cheat engineering and documented metrics. Keep per-network scale separate from aggregate totals.
+- Publish professional summaries. The owner subsequently authorized publishing their supplied resume PDF in full at `/resume`, embedded on the page, with a button opening that route in a new tab and direct PDF/download links. The extended Experience notes remain private. The owner confirmed that the resume governs employment dates. Group the game server work by technical responsibility; omit individual game server names and volunteer/ownership/job titles for those projects. Emphasize infrastructure, Java development, performance diagnostics, anti-cheat engineering and documented metrics. Keep per-network scale separate from aggregate totals.
 
 ## Visitor needs
 
@@ -40,7 +40,8 @@ The initial implementation follows this structure:
 - Resume-backed summaries and expandable technical notes for the three confirmed projects.
 - A dedicated Experience section with professional roles, grouped multiplayer infrastructure and development, client websites, public plugins, coursework builds and education.
 - A Cloud / Infrastructure entry linking to the separate static showcase and its architecture walkthrough.
-- Resume, source-code profile, and contact links once owner-provided details are available; omit missing destinations.
+- A public `/resume` page embedding the supplied resume PDF, linked from the header and Experience section in a new tab, with direct PDF and download controls.
+- Additional source-code profile/contact links when selected; omit missing destinations.
 
 The current project entries present resume-backed implementation summaries, original concept illustrations and expandable notes. Illustrations are not actual project screenshots. Public repositories, actual screenshots, full case studies and reproducible benchmark evidence remain pending. Experience metrics are attributed to the owner-supplied resume/notes, not independently measured site results. The cloud entry currently opens a clearly labeled planning page until the separate static showcase exists.
 
@@ -61,7 +62,7 @@ Potential case-study topics include the problem, personal contribution, architec
 - Career stage and target opportunities: internships, new-grad roles, or other positions?
 - Which target area should lead the positioning: systems/performance, GPU computing, or infrastructure/platform engineering?
 - What public code, demos, screenshots and reproducible measurements can accompany the resume-backed project summaries?
-- What identity, resume, profile, and contact details should be public?
+- Which additional profile/contact destinations should accompany the published resume?
 - Which further refinements should follow review of the current design?
 - Should a new systems project be developed alongside the portfolio?
 - What hosting budget, domain, cloud experience, and existing accounts are available?

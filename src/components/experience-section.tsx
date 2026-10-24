@@ -11,7 +11,7 @@ function ExperienceEntry({ entry, index }: { entry: Experience; index: number })
 export function ExperienceSection() {
   return <section id="experience" className="experience-section" aria-labelledby="experience-title">
     <div className="shell">
-      <Reveal className="experience-heading"><div><p className="eyebrow"><span className="chapter-box">03</span> EXPERIENCE</p><h2 id="experience-title">BUILT. SHIPPED.<br /><em>OPERATED.</em></h2></div><p>From community game servers<br />to platforms and infrastructure.</p></Reveal>
+      <Reveal className="experience-heading"><div><p className="eyebrow"><span className="chapter-box">03</span> EXPERIENCE</p><h2 id="experience-title">BUILT. SHIPPED.<br /><em>OPERATED.</em></h2></div><div className="experience-introduction"><p>From community game servers<br />to platforms and infrastructure.</p><a href="/resume" target="_blank" rel="noopener" className="experience-resume">View resume <span aria-hidden="true">↗</span><span className="visually-hidden"> (opens in a new tab)</span></a></div></Reveal>
       <div className="experience-group"><p className="experience-group-label mono">01 / PROFESSIONAL & CONTRACT WORK</p>{professionalExperience.map((entry, index) => <ExperienceEntry key={entry.id} entry={entry} index={index} />)}</div>
       <div className="game-server-work" aria-labelledby="game-server-title">
         <p className="experience-group-label mono">02 / MULTIPLAYER SYSTEMS</p>

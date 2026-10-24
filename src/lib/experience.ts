@@ -1,5 +1,5 @@
 /** Public professional summaries from the owner's supplied resume and experience notes.
- * Raw documents and personal contact details are deliberately not shipped. */
+ * Extended source notes stay private; the separately authorized resume is at /resume. */
 export type Experience = {
   id: string;
   organization: string;
