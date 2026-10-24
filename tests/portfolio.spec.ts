@@ -263,7 +263,7 @@ test("the opening draws the page and all cube faces, then restores the real inte
     const inked = await sample(1400);
     expect(inked.equals(early), "the opening must visibly draw across the viewport").toBe(false);
     expect(Number.parseFloat(await firstContour.evaluate((p) => getComputedStyle(p).strokeDashoffset))).toBeLessThan(earlyOffset);
-    const shaded = await sample(2900);
+    const shaded = await sample(CUBE_REVEAL_START);
     expect(shaded.equals(inked), "shading and interface lettering must follow the ink contours").toBe(false);
     await expect(page.locator("[data-cube-tone]")).toHaveCSS("opacity", "1");
     await expect(page.locator("[data-cube-screentone]")).toHaveCSS("opacity", "0.32");
@@ -276,7 +276,7 @@ test("the opening draws the page and all cube faces, then restores the real inte
   }
 });
 
-test("white paper is inked into the dark background and skips restore it immediately", async ({ page }) => {
+test("ink splats spread through white paper and skips restore the dark background", async ({ page }) => {
   await page.route("**/textures/resend/**", (route) => route.abort());
   await page.clock.install({ time: 0 });
   await page.clock.pauseAt(0);
@@ -285,16 +285,17 @@ test("white paper is inked into the dark background and skips restore it immedia
     await page.goto("/");
     await startClockedIntro(page);
     const paper = page.locator(".opening-paper");
-    const brush = page.locator("[data-paper-brush]").first();
+    const splat = page.locator("[data-paper-splat]").first();
     const seek = (time: number) => page.evaluate((t) => document.getAnimations().filter((a) => a.timeline === document.timeline).forEach((a) => { a.pause(); a.currentTime = t; }), time);
     await seek(0);
     await expect(paper).toBeVisible();
     await expect(paper).toHaveCSS("mix-blend-mode", "difference");
-    const initial = Number.parseFloat(await brush.evaluate((p) => getComputedStyle(p).strokeDashoffset));
+    await expect(page.locator("[data-paper-brush]")).toHaveCount(0);
+    const initial = await splat.evaluate((p) => getComputedStyle(p).transform);
     const white = await page.screenshot();
     await seek(1300);
-    expect(Number.parseFloat(await brush.evaluate((p) => getComputedStyle(p).strokeDashoffset))).toBeLessThan(initial);
-    expect((await page.screenshot()).equals(white), "ink must spread across the paper").toBe(false);
+    expect(await splat.evaluate((p) => getComputedStyle(p).transform)).not.toBe(initial);
+    expect((await page.screenshot()).equals(white), "ink splats must spread across the paper").toBe(false);
     await seek(2800);
     await expect(paper).toHaveCSS("opacity", "0");
     await page.keyboard.press("Escape");
@@ -356,14 +357,19 @@ test("the prepared cube starts rotating before the drawing ends", async ({ page 
   const elapsed = await page.evaluate((start) => performance.now() - start, began);
   await page.clock.runFor(Math.max(0, CUBE_REVEAL_START - elapsed - 150));
   await expect(page.locator(".cube-figure")).toHaveAttribute("data-renderer", "loading");
-  await page.clock.runFor(350);
+  await page.evaluate((t) => document.getAnimations().filter((a) => a.timeline === document.timeline).forEach((a) => { a.pause(); a.currentTime = t; }), CUBE_REVEAL_START - 150);
+  const finalStroke = page.locator("[data-cube-contour]").last();
+  expect(Number.parseFloat(await finalStroke.evaluate((p) => getComputedStyle(p).strokeDashoffset)), "the last cube strokes should keep drawing up to the handoff").toBeGreaterThan(0);
+  await page.clock.runFor(250);
   await expect(page.locator("html")).toHaveAttribute("data-entrance", "running");
   await expect(page.locator(".cube-figure")).toHaveAttribute("data-renderer", "webgl");
   // Hold the HTML/paper at the destination and isolate actual WebGL motion.
   await page.evaluate((end) => document.getAnimations().filter((a) => a.timeline === document.timeline).forEach((a) => { a.pause(); a.currentTime = end; }), ENTRANCE_DURATION);
   const canvas = page.locator(".cube-stage canvas");
+  const contour = await finalStroke.getAttribute("d");
   const before = await canvas.screenshot();
-  await page.clock.runFor(120);
+  await page.clock.runFor(80);
+  expect(await finalStroke.getAttribute("d"), "the drawing must follow the live cube's orientation throughout the handoff").not.toBe(contour);
   expect((await canvas.screenshot()).equals(before), "the cube must already move while the intro is finishing").toBe(false);
   await page.clock.runFor(ENTRANCE_DURATION);
   await expect(page.locator(".site-intro")).toHaveCount(0);

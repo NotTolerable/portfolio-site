@@ -1,11 +1,7 @@
 // Shared entrance timing, graphics warmup, and the reveal handoff.
 export const ENTRANCE_DURATION = 3400;
-export const CUBE_REVEAL_START = ENTRANCE_DURATION - 450;
-export const CUBE_ENTRANCE_DURATION = 900;
-
-export function entrancePose(elapsed: number) {
-  return Math.pow(1 - Math.max(0, Math.min(1, elapsed / CUBE_ENTRANCE_DURATION)), 3);
-}
+export const CUBE_HANDOFF_DURATION = 250;
+export const CUBE_REVEAL_START = ENTRANCE_DURATION - CUBE_HANDOFF_DURATION;
 
 let startedAt: number | null = null;
 const listeners = new Set<(time: number | null) => void>();

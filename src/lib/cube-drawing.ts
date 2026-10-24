@@ -24,12 +24,16 @@ function roundedFace(points: ScreenPoint[], rounding = .07) {
   }).join("") + "Z";
 }
 
-export function projectCubeDrawing(width: number, height: number) {
+export function projectCubeDrawing(width: number, height: number, pitch = 0, yaw = 0) {
   const compact = width < 760, scale = compact ? .83 : .78;
   const focal = Math.min(1.06, width / height * 1.06) / Math.tan(Math.PI / 9) * height / 2;
   const shift = compact ? 0 : .4;
+  function orient([x, y, z]: Point): Point {
+    const rx = x * Math.cos(yaw) + z * Math.sin(yaw), rz = -x * Math.sin(yaw) + z * Math.cos(yaw);
+    return rotate([rx, y * Math.cos(pitch) - rz * Math.sin(pitch), y * Math.sin(pitch) + rz * Math.cos(pitch)]);
+  }
   function project(p: Point): ScreenPoint {
-    const turned = rotate(p);
+    const turned = orient(p);
     const world = turned.map((v, i) => v * scale + right[i] * shift - up[i] * .5) as unknown as Point;
     const depth = Math.hypot(...camera) - dot(world, back);
     return [width / 2 + dot(world, right) * focal / depth, height / 2 - dot(world, up) * focal / depth];
@@ -43,7 +47,7 @@ export function projectCubeDrawing(width: number, height: number) {
         const t = .08 + line * .125;
         return `M${xy(mix(corners[0], corners[1], t))}L${xy(mix(corners[3], corners[2], Math.min(.98, t + .2)))}`;
       }).join("");
-      const center = rotate(point(0, 0));
+      const center = orient(point(0, 0));
       faces.push({ id: `${side}-${row}-${column}`, d: roundedFace(corners), hatch, corners, side, row, column, depth: dot(center, back) });
     }
   }

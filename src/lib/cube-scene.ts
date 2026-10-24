@@ -4,7 +4,7 @@ import { cubicBezier } from "motion";
 import { createFaceMaterials } from "./cube-textures";
 import { CubeOrbit, type OrbitInput } from "./cube-orbit";
 import { createCubeParticles } from "./cube-particles";
-import { CUBE_ENTRANCE_DURATION, beginCubePreparation, entrancePose } from "./entrance-timeline";
+import { CUBE_HANDOFF_DURATION, beginCubePreparation } from "./entrance-timeline";
 import { applyTurn, createCubies, createScrambleSequence, createTurnSequence, FACE_NORMALS, hasSticker, type Cubie, type ScrambleMove } from "./rubik-state";
 
 export type CubeInput = OrbitInput & {
@@ -17,7 +17,7 @@ export type CubeInput = OrbitInput & {
 
 const easeLayerTurn = cubicBezier(0.42, 0, 0.58, 1);
 
-export async function createCubeScene(canvas: HTMLCanvasElement, input: CubeInput) {
+export async function createCubeScene(canvas: HTMLCanvasElement, input: CubeInput, followDrawing: (pitch: number, yaw: number) => void) {
   let renderer!: THREE.WebGLRenderer;
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 50);
@@ -47,12 +47,10 @@ export async function createCubeScene(canvas: HTMLCanvasElement, input: CubeInpu
   const view = new THREE.Group();
   view.rotation.set(0.03, -0.17, -0.12);
   const pitch = new THREE.Group();
-  const arrival = new THREE.Group();
   const group = new THREE.Group();
   // Separate pitch/yaw axes preserve direct drag tracking and the view tilt.
   scene.add(view);
-  view.add(arrival);
-  arrival.add(pitch);
+  view.add(pitch);
   pitch.add(group);
   const particles = createCubeParticles(window.innerWidth < 760, renderer.getPixelRatio());
   group.add(particles.object);
@@ -98,7 +96,6 @@ export async function createCubeScene(canvas: HTMLCanvasElement, input: CubeInpu
   let dirty = true;
   let previousScroll = -1;
   let animationTime = 0;
-  let wasEntering = false;
 
   function updateScroll(progress: number) {
     const compact = canvas.clientWidth < 760;
@@ -163,8 +160,8 @@ export async function createCubeScene(canvas: HTMLCanvasElement, input: CubeInpu
     previousTime = now;
     if (visible && !document.hidden) {
       const automatic = !input.paused && !input.reduced && !input.entranceActive;
-      const entranceElapsed = input.entranceStartedAt === null ? CUBE_ENTRANCE_DURATION : now - input.entranceStartedAt;
-      const entering = !input.reduced && input.scroll === 0 && entranceElapsed < CUBE_ENTRANCE_DURATION;
+      const entranceElapsed = input.entranceStartedAt === null ? CUBE_HANDOFF_DURATION : now - input.entranceStartedAt;
+      const entering = !input.reduced && input.scroll === 0 && entranceElapsed < CUBE_HANDOFF_DURATION;
       if (automatic) animationTime += delta;
       if (input.reduced && active) { finishTurn(); dirty = true; }
       if (automatic && !entering) {
@@ -184,22 +181,9 @@ export async function createCubeScene(canvas: HTMLCanvasElement, input: CubeInpu
       const orientation = orbit.update(input, delta, automatic);
       const scroll = input.reduced ? 0 : Math.max(0, Math.min(1, input.scroll));
       if (scroll !== previousScroll || (automatic && scroll > 0)) updateScroll(scroll);
-      if (entering) {
-        const remaining = entrancePose(entranceElapsed);
-        // Only the intact cube's parent moves; no per-cubelet entrance work.
-        arrival.rotation.set(.08 * remaining, -.22 * remaining, -.025 * remaining);
-        arrival.scale.setScalar(1 - .05 * remaining);
-        arrival.position.set(0, -.08 * remaining, 0);
-        dirty = true;
-      } else if (wasEntering) {
-        arrival.rotation.set(0, 0, 0);
-        arrival.position.set(0, 0, 0);
-        arrival.scale.setScalar(1);
-        dirty = true;
-      }
-      wasEntering = entering;
       const targetX = orientation.y;
       const targetY = orientation.x;
+      if (entering) followDrawing(targetX, targetY);
       if (pitch.rotation.x !== targetX || group.rotation.y !== targetY) {
         // Direct tracking avoids inertial drift after the pointer is released.
         pitch.rotation.x = targetX;

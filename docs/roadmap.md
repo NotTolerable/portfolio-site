@@ -35,7 +35,7 @@ Updated: 2026-10-23. Current phase: deployed portfolio with content/design refin
 - [x] Restore the cube’s original column, enlarge it slightly, add a visible ray, and ease faster idle direction changes.
 - [x] Rewrite the copy as a relaxed personal portfolio and add a quick first-load greeting.
 - [x] Introduce the name-led systems theme, asymmetric project entries, expandable notes, and a reversible cube-to-particle scroll transition.
-- [x] Replace the intensive opening effects with an anime-inspired drawing of the complete opening viewport: serif name, page lettering/controls, and an inked/hatched cube that resolves into the live scene; add a white-paper background wash and prepare the live cube for a continuous crossfade; keep rendering lightweight, text independent of material readiness, and existing accessibility/skip behavior.
+- [x] Replace the intensive opening effects with an anime-inspired drawing of the complete opening viewport: serif name, page lettering/controls, and an inked/hatched cube that resolves into the live scene; add a white-paper ink-splatter reveal and finish the cube drawing through a continuous crossfade that shares the live cube’s moving pose; keep rendering lightweight, text independent of material readiness, and existing accessibility/skip behavior.
 - [x] Refine identity with a serif name, original cube-outline mark and BP, no underscore suffixes/index branding, and selective glass depth on controls.
 - [x] Refine glass with static frosting and rim highlights; remove the cube/hologram overlay while retaining automatic animation and requiring drag/keyboard input for manual steering.
 - [ ] Complete owner-verified project case studies, source links, resume, and contact details.

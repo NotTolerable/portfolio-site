@@ -1,4 +1,4 @@
-import { ENTRANCE_DURATION } from "./entrance-timeline";
+import { CUBE_REVEAL_START, ENTRANCE_DURATION } from "./entrance-timeline";
 
 type Animate = (element: Element, frames: Keyframe[], duration: number, delay?: number, easing?: string) => void;
 const ns = "http://www.w3.org/2000/svg";
@@ -23,7 +23,14 @@ export function preparePageInk(animate: Animate) {
   try {
     const paper = document.querySelector(".opening-paper");
     if (paper) {
-      paper.querySelectorAll<SVGPathElement>("[data-paper-brush]").forEach((path, index) => inkPath(path, animate, 1700, [180, 500, 900][index]));
+      paper.querySelectorAll<SVGGElement>("[data-paper-splat]").forEach((splat, index) => {
+        animate(splat, [
+          { transform: "scale(0)", offset: 0 },
+          { transform: "scale(.58)", offset: .22 },
+          { transform: "scale(.91)", offset: .58 },
+          { transform: "scale(1)", offset: 1 },
+        ], index === 3 ? 1050 : 850, [180, 550, 1000, 1440][index], "cubic-bezier(.16,.55,.25,1)");
+      });
       animate(paper, [{ opacity: 1 }, { opacity: 0 }], 220, 2480);
     }
     const sketch = svgNode("g", { fill: "none", stroke: "#a6bbc6", "stroke-linecap": "round", "stroke-linejoin": "round", "data-page-sketch": "" });
@@ -115,18 +122,18 @@ export function preparePageInk(animate: Animate) {
     }
     animate(overlay, [{ opacity: 1 }, { opacity: 0 }], 180, ENTRANCE_DURATION - 180);
 
-    document.querySelectorAll<SVGPathElement>("[data-cube-contour]").forEach((path, i) => {
-      inkPath(path, animate, 950, 130 + i * 24);
-      animate(path, [{ stroke: "#d1e0e5" }, { stroke: "#7b939f" }], 2200, 1000);
+    document.querySelectorAll<SVGPathElement>("[data-cube-contour]").forEach((path, i, paths) => {
+      inkPath(path, animate, 1700, 130 + i / (paths.length - 1) * (CUBE_REVEAL_START - 1830));
+      animate(path, [{ stroke: "#d1e0e5" }, { stroke: "#7b939f" }], CUBE_REVEAL_START - 1200, 1200);
     });
     document.querySelectorAll<SVGPathElement>("[data-cube-pencil] path").forEach((path, i) => inkPath(path, animate, 500, 50 + i * 32));
-    document.querySelectorAll<SVGPathElement>("[data-cube-hatch]").forEach((path, i) => inkPath(path, animate, 650, 850 + i * 38));
+    document.querySelectorAll<SVGPathElement>("[data-cube-hatch]").forEach((path, i, paths) => inkPath(path, animate, 1000, 1050 + i / (paths.length - 1) * (CUBE_REVEAL_START - 2050)));
     const silhouette = document.querySelector<SVGPathElement>("[data-cube-silhouette]");
     if (silhouette) inkPath(silhouette, animate, 1300, 100);
     const screentone = document.querySelector("[data-cube-screentone]");
     if (screentone) animate(screentone, [{ opacity: 0 }, { opacity: .32 }], 950, 1300);
     const tone = document.querySelector("[data-cube-tone]");
-    if (tone) animate(tone, [{ opacity: 0 }, { opacity: 1 }], 1100, 1500);
+    if (tone) animate(tone, [{ opacity: 0 }, { opacity: 1 }], CUBE_REVEAL_START - 1850, 1850);
     const pencil = document.querySelector("[data-cube-pencil]");
     if (pencil) animate(pencil, [{ opacity: 0, offset: 0 }, { opacity: .55, offset: .3 }, { opacity: .18, offset: 1 }], 2200);
     const gesture = document.querySelector(".cube-gesture");

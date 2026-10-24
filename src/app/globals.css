@@ -86,10 +86,10 @@ p { line-height: 1.75; }
 .cube-stage { position: relative; width: 100%; height: 100%; cursor: grab; touch-action: pan-y; pointer-events: auto; }
 .cube-stage:active { cursor: grabbing; }
 .cube-stage:focus-visible { outline-offset: -10px; }
-.cube-stage canvas { display: block; width: 100%; height: 100%; opacity: 0; transition: opacity 400ms; }
+.cube-stage canvas { display: block; width: 100%; height: 100%; opacity: 0; transition: opacity 250ms linear; }
 .cube-figure[data-renderer="webgl"] canvas { opacity: 1; }
 .cube-figure:not([data-renderer="webgl"]) .cube-stage { cursor: default; }
-.cube-fallback { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; transition: opacity 400ms; }
+.cube-fallback { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; transition: opacity 250ms linear; }
 .cube-figure[data-renderer="webgl"] .cube-fallback { opacity: 0; }
 .opening-drawing { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 60; pointer-events: none; overflow: hidden; }
 .intro-next { position: absolute; bottom: 16%; left: 0; z-index: 2; pointer-events: none; }
@@ -102,7 +102,7 @@ p { line-height: 1.75; }
 /* The paper is present before hydration; it disappears with every skip/failsafe. */
 .opening-paper { display: none; position: fixed; inset: 0; width: 100%; height: 100%; z-index: 70; mix-blend-mode: difference; pointer-events: none; }
 html:is([data-entrance="pending"], [data-entrance="running"]) .opening-paper { display: block; }
-html[data-entrance="pending"] .opening-paper [data-paper-brush] { visibility: hidden; }
+html[data-entrance="pending"] .opening-paper [data-paper-splat] { visibility: hidden; }
 html[data-entrance="pending"] :is([data-entrance-part], [data-entrance-reveal]):where(:not([data-entrance-part="identity"])) { visibility: hidden; }
 .site-intro { position: fixed; inset: auto 0 0; z-index: 80; pointer-events: none; }
 .opening-skip { position: absolute; right: max(24px, calc((100vw - 1200px) / 2)); bottom: 25px; display: inline-flex; align-items: center; gap: 18px; min-height: 44px; padding: 12px 0 12px 16px; border: 0; background: #090d10b3; border-radius: 6px; color: #b8cbd7; font: 10px var(--font-commit-mono); pointer-events: auto; }

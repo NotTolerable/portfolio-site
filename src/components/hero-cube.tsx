@@ -3,11 +3,12 @@
 import { useEffect, useRef, useState } from "react";
 import type { MotionValue } from "motion/react";
 import type { CubeInput } from "@/lib/cube-scene";
-import { CubeDrawing } from "./cube-drawing";
+import { CubeDrawing, type CubeDrawingHandle } from "./cube-drawing";
 import { CUBE_REVEAL_START, markCubePrepared, subscribeEntrance } from "@/lib/entrance-timeline";
 
 export function HeroCube({ scrollProgress }: { scrollProgress?: MotionValue<number> }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const drawingRef = useRef<CubeDrawingHandle>(null);
   const sceneRef = useRef<{ dispose(): void } | null>(null);
   const input = useRef<CubeInput>({ paused: false, pressed: false, reduced: false, x: 0, y: 0, scroll: 0, entranceStartedAt: null, entranceActive: true });
   const drag = useRef<{ pointerId: number; x: number; y: number } | null>(null);
@@ -51,7 +52,7 @@ export function HeroCube({ scrollProgress }: { scrollProgress?: MotionValue<numb
     import("@/lib/cube-scene").then(async ({ createCubeScene }) => {
       if (!active || !canvasRef.current) return;
       try {
-        const scene = await createCubeScene(canvasRef.current, input.current);
+        const scene = await createCubeScene(canvasRef.current, input.current, (pitch, yaw) => drawingRef.current?.followPose(pitch, yaw));
         if (!active) { scene.dispose(); return; }
         sceneRef.current = scene;
         setPrepared(true);
@@ -112,7 +113,7 @@ export function HeroCube({ scrollProgress }: { scrollProgress?: MotionValue<numb
         onPointerCancel={(event) => { if (drag.current?.pointerId === event.pointerId) endDrag(); }}
         onLostPointerCapture={endDrag}
       >
-        <CubeDrawing />
+        <CubeDrawing ref={drawingRef} />
         <canvas ref={canvasRef} aria-hidden="true" />
       </div>
     </figure>
