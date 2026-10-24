@@ -81,6 +81,7 @@ test("city motion, pause, lighting and rain controls work without loading the ol
   expect(requests.filter((r) => r.includes("/textures/resend/") || r.includes("/floating-garden") || r.includes("/illustrations/night-city.webp"))).toEqual([]);
   await expect(page.locator(".cube-figure, .site-intro, .opening-paper")).toHaveCount(0);
   expect(requests.some((r) => r.includes("/models/courier/character.fbx"))).toBe(true);
+  expect(requests.filter((r) => /\/(idle|run)\.fbx/.test(r))).toEqual([]);
   expect(errors).toEqual([]);
 });
 
@@ -105,7 +106,7 @@ test("scrolling follows the character through real street geometry and returns t
   await page.getByRole("button", { name: "Pause scene motion" }).click();
   await page.waitForTimeout(1200);
   const canvas = page.locator(".world-stage canvas"); const arrival = await canvas.screenshot();
-  await page.getByRole("button", { name: "Chapter 3: The build" }).click();
+  await page.getByRole("button", { name: "Chapter 3: Experience" }).click();
   await expect(page.locator(".world-hero")).toHaveAttribute("data-chapter", "2");
   await expect(page.locator(".journey-caption-1")).toBeVisible();
   await page.waitForTimeout(1600);
@@ -114,6 +115,33 @@ test("scrolling follows the character through real street geometry and returns t
   await expect(page.locator(".world-hero")).toHaveAttribute("data-chapter", "0");
   await page.waitForTimeout(1800);
   await expect(page.locator(".hero-copy")).toHaveCSS("opacity", "1");
+});
+
+test("auto walk and focused keyboard travel move the camera through the district", async ({ page }) => {
+  await page.addInitScript(() => {
+    const names = new WeakMap<WebGLUniformLocation, string>();
+    const locate = WebGL2RenderingContext.prototype.getUniformLocation;
+    const update = WebGL2RenderingContext.prototype.uniformMatrix4fv;
+    WebGL2RenderingContext.prototype.getUniformLocation = function (program, name) {
+      const location = locate.call(this, program, name); if (location) names.set(location, name); return location;
+    };
+    WebGL2RenderingContext.prototype.uniformMatrix4fv = function (location, transpose, data, ...offsets) {
+      if (location && names.get(location) === "viewMatrix") (window as Window & { __districtCamera?: number[] }).__districtCamera = Array.from(data);
+      return update.call(this, location, transpose, data, ...offsets);
+    };
+  });
+  await page.goto("/"); await ready(page);
+  const camera = () => page.evaluate(() => (window as Window & { __districtCamera?: number[] }).__districtCamera?.[14] ?? 0);
+  const arrival = await camera();
+  await page.getByRole("button", { name: /Auto walk/ }).click(); await page.waitForTimeout(1200);
+  expect(Math.abs(await camera() - arrival), "auto walk must advance the actual 3D camera").toBeGreaterThan(.15);
+  await page.getByRole("button", { name: /Auto walk/ }).click(); await page.waitForTimeout(1800);
+  const stage = page.getByRole("group", { name: /Interactive 3D night street/ }); await stage.focus();
+  const stopped = await camera(); await page.keyboard.down("w"); await page.waitForTimeout(900); await page.keyboard.up("w");
+  expect(Math.abs(await camera() - stopped), "W must produce physical travel").toBeGreaterThan(.1);
+  await page.getByRole("button", { name: "Pause scene motion" }).click(); await page.waitForTimeout(1800);
+  const paused = await camera(); await page.waitForTimeout(300);
+  expect(await camera()).toBe(paused);
 });
 
 test("the scene stops issuing draw calls offscreen", async ({ page }) => {

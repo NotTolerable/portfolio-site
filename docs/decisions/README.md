@@ -8,6 +8,8 @@
 - [0005: Anime-inspired night city](0005-anime-night-city.md) — rendering superseded by 0006; palette retained.
 - [0006: Real street and character journey](0006-street-character-journey.md) — accepted.
 
+- [0007: Grounded district and unified field journal](0007-grounded-district.md) — accepted under the owner’s independent creative/technical mandate.
+
 Other choices labeled as proposals in [architecture](../architecture.md) remain undecided.
 
 Use a numbered record such as `0001-site-framework.md` for a significant technical decision. Keep records concise:

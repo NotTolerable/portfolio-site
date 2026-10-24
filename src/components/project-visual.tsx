@@ -7,16 +7,16 @@ export function ProjectVisual({ kind }: { kind: "governance" | "interview" | "ax
         <rect width="600" height="360" fill={`url(#grid-${kind})`} />
         {kind === "axiom" ? <>
           <path d="M70 180h80m300 0h80" stroke="currentColor" strokeWidth="2" />
-          <rect x="150" y="70" width="300" height="220" rx="5" fill="#e4e9df" stroke="currentColor" strokeWidth="2" />
+          <rect x="150" y="70" width="300" height="220" rx="5" fill="#152a35" stroke="currentColor" strokeWidth="2" />
           <path d="M300 90v180M170 120h260" stroke="currentColor" strokeOpacity=".4" />
-          {[0,1,2,3,4].map((row) => <g key={row}><rect x={190+row*13} y={143+row*24} width={86-row*13} height="10" fill="currentColor" opacity={.25+row*.1} /><rect x="324" y={143+row*24} width={22+row*13} height="10" fill="#a84434" opacity={.35+row*.1} /></g>)}
+          {[0,1,2,3,4].map((row) => <g key={row}><rect x={190+row*13} y={143+row*24} width={86-row*13} height="10" fill="currentColor" opacity={.25+row*.1} /><rect x="324" y={143+row*24} width={22+row*13} height="10" fill="#d4a678" opacity={.35+row*.1} /></g>)}
           <path d="m82 225 32-24 25 9 30-45 30 12 25-35 20 8 36-42m80 130 24-21 24 7 35-42 25 9 28-40" stroke="currentColor" strokeWidth="1.5" />
           <circle cx="70" cy="180" r="7" fill="currentColor" /><circle cx="530" cy="180" r="7" fill="currentColor" />
         </> : kind === "governance" ? <>
           <path d="M80 180h98m244 0h98M300 48v48m0 168v48" stroke="currentColor" strokeOpacity=".35" strokeDasharray="3 7" />
           <rect x="194" y="74" width="212" height="212" rx="8" transform="rotate(12 300 180)" stroke="currentColor" strokeOpacity=".15" />
           <rect x="194" y="74" width="212" height="212" rx="8" transform="rotate(-8 300 180)" stroke="currentColor" strokeOpacity=".25" />
-          <rect x="194" y="74" width="212" height="212" rx="2" fill="#f4ecde" stroke="currentColor" strokeWidth="2" />
+          <rect x="194" y="74" width="212" height="212" rx="2" fill="#152a35" stroke="currentColor" strokeWidth="2" />
           <path d="m300 110 47 19v44c0 39-47 66-47 66s-47-27-47-66v-44l47-19Z" stroke="currentColor" strokeWidth="1.3" />
           <path d="m278 174 16 16 30-34" stroke="currentColor" strokeWidth="1.6" />
           {[96, 156, 216].map((y, i) => <g key={y}><rect x="89" y={y} width="34" height="30" rx="3" stroke="currentColor" strokeOpacity=".4" /><path d={`M98 ${y + 10}h16m-16 7h${i === 1 ? 10 : 16}`} stroke="currentColor" strokeOpacity=".5" /></g>)}

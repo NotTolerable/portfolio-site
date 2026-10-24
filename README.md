@@ -26,15 +26,21 @@ Browser checks require installed Google Chrome. They start a separate production
 
 ## Experience
 
-- A real 3D night street with a fictional rigged character, ink-hatched architecture, wet-road reflections, warm/cyan windows and GPU rain. Native scrolling advances the character and camera through comic-caption chapters. No city panorama is projected as the live scene.
+- A real 3D night street with a fictional rigged character, ink-hatched architecture, procedural wet-road lighting, warm/cyan windows and GPU rain. Native scrolling, Auto walk and focused W/S drive a measured, grounded walk with a stable shoulder camera and field notes. No city panorama is projected as the live scene.
 - An immediate semantic introduction, self-hosted Barlow Condensed / Inter / JetBrains Mono, and a direct project link that skips the journey.
-- Bounded drag/arrow camera controls, rain/glow toggles and keyboard pause. Capped resolution, batched geometry, instanced windows and adaptive effects manage GPU cost. Offscreen/hidden scenes stop drawing.
+- Bounded drag/arrow camera controls, rain/glow toggles and keyboard pause. One forward render, capped resolution, batched geometry, a sign atlas, instanced windows/contact shadows and adaptive resolution manage GPU cost. Offscreen/hidden scenes stop drawing.
 - A scene-rendered poster for loading, reduced motion and failed graphics/model downloads. Content and native project notes remain usable without JavaScript.
 - Three resume-backed project dossiers for Verilly, Behaviourly and Axiom, with original subject illustrations. Public source/demo links and reproducible results remain pending.
 - A complete experience ledger spanning the 407 ETR internship, freelance/contract development, grouped multiplayer infrastructure and development, AI-assisted client builds, public plugins and education. The owner-authorized resume is embedded at `/resume` with PDF/download links; extended experience notes remain private. GPU/CUDA remains an exploration interest.
 - A clearly labeled `/infrastructure` planning route for a separate static AWS showcase. The actual portfolio runs on Vercel.
 
 See [character and scene provenance](docs/assets/street-character.md). Previous [image-city](src/archive/image-city/README.md) and [cube](src/archive/cube-portfolio/README.md) designs are archived and do not load on the active route.
+
+## Scene profiling
+
+With a separate production server running on port 3012, run `node scripts/profile-district.mjs` (add `--walk` for locomotion). It records 100 frames at 1280×900 in headless Chrome with ANGLE SwiftShader, including draw calls, buffer resolution and character asset bytes. Adaptive resolution remains enabled. These figures diagnose regressions; they do not predict a device’s hardware frame rate.
+
+`node scripts/prepare-courier.mjs` regenerates the compact reference pose from the licensed source idle clip. The active scene does not download the idle/run FBXs.
 
 ## Context
 

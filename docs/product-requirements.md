@@ -24,6 +24,12 @@ The owner is interested in infrastructure, low-latency systems, GPU/CUDA program
 - The owner supplied a resume and extended experience notes and requested all experience be represented. Describe the earlier Minecraft-related work as **game server** development/operations and professionalize the tasks without changing their meaning or inflating seniority. Cover professional, freelance, contract, independent, volunteer, client-web and plugin work. Separate AI-assisted website delivery from personally authored code.
 - Publish professional summaries. The owner subsequently authorized publishing their supplied resume PDF in full at `/resume`, embedded on the page, with a button opening that route in a new tab and direct PDF/download links. The extended Experience notes remain private. The owner confirmed that the resume governs employment dates. Group the game server work by technical responsibility; omit individual game server names and volunteer/ownership/job titles for those projects. Emphasize infrastructure, Java development, performance diagnostics, anti-cheat engineering and documented metrics. Keep per-network scale separate from aggregate totals.
 
+## Comprehensive experience refinement
+
+The owner authorized an independent game-inspired refinement of the complete website, preserving all content, important routes and functionality. Grounded movement, smooth blending/turning/stopping, convincing foot contact, deliberate camera composition, complete environmental depth, cohesive UI and lower rendering cost take priority over extra effects. Use the existing stylized rig’s actual capabilities; do not claim parity with a commercial game or copy its assets.
+
+Keep a clear route to the projects, experience, cloud plan and embedded resume. Support native scrolling, keyboard use, reduced motion, lower-powered devices and graphics failure. Measurements must identify their test setup; software-rendered/headless timings are not universal frame-rate guarantees. See [DESIGN.md](../DESIGN.md) for the implemented creative direction.
+
 ## Visitor needs
 
 - Quickly understand the owner's interests and demonstrated skills.

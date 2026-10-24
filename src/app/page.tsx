@@ -15,7 +15,7 @@ export default function Home() {
       <WorldHero />
       <section id="projects" className="work-section" aria-labelledby="work-title">
         <div className="shell">
-          <Reveal className="chapter-heading"><div><p className="eyebrow"><span className="chapter-box">02</span> THE THINGS I MAKE</p><h2 id="work-title">SELECTED<br /><em>STORIES.</em></h2></div><p>Some code. A few experiments.<br />Here’s what I’ve been working on.</p><span className="chapter-asterisk" aria-hidden="true">✳</span></Reveal>
+          <Reveal className="chapter-heading"><div><p className="eyebrow"><span className="chapter-box">02</span> THE THINGS I MAKE</p><h2 id="work-title">SELECTED<br /><em>WORK.</em></h2></div><p>Three projects. Different systems.<br />A closer look at what I build.</p><span className="chapter-asterisk" aria-hidden="true">↗</span></Reveal>
           <div className="project-list">
             {projects.map((project, index) => <Reveal key={project.id} className={`project-entry project-entry-${index}`}>
               <article aria-labelledby={`${project.id}-title`}>

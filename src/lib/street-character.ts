@@ -1,57 +1,41 @@
 import * as THREE from "three";
 import { FBXLoader } from "three/addons/loaders/FBXLoader.js";
 import { engravedMaterial } from "./engraved-material";
+import { createWalkerRig, prepareWalkerModel, type IdlePose } from "./walker-rig";
 
-/** A fictional, CC0 Kenney character, not a portrait of the portfolio owner.
- * Source files, license and modifications are recorded in the asset notes. */
+/** Licensed CC0 mesh, compact static pose, and an original procedural walk.
+ * Only the model, skin and small pose are fetched; the old animation FBXs stay dormant. */
 export async function createStreetCharacter() {
   const manager = new THREE.LoadingManager();
   manager.setURLModifier((url) => /\.(png|jpe?g|tga)(\?.*)?$/i.test(url) ? "/models/courier/skin.png" : url);
-  const loader = new FBXLoader(manager);
   const loaded = await Promise.allSettled([
-    loader.loadAsync("/models/courier/character.fbx"),
-    loader.loadAsync("/models/courier/idle.fbx"),
-    loader.loadAsync("/models/courier/run.fbx"),
+    new FBXLoader(manager).loadAsync("/models/courier/character.fbx"),
     new THREE.TextureLoader().loadAsync("/models/courier/skin.png"),
+    new THREE.FileLoader().setResponseType("json").loadAsync("/models/courier/idle-pose.json"),
   ]);
   const failed = loaded.find((item) => item.status === "rejected");
   if (failed) {
     for (const item of loaded) if (item.status === "fulfilled") {
       if (item.value instanceof THREE.Texture) item.value.dispose();
-      else item.value.traverse((object) => { if (object instanceof THREE.Mesh) { object.geometry.dispose(); for (const m of Array.isArray(object.material) ? object.material : [object.material]) m.dispose(); } });
+      else if (item.value instanceof THREE.Object3D) item.value.traverse((o) => { if (o instanceof THREE.Mesh) o.geometry.dispose(); });
     }
     throw failed.reason;
   }
-  // All four loads succeeded; retain the tuple's individual resource types.
-  const [model, idle, locomotion, texture] = loaded.map((item) => (item as PromiseFulfilledResult<unknown>).value) as [THREE.Group, THREE.Group, THREE.Group, THREE.Texture];
-  texture.colorSpace = THREE.SRGBColorSpace;
-  const materials = new Set<THREE.Material>();
-  const geometries = new Set<THREE.BufferGeometry>();
-  model.traverse((object) => {
-    if (!(object instanceof THREE.Mesh)) return;
-    geometries.add(object.geometry);
-    for (const original of Array.isArray(object.material) ? object.material : [object.material]) original.dispose();
-    const material = engravedMaterial(0xffffff, .19); material.map = texture; material.roughness = .88;
-    materials.add(material); object.material = material; object.castShadow = true; object.receiveShadow = true;
+  const [model, texture, pose] = loaded.map((item) => (item as PromiseFulfilledResult<unknown>).value) as [THREE.Group, THREE.Texture, IdlePose];
+  texture.colorSpace = THREE.SRGBColorSpace; texture.anisotropy = 2;
+  const materials = new Set<THREE.Material>(), geometries = new Set<THREE.BufferGeometry>(), skeletons = new Set<THREE.Skeleton>();
+  model.traverse((node) => {
+    if (!(node instanceof THREE.Mesh)) return;
+    geometries.add(node.geometry);
+    if (node instanceof THREE.SkinnedMesh) skeletons.add(node.skeleton);
+    for (const original of Array.isArray(node.material) ? node.material : [node.material]) original.dispose();
+    const material = engravedMaterial(0x9eaaba, .17); material.map = texture; material.roughness = .98;
+    materials.add(material); node.material = material; node.frustumCulled = false;
   });
-  const bounds = new THREE.Box3().setFromObject(model);
-  const factor = 2.12 / bounds.getSize(new THREE.Vector3()).y;
-  model.scale.multiplyScalar(factor); model.position.y = -bounds.min.y * factor;
-  const root = new THREE.Group(); root.add(model); root.rotation.y = Math.PI;
-  const mixer = new THREE.AnimationMixer(model);
-  const idleClip = idle.animations[0], moveClip = locomotion.animations[0];
-  const idleAction = idleClip ? mixer.clipAction(idleClip).play() : null;
-  const moveAction = moveClip ? mixer.clipAction(moveClip).play() : null;
-  moveAction?.setEffectiveTimeScale(.65); moveAction?.setEffectiveWeight(0);
-  // Animation FBXs can contain duplicate source meshes; only their clips survive.
-  for (const source of [idle, locomotion]) source.traverse((object) => {
-    if (object instanceof THREE.Mesh) { object.geometry.dispose(); for (const m of Array.isArray(object.material) ? object.material : [object.material]) m.dispose(); }
-  });
-  let weight = 0;
-  return { root, update(delta: number, speed: number, paused: boolean) {
-    const target = paused ? 0 : Math.min(.72, speed * .42);
-    weight += (target - weight) * (1 - Math.exp(-delta * 9));
-    idleAction?.setEffectiveWeight(1 - weight); moveAction?.setEffectiveWeight(weight);
-    if (!paused) mixer.update(delta);
-  }, dispose() { mixer.stopAllAction(); mixer.uncacheRoot(model); geometries.forEach((g) => g.dispose()); materials.forEach((m) => m.dispose()); texture.dispose(); } };
+  prepareWalkerModel(model, pose);
+  const root = new THREE.Group(); root.add(model); root.updateMatrixWorld(true);
+  const rig = createWalkerRig(model, root);
+  return { root, feet: rig.feet, update: rig.update,
+    dispose() { geometries.forEach((g) => g.dispose()); materials.forEach((m) => m.dispose()); skeletons.forEach((s) => s.dispose()); texture.dispose(); },
+  };
 }

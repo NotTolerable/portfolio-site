@@ -1,6 +1,6 @@
 # Roadmap
 
-Updated: 2026-10-24. Current phase: real street/character journey and content refinement.
+Updated: 2026-10-24. Current phase: grounded After Hours district, unified journal and content refinement.
 
 ## 1. Establish project context
 
@@ -45,6 +45,15 @@ Updated: 2026-10-24. Current phase: real street/character journey and content re
 - [ ] Configure and document the separate AWS showcase when its implementation is authorized.
 
 The earlier systems/cube design was implemented and deployed before this rebrand. Its detailed visual history is retained in the archive and prior decision records.
+
+## 5. Cohesive game-inspired refinement
+
+- [x] Inspect the scene/rig/assets and identify the targeting-pose selection, disconnected camera motion, duplicated render passes and inconsistent UI materials.
+- [x] Establish the After Hours district and shared field-journal identity across all pages.
+- [x] Replace pose blending with bounded locomotion, planted feet, measured walking, smooth turning/stopping and subtle idle movement.
+- [x] Integrate a stable shoulder camera, Auto walk and focused W/S input while preserving drag, chapters, direct links and native scrolling.
+- [x] Replace mirror/shadow/bloom passes with a single render and selective lighting; reduce character downloads to the model, skin and compact pose.
+- [x] Complete final responsive, accessibility, failure-path and animation checks for this refinement.
 
 ## Deferred or undecided
 
