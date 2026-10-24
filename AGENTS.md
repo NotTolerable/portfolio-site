@@ -3,7 +3,7 @@
 ## Working agreement
 
 - This repository is a job-seeking software engineering portfolio. Read `docs/product-requirements.md`, `docs/architecture.md`, and `docs/roadmap.md` before implementation work.
-- Website implementation is authorized. The current approved direction is a personal systems portfolio: ink black, restrained blue-gray accents, code-like supporting typography, a serif name-led introduction, subtle glass controls, and a reversible cube/particle scroll transition. Follow `DESIGN.md`; the former Resend page layout and violet palette are superseded. The owner approved a free serif alternative to Domaine for now, documented in `DESIGN.md`.
+- Website implementation is authorized. The current approved direction is a personal software engineering portfolio with cinematic anime-inspired night-city graphics, dark ink surfaces, warm text, expressive condensed typography, and comic/editorial project chapters. Follow `DESIGN.md`. The owner authorized a complete rebrand and archiving the cube; circuit-board cities and floating-garden concepts were rejected. Earlier palettes, serif-led layouts, cube/particle entrances, and splatter animation are archived, not active requirements.
 - Keep confirmed requirements separate from proposals and open questions. Do not silently turn a suggested stack or visual direction into an approved decision.
 - Describe demonstrated experience accurately. Do not invent certifications, project outcomes, benchmark results, employment history, or expertise.
 
@@ -20,7 +20,7 @@
 
 ## Implementation conventions
 
-- Use Next.js App Router, TypeScript, and npm. Vercel is the initial hosting plan. Three.js implements the cube and GPU particle morph; Motion connects native scroll progress to the intro and handles restrained reveals. AWS infrastructure tools remain undecided.
+- Use Next.js App Router, TypeScript, and npm. Vercel is the initial hosting plan. Three.js implements the lightweight image-based night-city scene, GPU rain, and restrained camera motion; Motion handles content reveals. The previous cube implementation remains archived and off the active route. AWS infrastructure tools remain undecided.
 - Prefer accessible, semantic markup, responsive layouts, and restrained dependencies.
 - Keep application code, infrastructure configuration, and content responsibilities clear once their structure is defined.
 - Never commit credentials, private environment values, or personal data not intended for publication. Document required configuration with placeholders.

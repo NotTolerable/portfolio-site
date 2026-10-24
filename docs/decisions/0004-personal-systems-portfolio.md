@@ -1,6 +1,6 @@
 # 0004: Personal systems portfolio and reversible particle intro
 
-Status: implemented. Date: 2026-10-18. Supersedes the page-level direction in [0002](0002-design-reference.md); retains [source cube assets and motion](0003-source-cube-materials.md).
+Status: superseded for the active design by [0005](0005-anime-night-city.md). Date: 2026-10-18. Supersedes the page-level direction in [0002](0002-design-reference.md); retains [source cube assets and motion](0003-source-cube-materials.md).
 
 ## Context
 

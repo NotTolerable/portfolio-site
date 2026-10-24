@@ -1,6 +1,6 @@
 # Roadmap
 
-Updated: 2026-10-23. Current phase: deployed portfolio with content/design refinements pending.
+Updated: 2026-10-24. Current phase: night-city portfolio and content refinement.
 
 ## 1. Establish project context
 
@@ -12,7 +12,7 @@ Updated: 2026-10-23. Current phase: deployed portfolio with content/design refin
 - [ ] Identify career stage, target roles, and primary engineering focus.
 - [ ] Review the two existing projects and the owner's contributions.
 - [ ] Inventory publishable code, screenshots, demos, and technical evidence.
-- [x] Agree on a personal systems portfolio direction and replace the company-style layout with the latest `DESIGN.md`.
+- [x] Agree on the latest personal portfolio direction and replace the previous composition following `DESIGN.md`.
 - [ ] Decide whether to develop a systems project alongside the site.
 
 ## 3. Choose the implementation approach
@@ -26,26 +26,20 @@ Updated: 2026-10-23. Current phase: deployed portfolio with content/design refin
 - [ ] Record remaining significant technical decisions as agreed.
 - [x] Obtain the user's go-ahead to implement and then rebuild to the new design reference.
 
-## 4. Build and validate
+## 4. Current night-city rebrand
 
-- [x] Implement the new visual design, 3D cube, project explorer, and infrastructure planning page.
-- [x] Add autonomous legal cube turns, six scrambled surface textures, display-synchronized rendering, controlled whole-cube dragging, and glass-finish buttons.
-- [x] Refine cube materials with distinct near-black-to-charcoal shades, above-right directional lighting, and hover rotation.
-- [x] Match the cube reference with original material maps, rounded solid cubelets, and authored two-axis motion.
-- [x] Restore the cube’s original column, enlarge it slightly, add a visible ray, and ease faster idle direction changes.
-- [x] Rewrite the copy as a relaxed personal portfolio and add a quick first-load greeting.
-- [x] Introduce the name-led systems theme, asymmetric project entries, expandable notes, and a reversible cube-to-particle scroll transition.
-- [x] Replace the intensive opening effects with an anime-inspired drawing of the complete opening viewport: serif name, page lettering/controls, and an inked/hatched cube that resolves into the live scene; add a white-paper ink-splatter reveal and finish the cube drawing through a continuous crossfade that shares the live cube’s moving pose; keep rendering lightweight, text independent of material readiness, and existing accessibility/skip behavior.
-- [x] Refine identity with a serif name, original cube-outline mark and BP, no underscore suffixes/index branding, and selective glass depth on controls.
-- [x] Refine glass with static frosting and rim highlights; remove the cube/hologram overlay while retaining automatic animation and requiring drag/keyboard input for manual steering.
+- [x] Confirm the owner’s updated direction: high-quality anime/game-like night city, smooth performance, and a complete visual rebrand.
+- [x] Archive the cube, prior theme, and prior browser checks; preserve source/material provenance for future reuse.
+- [x] Build the new identity, dark city opening, comic/editorial project dossiers, personal chapter, interest tabs, and cloud-plan ticket.
+- [x] Integrate original optimized city artwork with lightweight GPU rain, mist, bounded camera motion, pause/rain/glow controls, and adaptive resolution.
+- [x] Preserve semantic HTML, accessible notes/tabs, reduced-motion still artwork, native touch scrolling, and no-JavaScript content.
+- [x] Rebrand the infrastructure planning route while preserving its honest proposed/deployed distinction.
+- [x] Complete production build, lint/types, browser interaction/fallback checks, responsive review, and accessibility verification for the new design.
+- [x] Retain GitHub-connected production publishing on the existing Vercel project/custom domain.
 - [ ] Complete owner-verified project case studies, source links, resume, and contact details.
-- [x] Configure the main portfolio's Vercel project and GitHub integration.
-- [ ] Configure infrastructure and deployment for the separate AWS showcase.
-- [ ] Write the hosting walkthrough from the actual implementation.
-- [x] Verify the local build, types, lint, interactive behavior, responsive layout, reduced motion, WebGL fallback, and automated accessibility.
-- [ ] Complete and verify owner-provided project evidence.
-- [x] Publish the current portfolio to Vercel at the owner's request.
-- [x] Verify public access, desktop/mobile layout, WebGL assets, cube/particle interactions, and project/cloud navigation on the deployed portfolio.
+- [ ] Configure and document the separate AWS showcase when its implementation is authorized.
+
+The earlier systems/cube design was implemented and deployed before this rebrand. Its detailed visual history is retained in the archive and prior decision records.
 
 ## Deferred or undecided
 

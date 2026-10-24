@@ -9,7 +9,7 @@ export function ProjectVisual({ kind }: { kind: "governance" | "interview" }) {
           <path d="M80 180h98m244 0h98M300 48v48m0 168v48" stroke="currentColor" strokeOpacity=".35" strokeDasharray="3 7" />
           <rect x="194" y="74" width="212" height="212" rx="8" transform="rotate(12 300 180)" stroke="currentColor" strokeOpacity=".15" />
           <rect x="194" y="74" width="212" height="212" rx="8" transform="rotate(-8 300 180)" stroke="currentColor" strokeOpacity=".25" />
-          <rect x="194" y="74" width="212" height="212" rx="8" fill="#10191e" stroke="currentColor" strokeOpacity=".5" />
+          <rect x="194" y="74" width="212" height="212" rx="2" fill="#f4ecde" stroke="currentColor" strokeWidth="2" />
           <path d="m300 110 47 19v44c0 39-47 66-47 66s-47-27-47-66v-44l47-19Z" stroke="currentColor" strokeWidth="1.3" />
           <path d="m278 174 16 16 30-34" stroke="currentColor" strokeWidth="1.6" />
           {[96, 156, 216].map((y, i) => <g key={y}><rect x="89" y={y} width="34" height="30" rx="3" stroke="currentColor" strokeOpacity=".4" /><path d={`M98 ${y + 10}h16m-16 7h${i === 1 ? 10 : 16}`} stroke="currentColor" strokeOpacity=".5" /></g>)}

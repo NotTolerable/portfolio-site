@@ -1,7 +1,11 @@
 # Technical decision records
 
 - [0001: Main portfolio stack and initial hosting](0001-main-portfolio-stack.md) — accepted.
-- [0002: Current design reference and visual implementation](0002-design-reference.md) — accepted; supersedes earlier palette and particle suggestions.
+- [0002: Current design reference and visual implementation](0002-design-reference.md) — superseded for the active composition by 0004 and 0005.
+
+- [0003: Source cube materials](0003-source-cube-materials.md) — retained for the archived cube.
+- [0004: Personal systems composition](0004-personal-systems-portfolio.md) — superseded for the active design by 0005.
+- [0005: Anime-inspired night city](0005-anime-night-city.md) — accepted.
 
 Other choices labeled as proposals in [architecture](../architecture.md) remain undecided.
 

@@ -1,6 +1,6 @@
 # Product requirements
 
-Status: initial portfolio deployed; content and design review continues. Updated: 2026-10-23.
+Status: initial portfolio deployed; content and design review continues. Updated: 2026-10-24.
 
 ## Purpose and audience
 
@@ -14,10 +14,11 @@ The owner is interested in infrastructure, low-latency systems, GPU/CUDA program
 - No projects in the target systems/GPU/infrastructure areas have been identified yet.
 - The main portfolio is animated and interactive, built with Next.js and TypeScript, and deployed on Vercel with GitHub-connected production builds. See [architecture](architecture.md) for the current hosting details.
 - A Cloud / Infrastructure entry should navigate to a separate static showcase demonstrating cloud hosting and explaining its actual infrastructure.
-- Visual direction: a personal systems engineering portfolio, following [DESIGN.md](../DESIGN.md). Use ink black, subtle blue-gray color, code-like details, a distinct name-led intro, and a Viszen-inspired particle scroll transition. This supersedes the Resend-style page layout and violet theme. The owner subsequently requested Resend-style serif typography for their name, the original cube-outline logo with a name/initials, no identity underscores or “personal index” branding, and subtle glass depth on controls. A free serif alternative is approved for now, documented in the design source.
-- The owner is Babisan Pirapakaran and has authorized implementation and the new layout/theme. The opening emphasizes the full name and personal engineering interests, with relaxed, direct copy.
-- The current entrance should draw the entire opening viewport, including the cube, with a clear anime art influence. The owner requested illustrated ink contours, pencil/hatched shading, and fluid detail across the actual page rather than a name-only reveal. The implemented roughly 3.4-second sequence coordinates the serif name strokes, logo/navigation, supporting text, control outlines, footer, and a drawn cube that resolves into the textured scene. This supersedes the name-only opening and earlier slicing/impact-frame directions. The owner subsequently requested a fluid background drawing from white into the permanent dark theme and a continuous handoff into the rotating cube, without an intentional pause at the end. Reveal the dark background with fluid ink splats and scattered droplets, rather than brush strokes. Keep the cube drawing progressing until its final handoff, with a shared moving pose through the drawing-to-material transition and no completed-drawing hold. Prepare the cube ahead of the handoff and begin its crossfade before completion. Keep navigation usable; retain the illustrated fallback when assets fail or remain slow. Maintain continuity with the actual homepage elements, without a separate splash screen or PORTFOLIO wordmark. Preserve skip, Escape/Tab/scroll/navigation dismissal, resize completion, reduced-motion suppression, direct section access, and no replay on internal navigation. Visual details belong in [DESIGN.md](../DESIGN.md).
-- Preserve automatic cube rotation and scrambling. Only manual mouse rotation is drag-only, with an arrow-key alternative and no hover steering. Keep the starting scrambled materials and scroll transformation. Remove the entire cube/hologram caption, material credit, and pause/reset overlay. Glass controls should have subtle actual surface texture, beyond a smooth gradient.
+- Visual direction: a cinematic anime/game-inspired **night city** with high-quality graphics and smooth performance, following [DESIGN.md](../DESIGN.md). The owner referenced Samana Studio’s comic/anime social work and Igloo’s immersive quality, authorized a complete redesign of layout, typography, and color, and clarified that a circuit-board city and floating-garden direction are not wanted.
+- The owner is Babisan Pirapakaran. The introduction must remain personal, clearly identify a software engineer, and give recruiters a direct route to demonstrated work.
+- The previous cube, serif-led systems layout, and whole-page ink/splatter entrance are superseded. Store the cube implementation for possible future reuse; it should not load on the active homepage.
+- Use a detailed, original night-city environment with lightweight interactive depth/atmosphere, native scroll progression, and responsive layouts. Keep core content available before graphics initialize and when WebGL/JavaScript are unavailable. Reduced motion retains a polished static scene; automatic effects can be paused. Do not claim universal frame rates or present concept artwork as actual project output.
+- Preserve honest project descriptions, keyboard-accessible project notes, and the planned Cloud / Infrastructure route. Engineering interests must remain distinct from demonstrated project experience. Omit missing resume/contact/source destinations.
 - Keep the main portfolio distinct from the planned static infrastructure showcase.
 
 ## Visitor needs
@@ -48,7 +49,7 @@ Potential case-study topics include the problem, personal contribution, architec
 - Any performance claims include actual measurements and enough context to interpret them.
 - The hosting explanation matches the deployed system and links to publishable infrastructure or deployment code where available.
 - Content does not imply unearned certifications or experience. The referenced AWS-certified portfolio is inspiration, not the owner's biography.
-- Pages work on mobile and desktop and support keyboard navigation, readable contrast, and semantic structure. The cube/particle scroll sequence is reversible, respects reduced motion and keyboard pause, and can be skipped directly through the project link.
+- Pages work on mobile and desktop and support keyboard navigation, readable contrast, and semantic structure. The night-city scene respects reduced motion and keyboard pause, keeps native scrolling, and can be skipped directly through the project link.
 - Published links work and no placeholder identity, project result, or contact information remains.
 
 ## Open questions
