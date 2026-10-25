@@ -73,4 +73,4 @@ This roadmap tracks product milestones, not temporary agent tasks or session log
 - [x] Integrate projects, complete experience, about, toolkit, contact, embedded resume and the cloud-planning route into the shared world/reader.
 - [x] Preserve full server-rendered reading mode, no-JavaScript content, reduced-motion preferences and graphics/asset failure behavior.
 - [x] Complete final visual, responsive, accessibility and browser verification of the observatory.
-- [ ] Publish and verify the redesigned production deployment.
+- [x] Publish and verify the redesigned production deployment, including the custom-domain Cloudflare contact-markup boundary.
