@@ -1,6 +1,6 @@
 # Roadmap
 
-Updated: 2026-10-24. Current phase: authored city-camera prototype; the published observatory remains the portfolio baseline.
+Updated: 2026-10-25. Current phase: undeployed Phase 2 winter-street vertical slice; the published observatory remains the portfolio baseline.
 
 ## 1. Establish project context
 
@@ -84,3 +84,16 @@ This roadmap tracks product milestones, not temporary agent tasks or session log
 - [x] Complete numerical, browser, responsive, accessibility and visual review of the prototype.
 - [x] Publish the prototype for camera-direction review and verify its journey, focus, return navigation and document routes on the custom domain.
 - [ ] Expand the full city after the camera prototype is reviewed; this milestone remains distinct from the staging scene.
+
+## 8. Phase 2 — winter-street vertical slice
+
+- [x] Isolate `/city-preview` on an experimental branch and preserve the production portfolio/camera study.
+- [x] Acquire, prepare and document coordinated CC0 architecture, street furniture, bookshop assets and PBR surfaces.
+- [x] Build a composed historic street with shop interiors, residential shutters, varied roofs, balconies, motivated lighting and restrained snow.
+- [x] Implement four independent-channel camera compositions, reversible physical travel and render-progress UI.
+- [x] Add damped sign motion, cursor-responsive snow, local shop hover/focus and pause/still controls.
+- [x] Capture actual scene views for mobile, reduced-motion, no-JavaScript and graphics-failure alternatives.
+- [x] Complete final visual/browser/accessibility/regression review and production-build performance measurements.
+- [x] Complete the [Phase 2 implementation report](reports/phase-2-city-preview.md) for owner review.
+
+Production deployment/merge requires explicit owner approval. Full city, court, skeletal pedestrians and portfolio integration remain outside this slice.

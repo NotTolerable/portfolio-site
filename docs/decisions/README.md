@@ -12,6 +12,7 @@
 - [0008: Continuous camera-led observatory](0008-continuous-observatory.md) — accepted under the owner’s complete technical/creative redesign mandate.
 
 - [0009: Authored city camera and direction prototype](0009-authored-city-camera.md) — accepted; camera prototype before the full city build.
+- [0010: Winter street vertical slice](0010-winter-street-vertical-slice.md) — accepted for local Phase 2 implementation; production merge/deployment requires owner approval.
 
 Other choices labeled as proposals in [architecture](../architecture.md) remain undecided.
 

@@ -1,6 +1,6 @@
 # Architecture
 
-Status: published observatory and isolated authored-camera prototype; Next.js/Vercel portfolio; separate AWS showcase remains planned. Updated: 2026-10-24.
+Status: published observatory/camera study plus an undeployed Phase 2 city vertical slice; Next.js/Vercel portfolio; separate AWS showcase remains planned. Updated: 2026-10-25.
 
 ## Application and hosting
 
@@ -76,3 +76,18 @@ Route 53 handles DNS, not HTTP proxying. CloudFront access to the private S3 ori
 - `tests/camera-study.spec.ts`: real rendered camera poses/orientations, distinct compositions, forward/backward traversal, focus, mobile/keyboard/reduced-motion behavior and graphics failure.
 
 The main orientation track uses authored yaw/pitch channels converted to quaternions rather than six interpolated look targets. Quaternion interpolation handles independent focus transitions; the horizon is explicitly leveled after additive motion. Full city art direction, more detailed architectural assets and rendering polish remain later work.
+
+## Phase 2 experimental street
+
+`/city-preview` is an isolated local vertical slice under [decision 0010](decisions/0010-winter-street-vertical-slice.md). It must not be deployed or merged into production without approval. It does not replace the homepage or `/camera-study`, and it does not implement the court or full portfolio integration.
+
+- `src/lib/city/route.ts`: lightweight shot/title metadata, keeping the still experience independent of Three.js initialization.
+- `src/lib/city/camera.ts`: arc-length translation rail, monotone pacing/lens tracks, a C1 SQUAD quaternion orientation track with precomputed tangents, horizon leveling, additive cursor offsets and an analytic damped sign spring. The render-clock director supplies the authoritative progress for all four compositions and captions.
+- `src/lib/camera-tracks.ts`: shared pure monotone interpolation extracted without changing the existing camera study's behavior.
+- `src/lib/city/assets.ts`: self-hosted GLB/HDR/map loading, meshopt decoding and explicit resource tracking, including late-load cancellation. Asset preparation/provenance is in [city assets](assets/city-preview.md).
+- `src/lib/city/environment.ts`: authored L-shaped street, detailed modular historic shells, varied shop/residential frontage, inset bookshop/café interiors, roofs, balconies, shutters, snow accumulation and source-model furniture. Static geometry is batched per building/material with source index buffers preserved; identical materials/texture variants are shared and shelf books are instanced. A ray/box intersection drives the localized storefront response.
+- `src/lib/city/effects.ts`: world-space GPU snow with bounded cursor influence and a restrained procedural sky. Each snow point wraps independently without long streak artifacts.
+- `src/lib/city/scene.ts`: one renderer/loop; ACES/sRGB output, half-float single-sample render target, reduced-resolution high-threshold bloom, linear-space SMAA and final OutputPass. Source normal/roughness/AO maps, PMREM image-based environment lighting, static moon/shop shadow maps and local contact surfaces supply the primary material/depth cues. No screen-space AO, live reflection pass or temporal effect is used.
+- `src/components/city-preview.tsx` and `city-preview.css`: native scroll intent, render-progress text, keyboard-accessible composition links and warmth control, atmosphere pause and reversible still mode. Desktop/fine-pointer/no-reduced-motion enables 3D; smaller/coarse-pointer/reduced-motion/no-JavaScript visitors use scene captures without requesting models/HDR. Required-asset, WebGL or context failure exposes the same still narrative.
+
+The shared world loader is suspended and its canvas removed on either experimental route; the preview has its own minimal header. Other routes retain their original provider and content. Pixel ratio caps at 1.5 and can reduce after sustained slow frames without reducing model detail. Hidden tabs suspend animation. Unchanged paused frames stop rendering. Teardown releases instancing, shadow/composer targets, geometry, materials, textures, ImageBitmaps, PMREM and listeners. `scripts/profile-city.mjs` reports actual machine/browser/viewport measurements; it makes no universal device frame-rate promise.

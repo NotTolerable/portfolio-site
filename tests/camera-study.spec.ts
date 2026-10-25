@@ -28,6 +28,13 @@ test('the camera prototype renders one world, moves forward, changes orientation
     expect(positions.at(-1)![2]).toBeLessThan(-77);
     await seek(page, 'Workshop approach', 'workshop');
     expect(Math.abs(Number((await page.locator('canvas').getAttribute('data-position'))!.split(',')[2]) - positions[1][2])).toBeLessThan(.25);
+    expect(errors).toEqual([]);
+});
+test('returning from the camera study restores a single portfolio renderer', async ({ page }) => {
+    const errors: string[] = [];
+    page.on('pageerror', e => errors.push(e.message));
+    await page.goto('/camera-study');
+    await ready(page);
     await page.getByRole('link', { name: 'Back to portfolio' }).click();
     await expect(page).toHaveURL('/');
     await expect(page.locator('.world-shell')).toHaveAttribute('data-scene', 'ready', { timeout: 30000 });

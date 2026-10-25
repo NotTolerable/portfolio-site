@@ -34,6 +34,10 @@ Browser checks require Google Chrome and start their own production server at `1
 
 `/camera-study` previews a connected nighttime street journey ending in an empty basketball court. Six authored compositions demonstrate independent position/orientation/lens/pacing tracks, reversible scroll travel, horizon-safe pointer parallax, object-specific focus and synchronized captions/hotspots. It reuses the existing licensed assets and preserves the published homepage; full city expansion follows camera review. See [decision 0009](docs/decisions/0009-authored-city-camera.md).
 
+## Phase 2 — local street preview
+
+Phase 2 is an **undeployed experiment** at `/city-preview` on `experiment/cinematic-night-street`. Run `npm run dev` and open `/city-preview` locally. It stages a four-shot winter-night street with a detailed bookshop, restrained interactions and actual-scene still alternatives. Do not merge or deploy this route into production without owner approval. See the [implementation report and measurements](docs/reports/phase-2-city-preview.md), [Phase 2 decision](docs/decisions/0010-winter-street-vertical-slice.md) and [city asset provenance](docs/assets/city-preview.md).
+
 ## Assets
 
 `node scripts/prepare-world-assets.mjs /absolute/path/to/source-downloads` rebuilds the self-hosted model derivatives. See [preparation and licenses](docs/assets/observatory.md). Source geometry and 1k map detail are retained; repeated materials/geometry are shared and GLBs use meshopt compression. The tools are development-only.

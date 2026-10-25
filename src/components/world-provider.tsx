@@ -15,7 +15,7 @@ const subscribeMotion=(listener:()=>void)=>{const m=matchMedia('(prefers-reduced
 const motionSnapshot=()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
 export function WorldProvider({children}:{children:React.ReactNode}) {
   const pathname=usePathname();
-  const cameraStudy=pathname==='/camera-study';
+  const cameraStudy=pathname==='/camera-study'||pathname==='/city-preview';
   const enhanced=useSyncExternalStore(subscribeHydration,()=>true,()=>false);
   const reduced=useSyncExternalStore(subscribeMotion,motionSnapshot,()=>false);
   const [choice,setChoice]=useState<'auto'|'world'|'reading'>('auto');

@@ -1,6 +1,16 @@
 # Babisan Pirapakaran — After Hours / The Observatory
 
-Status: published observatory plus an owner-authorized cinematic city-camera prototype; full city expansion follows camera review. Updated: 2026-10-24.
+Status: published observatory and camera study remain intact; Phase 2 is an undeployed experimental winter-street vertical slice. Updated: 2026-10-25.
+
+## Phase 2 — active experimental direction
+
+Build `/city-preview` as one polished, interactive street segment, separate from the production homepage. The owner explicitly prohibits deploying or merging this route into production until approval. The full city, basketball court and portfolio-content integration are deferred in this phase. See [decision 0010](docs/decisions/0010-winter-street-vertical-slice.md).
+
+**After Hours / The Late Edition** places a warm bookshop and cafés in a blue-black historic street in light snow. Recessed windows, source-textured masonry, roofs, cornices, balconies, shutters, worn paving and deliberately placed furniture establish scale and depth. Amber interiors, cool skylight and a few practical lanterns define the composition. Avoid observatory props, generic cube skylines and excessive neon. Shop names and posters are original fictional environmental details.
+
+Four reversible compositions establish the street, approach the bookshop, physically pass it, and turn east into a new view. Translation, quaternion orientation, lens and pacing are independently authored. One rendered progress drives the camera, active destination and text; damped pointer offsets remain additive. Snow, a suspended sign and localized shop lighting respond subtly to the cursor or keyboard focus.
+
+Keep temporary UI sparse: restrained Inter editorial headlines, a small identity/return link, an introductory text reveal, a discreet scroll cue, four accessible composition links and ambient/still controls. Use actual scene captures for mobile, reduced motion, no JavaScript and graphics failure. Existing portfolio content and routes remain unchanged. The sections below describe the published baseline and longer-term direction, not additional Phase 2 scope.
 
 ## Current mandate
 

@@ -1,0 +1,30 @@
+City preview: third-party asset credits
+All listed Poly Haven models/textures/HDR assets: CC0 1.0 Universal.
+License: https://creativecommons.org/publicdomain/zero/1.0/
+Provider license: https://polyhaven.com/license
+
+Modular Urban Apartments Facade — James Ray Cock
+https://polyhaven.com/a/modular_urban_apartments_facade
+Street Lamp 02 — Josh Dean
+https://polyhaven.com/a/street_lamp_02
+Painted Wooden Bench — Kirill Sannikov
+https://polyhaven.com/a/painted_wooden_bench
+Outdoor Table Chair Set 01 — James Ray Cock
+https://polyhaven.com/a/outdoor_table_chair_set_01
+Book Encyclopedia Set 01 — John Malcolm
+https://polyhaven.com/a/book_encyclopedia_set_01
+Wooden Bookshelf Worn — Ulan Cabanilla
+https://polyhaven.com/a/wooden_bookshelf_worn
+Planter Box 01 — James Ray Cock
+https://polyhaven.com/a/planter_box_01
+Cobblestone Floor 08 — Rob Tuytel
+https://polyhaven.com/a/cobblestone_floor_08
+Brick Wall 02 — Dimitrios Savva
+https://polyhaven.com/a/brick_wall_02
+
+Also reused from public/world (see that directory's LICENSE.txt):
+Concrete Floor Worn 001 — Dimitrios Savva; Rico Cilliers
+Modern Buildings Night — Greg Zaal
+
+Detailed sources, preparation, modifications and original authored elements:
+docs/assets/city-preview.md

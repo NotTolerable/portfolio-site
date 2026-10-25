@@ -7,6 +7,7 @@ import { DestinationLink, useWorld } from './world-provider';
 export function Header(){
   const pathname=usePathname(),{active}=useWorld();const [menu,setMenu]=useState(false);
   useEffect(()=>{if(!menu)return;const close=(e:KeyboardEvent)=>{if(e.key==='Escape')setMenu(false);};addEventListener('keydown',close);return()=>removeEventListener('keydown',close);},[menu]);
+  if(pathname==='/city-preview')return null;
   return <header className="site-header">
     <Link href="/" className="brand" aria-label="Babisan Pirapakaran, home"><Mark/><span className="brand-initials">bp</span><span className="brand-caption">BABISAN PIRAPAKARAN<br/><span>SOFTWARE ENGINEER</span></span></Link>
     <span className="header-world-label mono">AFTER HOURS <i aria-hidden="true"/> {pathname==='/camera-study'?'CAMERA DIRECTION STUDY':'A PERSONAL OBSERVATORY'}</span>
