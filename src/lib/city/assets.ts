@@ -2,7 +2,6 @@ import * as T from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { HDRLoader } from "three/addons/loaders/HDRLoader.js";
 import { MeshoptDecoder } from "three/addons/libs/meshopt_decoder.module.js";
-
 export class CityResources {
   geometries = new Set<T.BufferGeometry>();
   materials = new Set<T.Material>();
@@ -22,17 +21,16 @@ export class CityResources {
   }
   track(root: T.Object3D) {
     root.traverse((o) => {
-      if (!(o instanceof T.Mesh)) return;
+      if (!(o instanceof T.Mesh))
+        return;
       this.geometry(o.geometry);
       for (const m of Array.isArray(o.material) ? o.material : [o.material]) {
         this.material(m);
         for (const t of Object.values(m))
           if (t instanceof T.Texture) {
             this.texture(t);
-            if (
-              typeof ImageBitmap !== "undefined" &&
-              t.source.data instanceof ImageBitmap
-            )
+            if (typeof ImageBitmap !== "undefined" &&
+              t.source.data instanceof ImageBitmap)
               this.bitmaps.add(t.source.data);
           }
       }
@@ -63,62 +61,62 @@ export type CityAssets = {
   maps: Record<string, T.Texture>;
   hdr: T.DataTexture;
 };
-export async function loadCityAssets(
-  resources: CityResources,
-  signal: AbortSignal,
-): Promise<CityAssets> {
-  const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder),
-    textures = new T.TextureLoader();
+export async function loadCityAssets(resources: CityResources, signal: AbortSignal): Promise<CityAssets> {
+  const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder), textures = new T.TextureLoader();
   const keys = ["cobbles", "brick"]
     .flatMap((n) => ["diff", "nor_gl", "rough", "ao"].map((t) => n + "-" + t))
     .concat(["concrete-diff", "concrete-nor_gl", "concrete-rough"]);
   const results = await Promise.allSettled([
     ...cityAssetNames.map((n) => loader.loadAsync("/city/" + n + ".glb")),
     new HDRLoader().loadAsync("/world/city-light.hdr"),
-    ...keys.map((n) =>
-      textures.loadAsync(
-        n.startsWith("concrete-")
-          ? "/world/" + n.replace("-diff", "-diffuse") + ".webp"
-          : "/city/" + n + ".webp",
-      ),
-    ),
+    ...keys.map((n) => textures.loadAsync(n.startsWith("concrete-")
+      ? "/world/" + n.replace("-diff", "-diffuse") + ".webp"
+      : "/city/" + n + ".webp")),
   ]);
   for (const r of results)
     if (r.status === "fulfilled") {
-      if ("scene" in r.value) resources.track(r.value.scene);
-      else if (r.value instanceof T.Texture) resources.texture(r.value);
+      if ("scene" in r.value)
+        resources.track(r.value.scene);
+      else if (r.value instanceof T.Texture)
+        resources.texture(r.value);
     }
   if (signal.aborted || results.some((r) => r.status === "rejected")) {
     resources.dispose();
     throw Error("City assets unavailable");
   }
-  const models = Object.fromEntries(
-    cityAssetNames.map((n, i) => [
-      n,
-      (
-        results[i] as PromiseFulfilledResult<
-          Awaited<ReturnType<GLTFLoader["loadAsync"]>>
-        >
-      ).value.scene,
-    ]),
-  ) as CityAssets["models"];
-  const hdr = (
-    results[cityAssetNames.length] as PromiseFulfilledResult<T.DataTexture>
-  ).value;
-  const maps = Object.fromEntries(
-    keys.map((n, i) => [
-      n,
-      (
-        results[
-          cityAssetNames.length + 1 + i
-        ] as PromiseFulfilledResult<T.Texture>
-      ).value,
-    ]),
-  );
+  const models = Object.fromEntries(cityAssetNames.map((n, i) => [
+    n,
+    (results[i] as PromiseFulfilledResult<Awaited<ReturnType<GLTFLoader["loadAsync"]>>>).value.scene,
+  ])) as CityAssets["models"];
+  const hdr = (results[cityAssetNames.length] as PromiseFulfilledResult<T.DataTexture>).value;
+  const maps = Object.fromEntries(keys.map((n, i) => [
+    n,
+    (results[cityAssetNames.length + 1 + i] as PromiseFulfilledResult<T.Texture>).value,
+  ]));
   for (const [name, t] of Object.entries(maps)) {
     t.wrapS = t.wrapT = T.RepeatWrapping;
-    if (name.endsWith("-diff")) t.colorSpace = T.SRGBColorSpace;
+    if (name.endsWith("-diff"))
+      t.colorSpace = T.SRGBColorSpace;
     t.channel = 0;
   }
+  // Expand shared quantized static attributes once, rather than once per facade instance
+  // during every later district batch. Values and source triangle detail are preserved.
+  const prepared = new Set<T.BufferGeometry>();
+  for (const model of Object.values(models))
+    model.traverse(o => {
+      if (!(o instanceof T.Mesh) || prepared.has(o.geometry))
+        return;
+      prepared.add(o.geometry);
+      for (const key of ['position', 'normal', 'uv']) {
+        const a = o.geometry.getAttribute(key);
+        if (!a || (a instanceof T.BufferAttribute && a.array instanceof Float32Array && !a.normalized))
+          continue;
+        const values = new Float32Array(a.count * a.itemSize);
+        for (let i = 0; i < a.count; i++)
+          for (let j = 0; j < a.itemSize; j++)
+            values[i * a.itemSize + j] = a.getComponent(i, j);
+        o.geometry.setAttribute(key, new T.BufferAttribute(values, a.itemSize));
+      }
+    });
   return { models, maps, hdr };
 }

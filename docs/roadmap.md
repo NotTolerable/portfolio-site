@@ -97,3 +97,20 @@ This roadmap tracks product milestones, not temporary agent tasks or session log
 - [x] Complete the [Phase 2 implementation report](reports/phase-2-city-preview.md) for owner review.
 
 Production deployment/merge requires explicit owner approval. Full city, court, skeletal pedestrians and portfolio integration remain outside this slice.
+
+## Phase 3 — connected city (local experiment)
+
+- [x] Expand A/B/C/D into one physical street network with commercial, nightlife, neighborhood and residential progression.
+- [x] Author 14 varied compositions with independent camera channels, distance-based travel limits and one rendered arrival state.
+- [x] Add staged construction/preloading, shared asset/material caches, spatial culling and a fixed practical-light pool.
+- [x] Reuse the licensed compact pedestrian rig with individual sidewalk routes, planted feet, physical stops/turns and a clear arcade entrance.
+- [x] Add gym, alley hoop, small original Ippo print, independent shop and a quiet future-court gateway.
+- [x] Enable mobile 3D with touch/native scrolling; preserve keyboard, still/reduced-motion, failure and no-JavaScript access.
+- [x] Finish production-browser validation, captures and measured performance report; record remaining first-use/loading hitches explicitly.
+- [ ] Owner review before any production merge or deployment.
+
+### Subsequent phases (not implemented here)
+
+- Phase 4: connect the four stable landmark IDs to factual portfolio records, with direct accessible navigation and composed object-specific focus/readers.
+- Further art passes: bespoke human silhouettes/clothing, a second coordinated architectural kit, baked indirect lighting/contact detail and physical-device profiling.
+- Phase 6: author the complete empty nighttime basketball court and its final camera transition; this phase only prepares the approach.

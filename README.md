@@ -51,3 +51,9 @@ Vercel project `portfolio-site` under `nottolerables-projects` is connected to [
 ## Project context
 
 See [design](DESIGN.md), [requirements](docs/product-requirements.md), [architecture](docs/architecture.md), [roadmap](docs/roadmap.md) and [decisions](docs/decisions/README.md). The current experience follows [decision 0008](docs/decisions/0008-continuous-observatory.md), superseding the walking-character composition.
+
+## Phase 3 local city experiment
+
+On `experiment/connected-night-city`, open `/city-preview` after `npm run dev`. The published homepage is preserved. Four connected districts, 14 reversible camera compositions, staged loading, ambient pedestrians and mobile 3D expand the Phase 2 foundation. The final court and full portfolio integration are deferred; no deployment/production merge is authorized.
+
+See the [Phase 3 implementation report](docs/reports/phase-3-connected-city.md), [decision](docs/decisions/0011-connected-night-city.md), [base asset credits](docs/assets/city-preview.md) and [pedestrian provenance](docs/assets/city-pedestrian.md). `node scripts/profile-city.mjs http://127.0.0.1:3014` profiles an explicitly started local production server and records its machine/browser conditions.

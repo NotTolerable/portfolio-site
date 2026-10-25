@@ -1,6 +1,6 @@
 # 0010: Winter street vertical slice
 
-Status: accepted for local Phase 2 implementation. Production merge/deployment is explicitly not authorized.
+Status: completed Phase 2 baseline; scope expanded by [0011](0011-connected-night-city.md). Production merge/deployment remains explicitly unauthorized.
 Date: 2026-10-25
 
 ## Context

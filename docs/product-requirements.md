@@ -88,3 +88,21 @@ The owner's Phase 2 brief authorizes implementation of a separate experimental `
 Prove four continuous, reversible authored compositions: arrival down the street, a forward storefront approach, physically passing the shop until it leaves frame, and turning a corner into a new composition. Independently control camera translation/orientation/framing/pacing, bound pointer parallax, and synchronize UI with rendered progress. Add restrained cursor-responsive snow, a damped hanging sign and localized storefront hover/focus lighting. Background pedestrians are conditional on suitable animated assets, not a requirement to add placeholder people.
 
 Use sparse editorial UI and a smooth text introduction. Keep mobile/reduced-motion/graphics-failure alternatives usable. Verify the visual result in the browser, all four camera views, reversal, interactions, existing routes and actual desktop performance. Supply an implementation report covering files, assets/licenses, camera architecture, rendering, interactions, measurements and known limitations. See [DESIGN.md](../DESIGN.md), [decision 0010](decisions/0010-winter-street-vertical-slice.md) and [asset provenance](assets/city-preview.md).
+
+## Phase 3 — connected nighttime city
+
+The owner authorizes expanding the existing `/city-preview` into four physically connected districts using the Phase 2 Three.js foundation. Preserve the production homepage, professional content/data, resume, infrastructure and contact routes. No production deployment or merge is authorized. Do not add full portfolio panels or the complete final basketball court in this phase.
+
+- A: varied historic commercial arrival, warm furnished windows, street furniture and pedestrian groups.
+- B: cafés/restaurants, arcade and music venue, more signage and ambient activity, restrained lighting.
+- C: intimate neighborhood, boxing gym, alley hoop, independent shops and understated anime displays. Approved anime interests include Ippo, Bleach, Solo Leveling and original-series Rock Lee; displays are environmental details, not explicit interest labels.
+- D: lower density, open sky, softer practical lights, fewer pedestrians and a plausible approach to the Phase 6 court.
+- All districts occupy one navigable metre-based world. Camera travel must pass old buildings, reveal new streets around corners and reverse without teleportation or scene swapping.
+- Camera position, orientation, lens and segment pacing remain independent authored channels. Vary composition with storefront, architectural, side-facing, alley and quiet-approach shots. Bound cursor parallax and synchronize navigation/text/landmark availability with rendered arrival.
+- Pedestrians are mandatory here, superseding Phase 2's conditional scope: coherent sidewalk routes, independent speeds/timing, smooth stops/turns, grounded animation and occasional entry/exit through a real storefront portal. No obvious wall or pedestrian intersections.
+- Keep most scenery noninteractive. Reserve four stable landmark IDs/metadata for later projects, experience, background and skills, without implementing full content integration.
+- Stage upcoming district construction/loading, retain visited chunks, reuse materials/assets, cull spatially, control light/shadow/particle budgets and adapt quality without replacing detailed buildings with boxes.
+- Provide real mobile 3D traversal, keyboard navigation, reduced-motion/still/graphics-failure alternatives and no-JavaScript access back to all portfolio content.
+- Validate actual browser views and district transitions, forward/reverse travel, pedestrian routes, continuity, mobile/readability and failure recovery. Report measured performance with its test setup, actual screenshots, asset sources/licenses, limitations and Phase 4 recommendations.
+
+See [DESIGN.md](../DESIGN.md), [decision 0011](decisions/0011-connected-night-city.md) and the [implementation report](reports/phase-3-connected-city.md).

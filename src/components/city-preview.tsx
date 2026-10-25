@@ -3,23 +3,24 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { cityShots, type CityShot } from "@/lib/city/route";
+import {districts,districtAt,landmarks} from "@/lib/city/layout";
 import type { CityFrame } from "@/lib/city/camera";
 import type { CityScene } from "@/lib/city/scene";
 import "./city-preview.css";
 
 const subscribeDevice = (listener: () => void) => {
   const q = matchMedia(
-    "(min-width:900px) and (pointer:fine) and (prefers-reduced-motion:no-preference)",
+    "(prefers-reduced-motion:no-preference)",
   );
   q.addEventListener("change", listener);
   return () => q.removeEventListener("change", listener);
 };
 const deviceSnapshot = () =>
   matchMedia(
-    "(min-width:900px) and (pointer:fine) and (prefers-reduced-motion:no-preference)",
+    "(prefers-reduced-motion:no-preference)",
   ).matches;
 export function CityPreview() {
-  const desktop = useSyncExternalStore(
+  const motionAllowed = useSyncExternalStore(
     subscribeDevice,
     deviceSnapshot,
     () => false,
@@ -30,13 +31,15 @@ export function CityPreview() {
   const [still, setStill] = useState(false),
     [paused, setPaused] = useState(false),
     [warm, setWarm] = useState(false),
+    [district,setDistrict]=useState<string>("a"),
     [active, setActive] = useState<CityShot>(cityShots[0]);
-  const world = desktop && !still && status !== "unavailable";
+  const world = motionAllowed && !still && status !== "unavailable";
   const root = useRef<HTMLElement>(null),
     canvas = useRef<HTMLCanvasElement>(null),
     track = useRef<HTMLDivElement>(null),
     caption = useRef<HTMLDivElement>(null),
     engine = useRef<CityScene | null>(null);
+  const currentDistrict=useRef("a");
   const progress = useRef(0),
     lastShot = useRef("arrival"),
     settings = useRef({ paused: false, warm: false });
@@ -49,6 +52,10 @@ export function CityPreview() {
     });
     const present = (frame: CityFrame) => {
       root.current?.setAttribute("data-shot", frame.shot.id);
+      const actualDistrict=districtAt(frame.progress).id;
+      root.current?.setAttribute("data-district",actualDistrict);
+      if(currentDistrict.current!==actualDistrict){currentDistrict.current=actualDistrict;setDistrict(actualDistrict);}
+
       root.current?.style.setProperty(
         "--city-progress",
         String(frame.progress),
@@ -62,7 +69,7 @@ export function CityPreview() {
         const t = Math.max(0, Math.min(1, (frame.progress - a) / (b - a)));
         return t * t * (3 - 2 * t);
       };
-      const alpha =
+      const alpha = (frame.shot.title?1:0)*
         (frame.shot.start === 0
           ? 1
           : ease(frame.shot.start, frame.shot.start + 0.045)) *
@@ -123,7 +130,9 @@ export function CityPreview() {
     const onScroll = () => {
       if (!raf) raf = requestAnimationFrame(update);
     };
-    const initial = cityShots.find((s) => s.id === location.hash.slice(1));
+    const hash=location.hash.slice(1);
+    const destination=districts.find(d=>d.id===hash);
+    const initial = cityShots.find((s) => s.id === hash) ?? (destination?{at:destination.at}:undefined);
     if (initial && track.current) {
       const top = track.current.getBoundingClientRect().top + scrollY;
       scrollTo({
@@ -145,7 +154,7 @@ export function CityPreview() {
     engine.current?.setPaused(paused);
     engine.current?.setStorefront(warm);
   }, [paused, warm]);
-  function seek(shot: CityShot) {
+  function seek(shot: {at:number;id:string}) {
     if (!world || !track.current) return;
     const top = track.current.getBoundingClientRect().top + scrollY;
     scrollTo({
@@ -208,64 +217,43 @@ export function CityPreview() {
               ? "A WINTER WALK"
               : active.label.toUpperCase()}
           </p>
-          <h1>{active.title}</h1>
+          <h1>{active.title || active.subject}</h1>
           {active.id === "arrival" && (
             <p className="city-intro">The city has a softer side.</p>
           )}
-          {active.id === "bookshop" && (
-            <button
-              type="button"
-              className="city-shop-action"
-              aria-pressed={warm}
-              onClick={() => setWarm(!warm)}
-              onPointerEnter={() => engine.current?.setStorefront(true)}
-              onPointerLeave={() => engine.current?.setStorefront(warm)}
-              onFocus={() => engine.current?.setStorefront(true)}
-              onBlur={() => engine.current?.setStorefront(warm)}
-            >
-              A little warmth <span aria-hidden="true">↗</span>
-            </button>
-          )}
+
         </div>
         <div
           className="city-stills"
           aria-label="Still views of the nighttime street"
         >
-          {cityShots.map((shot, i) => (
-            <section key={shot.id} id={shot.id} className="city-still-view">
-              <Image
-                src={"/illustrations/city-" + shot.id + ".webp"}
-                alt={
-                  [
-                    "Historic stone buildings and warm shopfronts along a snowy nighttime street.",
-                    "A close view of the Late Edition bookshop, with shelves, pendant lamps and a hanging sign.",
-                    "The bookshop is behind us and the street opens toward a lit intersection.",
-                    "A turn reveals a second street, with a cinema and hotel façade under blue winter light.",
-                  ][i]
-                }
-                fill
-                priority={i === 0}
-                sizes="100vw"
-                unoptimized
-              />
+          {districts.map((d,i)=>(
+            <section key={d.id} id={d.id} className="city-still-view">
+              <Image src={"/illustrations/"+d.image+".webp"} alt={[
+                "Warm bookshop windows and historic façades on a snowy commercial street.",
+                "Restaurants, an arcade and a music venue along Lantern Street at night.",
+                "A boxing gym, independent print shop and a small hoop in a quiet side alley.",
+                "Lower residential houses and garden walls lead toward a quiet park entrance."
+              ][i]} fill priority={i===0} sizes="100vw" unoptimized />
               <div className="city-vignette" />
-              <div>
-                <p className="city-kicker">
-                  AFTER HOURS / {shot.label.toUpperCase()}
-                </p>
-                {i === 0 ? <h1>{shot.title}</h1> : <h2>{shot.title}</h2>}
-                {i === 0 && <p>A winter walk, at your own pace.</p>}
+              <div><p className="city-kicker">AFTER HOURS / {d.label.toUpperCase()}</p>
+                {i===0?<h1>{d.title}</h1>:<h2>{d.title}</h2>}
+                {i===0&&<p>A winter walk, at your own pace.</p>}
               </div>
             </section>
           ))}
           <p className="city-still-note">
             {status === "unavailable"
               ? "The live street could not load. These stills show the same scene."
-              : "Still views · For smaller screens and reduced motion."}{" "}
+              : "Still views · A quieter way to explore."}{" "}
             <Link href="/">Explore the portfolio ↗</Link>
           </p>
         </div>
       </div>
+      {world && landmarks.some(l=>l.district===district && (active.id==='bookshop'||active.id==='music'||active.id==='printshop'||active.id==='residential')) &&
+        <button type="button" className="city-local-action" aria-pressed={warm} onClick={()=>setWarm(!warm)}
+        onPointerEnter={()=>engine.current?.setStorefront(true)} onPointerLeave={()=>engine.current?.setStorefront(warm)}
+        onFocus={()=>engine.current?.setStorefront(true)} onBlur={()=>engine.current?.setStorefront(warm)}>A little warmth ↗</button>}
       <footer className="city-footer">
         <div className="city-scroll-hint" aria-hidden="true">
           <span />
@@ -273,27 +261,18 @@ export function CityPreview() {
             {active.id === "corner" ? "THE NIGHT GOES ON" : "SCROLL TO WANDER"}
           </p>
         </div>
-        <nav aria-label="Street compositions">
-          {cityShots.map((shot, i) => (
-            <a
-              key={shot.id}
-              href={"#" + shot.id}
-              aria-label={shot.label}
-              aria-current={
-                world && active.id === shot.id ? "location" : undefined
-              }
-              onClick={(e) => {
-                if (world) {
-                  e.preventDefault();
-                  seek(shot);
-                }
-              }}
-            >
-              <span className="city-shot-line" />
-              <span>0{i + 1}</span>
+        <nav aria-label="City districts">
+          {districts.map((d,i)=>(
+            <a key={d.id} href={"#"+d.id} aria-label={d.short} aria-current={world&&district===d.id?"location":undefined}
+              onClick={e=>{if(world){e.preventDefault();seek(d);}}}>
+              <span className="city-shot-line"/><span>0{i+1}</span><span className="city-district-name">{d.short}</span>
             </a>
           ))}
         </nav>
+        {world && <div className="city-shot-controls">
+          <button type="button" aria-label="Previous composition" disabled={active.id==='arrival'} onClick={()=>seek(cityShots[Math.max(0,cityShots.indexOf(active)-1)])}>←</button>
+          <button type="button" aria-label="Next composition" disabled={active.id==='last-light'} onClick={()=>seek(cityShots[Math.min(cityShots.length-1,cityShots.indexOf(active)+1)])}>→</button>
+        </div>}
         {world && (
           <div className="city-motion">
             <button
@@ -308,7 +287,7 @@ export function CityPreview() {
             </button>
           </div>
         )}
-        {desktop && still && status !== "unavailable" && (
+        {motionAllowed && still && status !== "unavailable" && (
           <button
             type="button"
             className="city-return-motion"

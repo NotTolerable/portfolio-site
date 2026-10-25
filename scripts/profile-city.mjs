@@ -24,16 +24,15 @@ try {
     .waitFor({ timeout: 90000 });
   await page.locator("canvas[data-frames]").waitFor({ timeout: 30000 });
   const firstSceneMs = Date.now() - started;
+  const initialization=await page.locator("canvas").evaluate(c=>({assetLoadMs:c.dataset.assetLoadMs,preparationMs:c.dataset.preparationMs,compileMs:c.dataset.compileMs}));
   const cdp = await browser.newBrowserCDPSession(),
     gpu = (await cdp.send("SystemInfo.getInfo")).gpu;
   const results = [];
-  for (const [id, p] of [
-    ["arrival", 0],
-    ["bookshop", 0.36],
-    ["passing", 0.66],
-    ["corner", 1],
+  for (const [id,p] of [
+    ['arrival',0],['bookshop',.12],['corner',.28],['arcade',.36],['music',.43],
+    ['north-turn',.52],['gym',.59],['alley',.67],['printshop',.74],['quiet-turn',.83],['residential',.93],['last-light',1]
   ]) {
-    await page.locator('.city-footer a[href="#' + id + '"]').click();
+    await page.evaluate(p=>{const t=document.querySelector('.city-scroll-track');scrollTo({top:t.getBoundingClientRect().top+scrollY+p*(t.offsetHeight-innerHeight),behavior:'instant'});},p);
     await page.waitForFunction(
       (p) =>
         Math.abs(
@@ -81,13 +80,31 @@ try {
         geometries: c.dataset.geometries,
         dpr: c.dataset.dpr,
         cpuRenderMs: c.dataset.cpuRenderMs,
+        loadedDistricts:c.dataset.loaded,
+        pedestrians:c.dataset.pedestrians,
+        lights:c.dataset.lights,
       }))),
     });
+  }
+  const initialResources=await page.evaluate(()=>{const e=performance.getEntriesByType('resource').filter(e=>/\/(city|world|models\/courier)\//.test(e.name));return {count:e.length,encodedBytes:e.reduce((a,e)=>a+e.encodedBodySize,0),transferBytes:e.reduce((a,e)=>a+e.transferSize,0)};});
+  // A fresh scene build captures preloading and travel stalls, not only settled views.
+  await page.reload();
+  await page.locator('.city-preview[data-renderer="ready"]').waitFor({timeout:90000});
+  const travel=[];
+  for(const destination of [1,0]){
+    travel.push(await page.evaluate(destination=>new Promise(resolve=>{
+      const samples=[];let previous=0,start=performance.now();
+      const t=document.querySelector('.city-scroll-track');
+      scrollTo({top:t.getBoundingClientRect().top+scrollY+destination*(t.offsetHeight-innerHeight),behavior:'instant'});
+      function tick(now){if(previous)samples.push(now-previous);previous=now;const p=Number(document.querySelector('canvas').dataset.progress);
+        if(Math.abs(p-destination)<.00001&&samples.length>30){const sorted=[...samples].sort((a,b)=>a-b);resolve({destination,durationMs:Math.round(now-start),meanFps:+(1000/(samples.reduce((a,b)=>a+b,0)/samples.length)).toFixed(1),p95FrameMs:+sorted[Math.floor(sorted.length*.95)].toFixed(2),maxFrameMs:+sorted.at(-1).toFixed(2),framesOver50Ms:samples.filter(n=>n>50).length});}else requestAnimationFrame(tick);}
+      requestAnimationFrame(tick);
+    }),destination));
   }
   const resources = await page.evaluate(() => {
     const entries = performance
       .getEntriesByType("resource")
-      .filter((e) => /\/(city|world)\//.test(e.name));
+      .filter((e) => /\/(city|world|models\/courier)\//.test(e.name));
     return {
       count: entries.length,
       encodedBytes: entries.reduce((a, e) => a + e.encodedBodySize, 0),
@@ -105,7 +122,10 @@ try {
         software,
         gpu: gpu.auxAttributes?.glRenderer,
         firstSceneMs,
-        resources,
+        initialization,
+        resources:initialResources,
+        reloadResources:resources,
+        travel,
         results,
         errors,
       },

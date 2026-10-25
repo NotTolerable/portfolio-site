@@ -1,8 +1,16 @@
 # Babisan Pirapakaran — After Hours / The Observatory
 
-Status: published observatory and camera study remain intact; Phase 2 is an undeployed experimental winter-street vertical slice. Updated: 2026-10-25.
+Status: published observatory and camera study remain intact; Phase 3 is an undeployed four-district winter-night city. Updated: 2026-10-25.
 
-## Phase 2 — active experimental direction
+## Phase 3 — active experimental direction
+
+`/city-preview` now expands the street into one connected, inhabited winter-night city: warm commercial arrival → intimate nightlife → gym, alley and independent shops → quiet residential park approach. Keep the detailed historic architecture, restrained amber/cool-blue palette, Inter/JetBrains Mono UI and physically coherent scale. The owner requires mobile 3D, staged loading, reversible cinematic choreography and background pedestrians. Use sparse four-district navigation and previous/next composition controls; most buildings remain scenery. Four stable landmarks reserve future portfolio roles without adding panels now.
+
+Fourteen authored compositions must vary height, yaw, pitch, framing and subject while following the same continuous streets. Shared rendered progress controls arrival, titles, interactions and streaming limits. Build the next district before camera access; retain visited geometry for reversal. Snow, hanging signs, local fixture warmth and ambient NPCs provide restrained environmental life. An original Ippo fan print is a small physical gym display, not a visual theme for the interface.
+
+Do not deploy/merge this experiment, alter the production homepage, integrate complete portfolio content or build the Phase 6 court. The final gateway only establishes its future approach. See [decision 0011](docs/decisions/0011-connected-night-city.md) and the [Phase 3 report](docs/reports/phase-3-connected-city.md).
+
+## Phase 2 — completed historical baseline
 
 Build `/city-preview` as one polished, interactive street segment, separate from the production homepage. The owner explicitly prohibits deploying or merging this route into production until approval. The full city, basketball court and portfolio-content integration are deferred in this phase. See [decision 0010](docs/decisions/0010-winter-street-vertical-slice.md).
 

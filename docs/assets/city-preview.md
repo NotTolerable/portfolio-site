@@ -35,3 +35,13 @@ node scripts/prepare-city-assets.mjs /absolute/path/to/city-source /absolute/pat
 The script uses existing glTF Transform, sharp and meshoptimizer dependencies. It retains model geometry, prunes unused architecture modules, normalizes module pivots, deduplicates resources, packs meshopt GLBs and converts maps to 1k WebP. No model decimation is performed. Architecture texture detail and source normal/AO maps remain intact. The source downloads stay outside the repository.
 
 `public/illustrations/city-{arrival,bookshop,passing,corner}.webp` are captures of the actual experimental scene. They provide mobile, reduced-motion, no-JavaScript and graphics-failure views. They are not project screenshots or imported reference renders.
+
+## Phase 3 additions and supersession
+
+Phase 3 expands the same detailed architecture/furniture collection across four connected districts; it introduces no new downloaded building kit. Historic facade modules remain the primary architecture. The retained Kenney CC0 source is now used through [pedestrian.glb](../../public/city/pedestrian.glb); see [complete pedestrian provenance](city-pedestrian.md). This supersedes the Phase 2 note above about absent pedestrians.
+
+`public/city/art/ippo-print.webp` is an original model-generated fan illustration of Ippo Makunouchi, generated in this session with OpenAI's image-generation tool, then resized/encoded with sharp to 768×1152 WebP. It is a small physical boxing-gym window print, following the owner's requested Ippo interest. No official anime still, manga page, logo, external fan artist's image or downloaded character art was used. It is not a CC0 Poly Haven/Kenney asset or an official licensed franchise product. The generated source was retained outside the repository; the published derivative is self-hosted and only requested while district C preloads. No portfolio result or client work is represented by the image.
+
+Signs, arcade cabinets, gym ring/bags, alley hoop/net, park-edge branches, garden walls and district interiors are original scene geometry. Businesses are fictional environmental details, not portfolio employers or clients.
+
+Phase 3 fallbacks are actual renderer captures at `public/illustrations/city-{arrival,nightlife,neighborhood,residential}.webp`. These replace the old four-composition fallback sequence for `/city-preview`; the historical Phase 2 bookshop/passing/corner captures remain available. Mobile now receives live 3D when motion is allowed; still/reduced-motion/no-JavaScript/graphics failure use these four district views.
