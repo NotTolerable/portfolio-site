@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { Euler, Vector3 } from 'three';
-import { cinematicShots, createCinematicDirector, sampleAuthoredCamera, studyFocus } from '../src/lib/cinematic-journey';
+import { cinematicShots, createCinematicDirector, sampleAuthoredCamera, studyFocus } from '../../src/lib/cinematic-journey';
 test('the authored journey advances physically through the city and has distinct compositions', () => {
     let previous = Infinity;
     const heights: number[] = [], yaws: number[] = [], pitches: number[] = [];

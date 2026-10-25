@@ -1,8 +1,16 @@
-# Babisan Pirapakaran — After Hours
+# Babisan Pirapakaran — Under the Surface
 
-A software engineering portfolio built as one continuous, camera-led night-city observatory. Next.js App Router, TypeScript and Three.js serve the experience and its complete server-rendered reading alternative. Hosted at [babisanp.com](https://babisanp.com).
+A personal software engineering portfolio presented as an underwater gallery, closely adapting [Samana Studio](https://samanastudio.es/). Next.js, TypeScript, direct Three.js, GSAP and Lenis combine three project exhibits, authored camera passes, complete experience records and a particle-built processor.
 
-## Development and verification
+## Current branches
+
+- `redesign/samana-portfolio`: new local gallery, not deployed.
+- `archive/3d-city-2026-10-25`: complete pre-redesign working state, snapshot `8004668`.
+- `main`: existing GitHub-connected Vercel production at babisanp.com; unchanged by this work.
+
+The previous ZIP snapshot remains in ignored `archives/`. City/observatory/cube source is dormant; old city integration checks are preserved under `tests/archive`. `/camera-study` and `/city-preview` now redirect home.
+
+## Run and verify
 
 ```sh
 npm ci
@@ -10,50 +18,26 @@ npm run dev
 ```
 
 ```sh
-npm run build
 npm run lint
 npm run typecheck
+npm run build
 npm run test:e2e
 ```
 
-Browser checks require Google Chrome and start their own production server at `127.0.0.1:3012`; build first. They cover destinations, records/focus, content, persistent cross-route rendering, interests/cloud flow, ambient pause, reduced motion, model/WebGL/context failure, responsive accessibility, PDF download and no-JavaScript access. Retained cube/rig tests exercise dormant archived logic, not active design requirements.
+Browser tests require installed Google Chrome and create a dedicated production server at `127.0.0.1:3012`. Build first. They cover reversible travel, project/experience records, focus, reading mode, narrow layouts/accessibility, no-script/WebGL failure, infrastructure and resume embedding/download. Retained cube/walker math checks cover dormant code.
 
-## Experience
+## Content and access
 
-- One persistent rooftop world connects introduction, projects, complete experience, personal background, toolkit and contact. Native scroll drives a continuous camera rail; direct destination links and object-anchored controls provide alternatives.
-- Detailed licensed optical/radio/relay/desk/lamp/searchlight models, modular architecture, PBR surfaces, wet patches, HDR reflections, a static shadow map and GPU rain form the environment. See [asset provenance](docs/assets/observatory.md) and `public/world/LICENSE.txt`.
-- Project and domain selection respond in the actual scene. Native dialog readers present complete factual records with keyboard access, focus handling and readable document layout.
-- JetBrains Mono identity/annotations and professional Inter headings/body replace the former heavy comic typography.
-- Reading mode, initial reduced motion, failed graphics/assets and no JavaScript expose all records. The fallback poster is a capture of the actual world. Ambient movement can be paused independently of navigation.
-- Verilly, Behaviourly and Axiom retain resume-backed descriptions and conceptual illustrations; unprovided live demos/source links/results are not invented. GPU/CUDA remains a learning interest.
-- Complete experience includes 407 ETR, freelance/contract work, grouped multiplayer infrastructure/performance/anti-cheat/Java development, AI-assisted client builds, plugins, coursework and education.
-- `/resume` embeds the exact owner-authorized PDF with direct-file/download links. `/infrastructure` presents a clearly proposed separate AWS architecture. This portfolio runs on Vercel.
-- Owner email, GitHub and LinkedIn come from the published resume. Private extended experience notes are not published.
+Axiom, Verilly and Behaviourly retain resume-backed descriptions. Complete experience includes 407 ETR, freelance/contract work, grouped multiplayer infrastructure/performance/anti-cheat/Java development, client builds, plugins, coursework and education. No missing project links, certifications or measured benchmarks are invented; CUDA remains an exploration interest.
 
-## Camera direction prototype
+The menu offers complete reading mode and animation pause. No JavaScript or unavailable WebGL exposes server-rendered records automatically. Reduced motion skips the entrance/ambient animation and keeps direct scroll navigation. Native detail dialogs support keyboard focus and Escape.
 
-`/camera-study` previews a connected nighttime street journey ending in an empty basketball court. Six authored compositions demonstrate independent position/orientation/lens/pacing tracks, reversible scroll travel, horizon-safe pointer parallax, object-specific focus and synchronized captions/hotspots. It reuses the existing licensed assets and preserves the published homepage; full city expansion follows camera review. See [decision 0009](docs/decisions/0009-authored-city-camera.md).
+`/resume` embeds the owner-authorized PDF and provides open/download actions. `/infrastructure` documents the clearly proposed separate AWS static-site flow; it does not claim the portfolio runs on AWS. Email, GitHub and LinkedIn use the owner’s existing public details.
 
-## Phase 2 — local street preview
+## Design and provenance
 
-Phase 2 is an **undeployed experiment** at `/city-preview` on `experiment/cinematic-night-street`. Run `npm run dev` and open `/city-preview` locally. It stages a four-shot winter-night street with a detailed bookshop, restrained interactions and actual-scene still alternatives. Do not merge or deploy this route into production without owner approval. See the [implementation report and measurements](docs/reports/phase-2-city-preview.md), [Phase 2 decision](docs/decisions/0010-winter-street-vertical-slice.md) and [city asset provenance](docs/assets/city-preview.md).
+See [DESIGN.md](DESIGN.md), [architecture](docs/architecture.md), [decision0012](docs/decisions/0012-underwater-portfolio.md), [reference study](docs/reports/samana-reference-study.md) and [asset provenance](docs/assets/underwater-gallery.md).
 
-## Assets
+Two attributed CC BY4 sculptures and a CC0 Microsoft fish are self-hosted. Ice, processor and shaders are original approximations; the source application, S data and unidentified-license reference assets are not bundled. Credits are visible in the site.
 
-`node scripts/prepare-world-assets.mjs /absolute/path/to/source-downloads` rebuilds the self-hosted model derivatives. See [preparation and licenses](docs/assets/observatory.md). Source geometry and 1k map detail are retained; repeated materials/geometry are shared and GLBs use meshopt compression. The tools are development-only.
-
-The former [grounded district](src/archive/grounded-district/README.md), [image-city](src/archive/image-city/README.md) and [cube](src/archive/cube-portfolio/README.md) are dormant archives. Old preparation/profiling scripts target those archived implementations.
-
-## Deployment
-
-Vercel project `portfolio-site` under `nottolerables-projects` is connected to [NotTolerable/portfolio-site](https://github.com/NotTolerable/portfolio-site). Pushes to `main` deploy production with default Next.js settings. No application environment variables are required. `.vercel/`, credentials, environment files, dependencies, builds and browser artifacts are ignored. The separate AWS showcase remains planned.
-
-## Project context
-
-See [design](DESIGN.md), [requirements](docs/product-requirements.md), [architecture](docs/architecture.md), [roadmap](docs/roadmap.md) and [decisions](docs/decisions/README.md). The current experience follows [decision 0008](docs/decisions/0008-continuous-observatory.md), superseding the walking-character composition.
-
-## Phase 3 local city experiment
-
-On `experiment/connected-night-city`, open `/city-preview` after `npm run dev`. The published homepage is preserved. Four connected districts, 14 reversible camera compositions, staged loading, ambient pedestrians and mobile 3D expand the Phase 2 foundation. The final court and full portfolio integration are deferred; no deployment/production merge is authorized.
-
-See the [Phase 3 implementation report](docs/reports/phase-3-connected-city.md), [decision](docs/decisions/0011-connected-night-city.md), [base asset credits](docs/assets/city-preview.md) and [pedestrian provenance](docs/assets/city-pedestrian.md). `node scripts/profile-city.mjs http://127.0.0.1:3014` profiles an explicitly started local production server and records its machine/browser conditions.
+Vercel project `portfolio-site` under `nottolerables-projects` remains connected to `NotTolerable/portfolio-site`; pushes to `main` deploy production. Publishing this redesign is outside the current request. No application environment variables or backend services are required.

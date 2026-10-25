@@ -3,7 +3,7 @@ import * as T from 'three';
 import { NodeIO, type Node as GltfNode } from '@gltf-transform/core';
 import { ALL_EXTENSIONS } from '@gltf-transform/extensions';
 import { MeshoptDecoder } from 'meshoptimizer';
-import { collectCafeSeats } from '../src/lib/city/staging';
+import { collectCafeSeats } from '../../src/lib/city/staging';
 const io = new NodeIO().registerExtensions(ALL_EXTENSIONS).registerDependencies({ 'meshopt.decoder': MeshoptDecoder });
 /** Use real packed animation channels/transforms, without needing a browser image decoder for this kinematic check. */
 async function readRig(name: string) {

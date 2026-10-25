@@ -1,0 +1,38 @@
+Babisan Pirapakaran — underwater portfolio gallery
+
+Visual and interaction reference: https://samanastudio.es/
+Independent application code, original portfolio content and CPU formation.
+
+Baby Angel Sculpture — M.Reslan
+https://sketchfab.com/3d-models/baby-angel-sculpture-7ca5460e6af541f7ac9e0ac2cb3b9955
+https://skfb.ly/6FPQp
+Licensed CC BY 4.0 https://creativecommons.org/licenses/by/4.0/
+Web geometry optimization: Samana Studio. Source derivative: https://samanastudio.es/models/baby_angel_opt.glb
+Changes here: rescaling, centering, new materials and placement in original ice geometry.
+
+Statue Bust of Nike — skullreaper134
+https://sketchfab.com/3d-models/statue-bust-of-nike-213c38657eec4be19f75f2a3fee10a7a
+https://skfb.ly/oAvWs
+Licensed CC BY 4.0 https://creativecommons.org/licenses/by/4.0/
+Web asset preparation: Samana Studio. Source derivative: https://samanastudio.es/models/nike.glb
+Changes here: rescaling, centering, new materials and placement in original ice geometry.
+
+Both GLBs retain embedded original author, source URL and CC BY 4.0 attribution.
+License confirmed against original model pages, embedded GLB metadata and https://samanastudio.es/credits/ on 2026-10-25.
+No endorsement by the original artists or Samana Studio is implied.
+
+Geist font: Vercel / Geist contributors, SIL Open Font License 1.1.
+Self-hosted using @fontsource/geist, whose package includes LICENSE.
+
+Ice geometry, CPU mesh, particle processor, shaders and UI were authored for this implementation.
+No Samana application code, uncredited ice/HDR/fish assets or S-formation data are included.
+
+Barramundi Fish — Microsoft, 2017, CC0 1.0 Universal.
+https://github.com/KhronosGroup/glTF-Sample-Assets/tree/main/Models/BarramundiFish
+https://creativecommons.org/publicdomain/zero/1.0/
+Changes: textures resized to 1024px WebP, quality 85; recentered/rescaled, material tint, procedural tail motion. Geometry unchanged.
+
+Studio Small 08 HDRI — Sergej Majboroda / Poly Haven, CC0.
+https://polyhaven.com/a/studio_small_08
+https://polyhaven.com/license
+Changes: cool desaturated tint during PMREM preparation.

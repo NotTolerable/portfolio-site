@@ -2,8 +2,9 @@ import { defineConfig } from "@playwright/test";
 
 export default defineConfig({
   testDir: "./tests",
+  testIgnore: "**/archive/**",
   fullyParallel: false,
-  // WebGL suites share a software GPU; simultaneous worlds distort animation timing.
+  // Serialize immersive browser checks to keep camera timing predictable.
   workers: 1,
   use: {
     baseURL: "http://127.0.0.1:3012",

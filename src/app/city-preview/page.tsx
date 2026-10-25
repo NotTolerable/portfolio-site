@@ -1,11 +1,5 @@
-import type { Metadata } from "next";
-import { CityPreview } from "@/components/city-preview";
-export const metadata: Metadata = {
-  title: "After Hours — City Preview",
-  description:
-    "A continuous winter-night journey through four connected city districts.",
-  robots: { index: false, follow: false },
-};
-export default function CityPreviewPage() {
-  return <CityPreview />;
+import { redirect } from "next/navigation";
+/** Historical city prototype is preserved on archive/3d-city-2026-10-25. */
+export default function ArchivedCityPreview() {
+  redirect("/");
 }

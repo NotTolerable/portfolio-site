@@ -1,8 +1,8 @@
 import { expect, test } from '@playwright/test';
 import { Euler, Vector3 } from 'three';
-import { createCityDirector, sampleCityCamera, cityDistanceAt, cityJourneyLength, springStep } from '../src/lib/city/camera';
-import { onWalkableGround, districtAt } from '../src/lib/city/layout';
-import { createPedestrianMotion, pedestrianSpecs } from '../src/lib/city/pedestrian-motion';
+import { createCityDirector, sampleCityCamera, cityDistanceAt, cityJourneyLength, springStep } from '../../src/lib/city/camera';
+import { onWalkableGround, districtAt } from '../../src/lib/city/layout';
+import { createPedestrianMotion, pedestrianSpecs } from '../../src/lib/city/pedestrian-motion';
 test('the route occupies connected roads, clears architecture and reverses exactly over all four districts', () => {
   expect(cityJourneyLength).toBeGreaterThan(190);
   const poses = Array.from({ length: 4001 }, (_, i) => sampleCityCamera(i / 4000));
