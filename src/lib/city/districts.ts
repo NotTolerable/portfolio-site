@@ -1,4 +1,5 @@
 import * as T from 'three';
+import {dressStreet} from './street-details';
 import { createCityKit, type CityKitCache } from './building-kit';
 import { CityResources, type CityAssets } from './assets';
 import type { DistrictId, LandmarkId } from './layout';
@@ -100,7 +101,7 @@ export async function buildDistrict(id: Exclude<DistrictId, 'a'>, root: T.Group,
     board(hotel, 'MINUIT', 'ROOMS  /  RECEPTION', -3);
     shopLight(hotel, 1.4);
     await yieldFrame();
-    const restaurant = shell(23, -25.3, 4, 3, Math.PI, '#b6a38f', 'large', 'CAFÉ DU COIN', { open: true });
+    const restaurant = shell(23, -25.3, 4, 2, Math.PI, '#b6a38f', 'large', 'CAFÉ DU COIN', { open: true });
     tables(restaurant, [-3, 1]);
     awning(restaurant, 11.8, '#5b3931');
     shopLight(restaurant);
@@ -111,7 +112,7 @@ export async function buildDistrict(id: Exclude<DistrictId, 'a'>, root: T.Group,
     board(noodle, 'SUPPER', 'UNTIL LATE', 0);
     shopLight(noodle, 2.4);
     await yieldFrame();
-    const arcade = shell(43.5, -36.8, 3, 4, 0, '#93a2aa', 'large', 'THE ARCADE', { open: true, openBay: 0 });
+    const arcade = shell(43.5, -36.8, 3, 2, 0, '#93a2aa', 'large', 'THE ARCADE', { open: true, openBay: 0 });
     // Bay zero is x40.5; a clear 2.73m portal leads to a real floor and furnished room.
     // Route entry is centred on x40.5, no glass/plinth across this bay.
     for (const u of [-1, 1.25, 3]) {
@@ -127,7 +128,7 @@ export async function buildDistrict(id: Exclude<DistrictId, 'a'>, root: T.Group,
     tables(supper, [-2, 1.5]);
     shopLight(supper, 1.8);
     await yieldFrame();
-    const bar = shell(47, -25.3, 4, 4, Math.PI, '#b1a7a5', 'double', 'THE BLUE NOTE', { open: true });
+    const bar = shell(47, -25.3, 4, 2, Math.PI, '#b1a7a5', 'double', 'THE BLUE NOTE', { open: true });
     box(bar, 8.7, 1.03, .65, wood, 0, .6, -2.5, .03);
     box(bar, 8.9, .08, .8, stone, 0, 1.16, -2.5, .02);
     for (let i = 0; i < 16; i++) {
@@ -135,6 +136,12 @@ export async function buildDistrict(id: Exclude<DistrictId, 'a'>, root: T.Group,
     }
     tables(bar, [-3, 2.7]);
     board(bar, 'LIVE', 'TONIGHT  /  23:00', 0);
+    for(const y of [1.15,1.85,2.5]){
+      box(bar,8.8,.055,.4,wood,0,y,-3.55,.015);
+      for(let i=0;i<19;i++)box(bar,.08,.29+(i%4)*.04,.1,material(i%3===0?'#7b6445':'#344b3a',.24),-4.1+i*.45,y+.18,-3.5,.015);
+    }
+    for(const u of [-2,0,2]){box(bar,.38,.065,.38,wood,u,.66,-1.5,.03);rod(bar,new T.Vector3(u,.1,-1.5),new T.Vector3(u,.63,-1.5),.035,iron);}
+    rod(bar,new T.Vector3(-4.4,.1,-1.8),new T.Vector3(-4.4,1.7,-1.8),.018,iron);box(bar,.12,.055,.055,iron,-4.4,1.72,-1.8,.02);
     fixtures['blue-note'] = shopLight(bar, 2.5, '#f3c49b');
     hanging(bar, 'LIVE');
     await yieldFrame();
@@ -146,7 +153,7 @@ export async function buildDistrict(id: Exclude<DistrictId, 'a'>, root: T.Group,
     for (const x of [19, 35, 51])
       lantern(x, -25.8, Math.PI, 8);
     cloneProp('bench', root, .86, 29.7, .13, -35.6);
-    cloneProp('planter', root, .55, 44, .13, -26);
+    cloneProp('planter', root, .55, 40.2, .13, -24.9);
     cloneProp('cafe', root, .9, 23, .13, -26.1, Math.PI / 2);
     // Thin festoon spans at safe 6m height; restrained warm bulbs are emissive, not extra lights.
     for (const x of [28, 48])
@@ -165,7 +172,7 @@ export async function buildDistrict(id: Exclude<DistrictId, 'a'>, root: T.Group,
     await yieldFrame();
     shell(54.05, -43, 3, 3, Math.PI / 2, '#b4ac9c', 'double', 'MAISON 18', { residential: true });
     await yieldFrame();
-    const gym = shell(65.95, -55.5, 4, 3, -Math.PI / 2, '#a7aca5', 'large', 'SECOND ROUND', { open: true });
+    const gym = shell(65.95, -55.5, 4, 2, -Math.PI / 2, '#a7aca5', 'large', 'SECOND ROUND', { open: true });
     box(gym, 4.4, .35, 3, material('#414c52'), -.5, .3, -1.9, .04);
     box(gym, 4.25, .055, 2.9, material('#a59c85', .95), -.5, .51, -1.9, .015);
     for (const x of [-2.55, 1.55])
@@ -297,6 +304,7 @@ export async function buildDistrict(id: Exclude<DistrictId, 'a'>, root: T.Group,
     }
     plane(street, 1.4, .3, label('NORTH GARDENS', 'PLEASE WALK QUIETLY', 768, 192, '#24332f', '#c8c1a7'), 25.2, 1.9, -131.2);
   }
+  dressStreet(id,root,assets,r,cache);
   k.batch(street);
   await k.finishAsync(yieldFrame);
   return { signs, fixtures };

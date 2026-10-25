@@ -1,0 +1,27 @@
+Street prop derivatives — CC0 1.0 Universal
+https://creativecommons.org/publicdomain/zero/1.0/
+
+City bicycle — Innerscene (original model)
+https://www.innerscene.com/tools/library/3d-parts/city-bicycle-58a2a324
+https://www.innerscene.com/tools/library/terms
+
+Metal Trash Can — GurJas Studios, Poly Haven
+https://polyhaven.com/a/metal_trash_can
+
+Covered Car — MP, Poly Haven
+https://polyhaven.com/a/covered_car
+
+Poly Haven asset license: https://polyhaven.com/license
+
+All three source assets are dedicated to the public domain under CC0 1.0.
+Their licenses allow commercial use, modification and self-hosted redistribution.
+Attribution is optional; the credits above preserve source provenance.
+
+Derivatives: grounded and centred in metres, static geometry joined by material,
+Meshopt compression, source textures converted to WebP at up to 1024 square.
+The trash can includes the intact source variant and its leaning lid; the separate
+rusty display duplicate is omitted. No source geometry decimation is applied.
+The bicycle uses material factors and has no source texture images.
+
+Preparation: scripts/prepare-city-props.mjs
+Details: docs/assets/city-street-props.md

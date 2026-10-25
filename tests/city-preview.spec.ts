@@ -32,6 +32,7 @@ test('four districts share one world, deferred assets, reversible travel and arr
   await ready(page);
   await expect(page.locator('canvas')).toHaveAttribute('data-loaded', '1');
   expect(requests.some(u => u.includes('ippo-print'))).toBe(false);
+  expect(requests.some(u=>u.includes('/props/covered-car.glb'))).toBe(false);
   const positions: number[][] = [];
   for (const [p, id] of [[0, 'a'], [.36, 'b'], [.59, 'c'], [.93, 'd']] as const) {
     await travel(page, p);
@@ -43,7 +44,9 @@ test('four districts share one world, deferred assets, reversible travel and arr
   expect(positions[2][0]).toBeGreaterThan(60);
   expect(positions[3][2]).toBeLessThan(-108);
   await expect(page.locator('canvas')).toHaveAttribute('data-loaded', '4');
-  await expect(page.locator('canvas')).toHaveAttribute('data-pedestrians', '17');
+  expect(Number(await page.locator('canvas').getAttribute('data-pedestrians'))).toBeGreaterThanOrEqual(45);
+  expect(requests.some(u=>u.includes('/city/people/sam.glb'))).toBe(true);
+  expect(requests.some(u=>u.includes('/city/pedestrian.glb')||u.includes('/models/courier/'))).toBe(false);
   await travel(page, .12);
   expect(Math.abs(Number((await page.locator('canvas').getAttribute('data-position'))!.split(',')[2]) + 9.5)).toBeLessThan(.1);
   await expect(page.locator('canvas')).toHaveAttribute('data-loaded', '4');
@@ -67,6 +70,8 @@ test('local warmth, sign response, ambient pause, keyboard shot navigation and s
   await expect.poll(async () => Number(await page.locator('canvas').getAttribute('data-hover'))).toBeGreaterThan(.9);
   await page.keyboard.press('Enter');
   await expect(warmth).toHaveAttribute('aria-pressed', 'true');
+  const pose=await page.locator('canvas').getAttribute('data-people-pose');
+  await expect.poll(()=>page.locator('canvas').getAttribute('data-people-pose')).not.toBe(pose);
   await page.getByRole('button', { name: 'Pause atmosphere', exact: true }).click();
   await page.mouse.move(0, 0);
   await page.waitForTimeout(3000);
@@ -125,7 +130,7 @@ test('a deferred neighborhood asset failure falls back to the complete four-dist
   await expect(page.locator('.city-still-view')).toHaveCount(4);
   await expect(page.getByRole('link', { name: 'Explore the portfolio' })).toHaveAttribute('href', '/');
 });
-for (const failure of ["asset", "context", "webgl"] as const)
+for (const failure of ["asset", "people", "context", "webgl"] as const)
   test(`${failure} failure leaves a complete still narrative and portfolio links`, async ({ page, }) => {
     if (failure === "webgl")
       await page.addInitScript(() => {
@@ -138,6 +143,7 @@ for (const failure of ["asset", "context", "webgl"] as const)
       });
     if (failure === "asset")
       await page.route("**/city/architecture.glb", (r) => r.abort());
+    if(failure==="people")await page.route("**/city/people/sam.glb",r=>r.abort());
     await page.goto("/city-preview");
     if (failure === "context") {
       await ready(page);

@@ -55,9 +55,11 @@ export const cityAssetNames = [
   "books",
   "shelf",
   "planter",
+  "bicycle",
+  "trash-can",
 ] as const;
 export type CityAssets = {
-  models: Record<(typeof cityAssetNames)[number], T.Group>;
+  models: Record<(typeof cityAssetNames)[number], T.Group> & Partial<Record<"covered-car", T.Group>>;
   maps: Record<string, T.Texture>;
   hdr: T.DataTexture;
 };
@@ -67,7 +69,7 @@ export async function loadCityAssets(resources: CityResources, signal: AbortSign
     .flatMap((n) => ["diff", "nor_gl", "rough", "ao"].map((t) => n + "-" + t))
     .concat(["concrete-diff", "concrete-nor_gl", "concrete-rough"]);
   const results = await Promise.allSettled([
-    ...cityAssetNames.map((n) => loader.loadAsync("/city/" + n + ".glb")),
+    ...cityAssetNames.map((n) => loader.loadAsync("/city/" + (["bicycle", "trash-can", "covered-car"].includes(n) ? "props/" : "") + n + ".glb")),
     new HDRLoader().loadAsync("/world/city-light.hdr"),
     ...keys.map((n) => textures.loadAsync(n.startsWith("concrete-")
       ? "/world/" + n.replace("-diff", "-diffuse") + ".webp"
@@ -103,7 +105,7 @@ export async function loadCityAssets(resources: CityResources, signal: AbortSign
   // during every later district batch. Values and source triangle detail are preserved.
   const prepared = new Set<T.BufferGeometry>();
   for (const model of Object.values(models))
-    model.traverse(o => {
+    model?.traverse(o => {
       if (!(o instanceof T.Mesh) || prepared.has(o.geometry))
         return;
       prepared.add(o.geometry);
@@ -119,4 +121,14 @@ export async function loadCityAssets(resources: CityResources, signal: AbortSign
       }
     });
   return { models, maps, hdr };
+}
+/** The parked vehicle is not needed for the opening; stage its textures with the nightlife district. */
+export async function loadNightlifeAssets(assets: CityAssets, r: CityResources, signal: AbortSignal) {
+  if (assets.models['covered-car'])
+    return;
+  const gltf = await new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).loadAsync('/city/props/covered-car.glb');
+  r.track(gltf.scene);
+  if (signal.aborted)
+    throw Error('Aborted');
+  assets.models['covered-car'] = gltf.scene;
 }

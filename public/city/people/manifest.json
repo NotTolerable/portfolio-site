@@ -1,0 +1,474 @@
+{
+  "license": "CC0-1.0",
+  "preparation": "scripts/prepare-city-human-assets.mjs",
+  "characters": [
+    {
+      "name": "sam",
+      "source": "https://www.innerscene.com/tools/library/3d-parts/locomotion-collection-sam-3d-person-animated-dc23800f",
+      "sourceSha256": "288af86ec0581d78bb8dc495e036736adfc35f8c7c11dc6a0d6b538ad2c0d7b7",
+      "bytes": 1790924,
+      "sha256": "e0422c84f95edea433cb6c0284cdbdc4976c33be4cc6dc795462852ed3b49ecc",
+      "sourceTriangles": 91610,
+      "triangles": 26442,
+      "primitives": 10,
+      "joints": [
+        "foot_l",
+        "ball_l",
+        "foot_r",
+        "ball_r",
+        "Root",
+        "pelvis",
+        "spine_01",
+        "spine_02",
+        "spine_03",
+        "clavicle_l",
+        "upperarm_l",
+        "lowerarm_l",
+        "hand_l",
+        "index_01_l",
+        "index_02_l",
+        "index_03_l",
+        "middle_01_l",
+        "middle_02_l",
+        "middle_03_l",
+        "pinky_01_l",
+        "pinky_02_l",
+        "pinky_03_l",
+        "ring_01_l",
+        "ring_02_l",
+        "ring_03_l",
+        "thumb_01_l",
+        "thumb_02_l",
+        "thumb_03_l",
+        "lowerarm_prox_l",
+        "clavicle_r",
+        "upperarm_r",
+        "lowerarm_r",
+        "hand_r",
+        "held_accessory",
+        "index_01_r",
+        "index_02_r",
+        "index_03_r",
+        "middle_01_r",
+        "middle_02_r",
+        "middle_03_r",
+        "pinky_01_r",
+        "pinky_02_r",
+        "pinky_03_r",
+        "ring_01_r",
+        "ring_02_r",
+        "ring_03_r",
+        "thumb_01_r",
+        "thumb_02_r",
+        "thumb_03_r",
+        "lowerarm_prox_r",
+        "neck_01",
+        "head",
+        "thigh_l",
+        "calf_l",
+        "thigh_r",
+        "calf_r"
+      ],
+      "clips": [
+        {
+          "name": "Idle_Standing",
+          "duration": 6,
+          "channels": 168
+        },
+        {
+          "name": "Walk_Relaxed",
+          "duration": 2,
+          "channels": 168
+        },
+        {
+          "name": "Walk_Brisk",
+          "duration": 1.7333333492279053,
+          "channels": 168
+        },
+        {
+          "name": "Sit_Stand",
+          "duration": 6,
+          "channels": 168
+        }
+      ],
+      "textures": [
+        {
+          "name": "eyebrow001",
+          "size": [
+            512,
+            512
+          ],
+          "bytes": 33154
+        },
+        {
+          "name": "eyelashes01",
+          "size": [
+            512,
+            512
+          ],
+          "bytes": 47234
+        },
+        {
+          "name": "brown_eye",
+          "size": [
+            1024,
+            1024
+          ],
+          "bytes": 35442
+        },
+        {
+          "name": "male_casualsuit02_normal",
+          "size": [
+            512,
+            512
+          ],
+          "bytes": 18790
+        },
+        {
+          "name": "middleage_lightskinned_male_diffuse2",
+          "size": [
+            1024,
+            1024
+          ],
+          "bytes": 77110
+        },
+        {
+          "name": "shoes01_normal",
+          "size": [
+            512,
+            512
+          ],
+          "bytes": 57092
+        },
+        {
+          "name": "shoes01_diffuse",
+          "size": [
+            1024,
+            1024
+          ],
+          "bytes": 144976
+        },
+        {
+          "name": "short01_diffuse",
+          "size": [
+            1024,
+            1024
+          ],
+          "bytes": 360126
+        }
+      ]
+    },
+    {
+      "name": "harper",
+      "source": "https://www.innerscene.com/tools/library/3d-parts/locomotion-collection-harper-3d-person-animated-797e1e2a",
+      "sourceSha256": "aa8cc1f80f09c6c110ddfcc534b245a41ec2efb0a8035e44e56b229711675db1",
+      "bytes": 1906484,
+      "sha256": "549b46bcb4670996394da78942016a1c6f0ab5c9370be9a55aa0f0ec5997128c",
+      "sourceTriangles": 101414,
+      "triangles": 33504,
+      "primitives": 9,
+      "joints": [
+        "foot_l",
+        "ball_l",
+        "foot_r",
+        "ball_r",
+        "Root",
+        "pelvis",
+        "spine_01",
+        "spine_02",
+        "spine_03",
+        "clavicle_l",
+        "upperarm_l",
+        "lowerarm_l",
+        "hand_l",
+        "index_01_l",
+        "index_02_l",
+        "index_03_l",
+        "middle_01_l",
+        "middle_02_l",
+        "middle_03_l",
+        "pinky_01_l",
+        "pinky_02_l",
+        "pinky_03_l",
+        "ring_01_l",
+        "ring_02_l",
+        "ring_03_l",
+        "thumb_01_l",
+        "thumb_02_l",
+        "thumb_03_l",
+        "lowerarm_prox_l",
+        "clavicle_r",
+        "upperarm_r",
+        "lowerarm_r",
+        "hand_r",
+        "held_accessory",
+        "index_01_r",
+        "index_02_r",
+        "index_03_r",
+        "middle_01_r",
+        "middle_02_r",
+        "middle_03_r",
+        "pinky_01_r",
+        "pinky_02_r",
+        "pinky_03_r",
+        "ring_01_r",
+        "ring_02_r",
+        "ring_03_r",
+        "thumb_01_r",
+        "thumb_02_r",
+        "thumb_03_r",
+        "lowerarm_prox_r",
+        "neck_01",
+        "head",
+        "thigh_l",
+        "calf_l",
+        "thigh_r",
+        "calf_r"
+      ],
+      "clips": [
+        {
+          "name": "Idle_Standing",
+          "duration": 6,
+          "channels": 168
+        },
+        {
+          "name": "Walk_Relaxed",
+          "duration": 2,
+          "channels": 168
+        },
+        {
+          "name": "Walk_Brisk",
+          "duration": 1.7333333492279053,
+          "channels": 168
+        },
+        {
+          "name": "Sit_Stand",
+          "duration": 6,
+          "channels": 168
+        }
+      ],
+      "textures": [
+        {
+          "name": "eyebrow006",
+          "size": [
+            512,
+            512
+          ],
+          "bytes": 9628
+        },
+        {
+          "name": "eyelashes01",
+          "size": [
+            512,
+            512
+          ],
+          "bytes": 47234
+        },
+        {
+          "name": "old_lightskinned_female_diffuse",
+          "size": [
+            1024,
+            1024
+          ],
+          "bytes": 93510
+        },
+        {
+          "name": "brown_eye",
+          "size": [
+            1024,
+            1024
+          ],
+          "bytes": 35442
+        },
+        {
+          "name": "male_elegantsuit01_diffuse",
+          "size": [
+            1024,
+            1024
+          ],
+          "bytes": 17272
+        },
+        {
+          "name": "shoes04_normal",
+          "size": [
+            512,
+            512
+          ],
+          "bytes": 57092
+        },
+        {
+          "name": "shoes04_diffuse",
+          "size": [
+            1024,
+            1024
+          ],
+          "bytes": 94726
+        },
+        {
+          "name": "Harper hair colour-short01_diffuse",
+          "size": [
+            1024,
+            1024
+          ],
+          "bytes": 494244
+        }
+      ]
+    },
+    {
+      "name": "maya",
+      "source": "https://www.innerscene.com/tools/library/3d-parts/locomotion-collection-maya-3d-person-animated-1499b2fd",
+      "sourceSha256": "1b1ffa3d8640c65da89b840bc318be9edc913f734802634357d43a781eef4033",
+      "bytes": 1498540,
+      "sha256": "6532bbbcbc378008d98e41941ff1430669f466b8dea535aa5bb0579612f3dc47",
+      "sourceTriangles": 102036,
+      "triangles": 29658,
+      "primitives": 10,
+      "joints": [
+        "foot_l",
+        "ball_l",
+        "foot_r",
+        "ball_r",
+        "Root",
+        "pelvis",
+        "spine_01",
+        "spine_02",
+        "spine_03",
+        "clavicle_l",
+        "upperarm_l",
+        "lowerarm_l",
+        "hand_l",
+        "index_01_l",
+        "index_02_l",
+        "index_03_l",
+        "middle_01_l",
+        "middle_02_l",
+        "middle_03_l",
+        "pinky_01_l",
+        "pinky_02_l",
+        "pinky_03_l",
+        "ring_01_l",
+        "ring_02_l",
+        "ring_03_l",
+        "thumb_01_l",
+        "thumb_02_l",
+        "thumb_03_l",
+        "lowerarm_prox_l",
+        "clavicle_r",
+        "upperarm_r",
+        "lowerarm_r",
+        "hand_r",
+        "held_accessory",
+        "index_01_r",
+        "index_02_r",
+        "index_03_r",
+        "middle_01_r",
+        "middle_02_r",
+        "middle_03_r",
+        "pinky_01_r",
+        "pinky_02_r",
+        "pinky_03_r",
+        "ring_01_r",
+        "ring_02_r",
+        "ring_03_r",
+        "thumb_01_r",
+        "thumb_02_r",
+        "thumb_03_r",
+        "lowerarm_prox_r",
+        "neck_01",
+        "head",
+        "thigh_l",
+        "calf_l",
+        "thigh_r",
+        "calf_r"
+      ],
+      "clips": [
+        {
+          "name": "Idle_Standing",
+          "duration": 6,
+          "channels": 168
+        },
+        {
+          "name": "Walk_Relaxed",
+          "duration": 2,
+          "channels": 168
+        },
+        {
+          "name": "Walk_Brisk",
+          "duration": 1.7333333492279053,
+          "channels": 168
+        },
+        {
+          "name": "Sit_Stand",
+          "duration": 6,
+          "channels": 168
+        }
+      ],
+      "textures": [
+        {
+          "name": "eyebrow006",
+          "size": [
+            512,
+            512
+          ],
+          "bytes": 9628
+        },
+        {
+          "name": "eyelashes01",
+          "size": [
+            512,
+            512
+          ],
+          "bytes": 47234
+        },
+        {
+          "name": "female_casualsuit01_normal",
+          "size": [
+            512,
+            512
+          ],
+          "bytes": 17726
+        },
+        {
+          "name": "a1be60a3069678d6",
+          "size": [
+            128,
+            128
+          ],
+          "bytes": 142
+        },
+        {
+          "name": "27c4aaf91b2e8566",
+          "size": [
+            128,
+            128
+          ],
+          "bytes": 148
+        },
+        {
+          "name": "brown_eye",
+          "size": [
+            1024,
+            1024
+          ],
+          "bytes": 35442
+        },
+        {
+          "name": "young_lightskinned_female_diffuse3",
+          "size": [
+            1024,
+            1024
+          ],
+          "bytes": 63056
+        },
+        {
+          "name": "ponytail01_diffuse",
+          "size": [
+            1024,
+            1024
+          ],
+          "bytes": 292646
+        }
+      ]
+    }
+  ]
+}

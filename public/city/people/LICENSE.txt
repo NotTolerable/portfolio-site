@@ -1,0 +1,29 @@
+CITY CIVILIAN CHARACTER ASSETS — CC0 1.0 Universal
+
+Sam, Harper and Maya are fictional adult character GLBs from the Innerscene
+Free Parts Library, adapted from MakeHuman / MPFB CC0 graphical assets.
+The individual library pages dedicate the supplied files, including character
+styling, materials and original authored animation, to the public domain (CC0).
+The motions use Innerscene's authored mathematical IK recipes, not mocap data.
+
+Source pages:
+https://www.innerscene.com/tools/library/3d-parts/locomotion-collection-sam-3d-person-animated-dc23800f
+https://www.innerscene.com/tools/library/3d-parts/locomotion-collection-harper-3d-person-animated-797e1e2a
+https://www.innerscene.com/tools/library/3d-parts/locomotion-collection-maya-3d-person-animated-1499b2fd
+
+Library terms and contributor dedication:
+https://www.innerscene.com/tools/library/terms
+
+CC0 legal text:
+https://creativecommons.org/publicdomain/zero/1.0/legalcode
+
+These files may be copied, modified, redistributed and used commercially without
+permission or required attribution. They are provided as-is without warranties.
+
+Repository derivatives reduce mesh density, omit internal teeth, fine scalp
+roots and carry-only accessories, retain four animation clips, resize/re-encode
+textures, and apply Meshopt compression. Original facial features, human
+proportions, clothing, named skeleton and authored motion are retained.
+
+See docs/assets/city-people.md and manifest.json for source hashes, measurements,
+preparation, integration notes and verification. Source/license checked 2026-10-25.

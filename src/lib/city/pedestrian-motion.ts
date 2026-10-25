@@ -15,6 +15,13 @@ export type PedestrianSpec = {
   heading?: number;
 };
 export const pedestrianSpecs: PedestrianSpec[] = [
+  {id:'a-window-wait',district:'a',path:[[-4.4,-20.4]],speed:0,offset:.34,height:1.76,wait:0,heading:-Math.PI/2},
+  {id:'b-queue-one',district:'b',path:[[43.6,-25.85]],speed:0,offset:.1,height:1.8,wait:0,heading:1.1},
+  {id:'b-queue-two',district:'b',path:[[44.55,-25.85]],speed:0,offset:.4,height:1.69,wait:0,heading:-1.4},
+  {id:'b-queue-three',district:'b',path:[[45.5,-25.85]],speed:0,offset:.8,height:1.77,wait:0,heading:-1.3},
+  {id:'c-gym-friend-one',district:'c',path:[[64.65,-54.8]],speed:0,offset:.24,height:1.81,wait:0,heading:Math.PI},
+  {id:'c-gym-friend-two',district:'c',path:[[64.65,-55.8]],speed:0,offset:.68,height:1.7,wait:0,heading:0},
+
   { id: 'a-north', district: 'a', path: [[-4.15, 3.5], [-4.15, 11]], speed: .72, offset: .22, height: 1.82, wait: 2 },
   { id: 'a-south', district: 'a', path: [[-4.96, 3.5], [-4.96, 11]], speed: .65, offset: .78, height: 1.72, wait: 3 },
   { id: 'a-shopper', district: 'a', path: [[4.15, 3], [4.15, -6.2]], speed: .76, offset: .5, height: 1.88, wait: 2.4 },

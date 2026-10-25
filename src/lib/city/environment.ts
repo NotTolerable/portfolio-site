@@ -1,4 +1,5 @@
 import * as T from "three";
+import {dressStreet,stockMarket} from "./street-details";
 import {RoundedBoxGeometry} from "three/addons/geometries/RoundedBoxGeometry.js";
 import {createCityKit,type CityKitCache} from "./building-kit";
 import {CityResources,type CityAssets} from "./assets";
@@ -77,7 +78,7 @@ const {box,plane,rod,label,cloneProp,module,shell,batch,material,brass,iron,ston
   );
   shell(-5.95, 6.5, 3, 4, Math.PI / 2, "#a5acaa", "small", "MAISON 18");
   shell(-5.95, -23, 4, 4, Math.PI / 2, "#aebbc0", "double", "RUE DES ARCHIVES");
-  shell(5.95, 5.5, 4, 3, -Math.PI / 2, "#c3b8aa", "double", "ATELIER NO. 4");
+  const market=shell(5.95,5.5,4,3,-Math.PI/2,"#c3b8aa","double","CORNER MARKET",{open:true});stockMarket(market,kit);
   const cafe = shell(
     5.95,
     -10.5,
@@ -333,6 +334,7 @@ const {box,plane,rod,label,cloneProp,module,shell,batch,material,brass,iron,ston
   for (const [x, z, w, d] of contactPoints)
     plane(scene, w, d, contact, x, 0.115, z, new T.Euler(-Math.PI / 2, 0, 0));
   sign.userData.dynamic=true;
+  dressStreet('a',scene,assets,r,kit.cache);
   kit.finish();
   return {
     sign,
