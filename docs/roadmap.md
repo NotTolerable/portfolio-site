@@ -82,5 +82,5 @@ This roadmap tracks product milestones, not temporary agent tasks or session log
 - [x] Author independent translation, orientation, lens and pacing tracks with continuous forward travel and reversible scroll evaluation.
 - [x] Unify rendered camera progress, captions, composition navigation and spatial landmarks; add object-specific focus and bounded parallax.
 - [x] Complete numerical, browser, responsive, accessibility and visual review of the prototype.
-- [ ] Publish the prototype for camera-direction review.
+- [x] Publish the prototype for camera-direction review and verify its journey, focus, return navigation and document routes on the custom domain.
 - [ ] Expand the full city after the camera prototype is reviewed; this milestone remains distinct from the staging scene.
