@@ -360,3 +360,42 @@ test("skipping pending loading cannot enable the gallery after the assets arrive
   await expect(page.locator("html")).not.toHaveClass(/gallery-enhanced/);
   await expect(page.locator(".gallery-interface")).toBeHidden();
 });
+
+test("only the camera-nearest visible hotspot glows through camera turns and panel focus", async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await ready(page);
+  const hotspots = page.locator(".gallery-hotspot"),
+    glowing = page.locator(".gallery-hotspot.is-nearest");
+  await expect(glowing).toHaveCount(1);
+  // In the establishing composition the middle anchor is physically closest.
+  await expect(hotspots.nth(1)).toHaveClass(/is-nearest/);
+  for (const i of [0, 2])
+    expect(
+      await hotspots
+        .nth(i)
+        .locator("span")
+        .evaluate((node) => getComputedStyle(node).boxShadow),
+    ).toBe("none");
+  // The reverse-side composition brings the lower anchor closest instead.
+  await travel(page, 0.5 / 7.1);
+  await expect(hotspots.nth(2)).toHaveClass(/is-nearest/);
+  await expect(glowing).toHaveCount(1);
+  expect(
+    await hotspots
+      .nth(1)
+      .locator("span")
+      .evaluate((node) => getComputedStyle(node).boxShadow),
+  ).toBe("none");
+  await hotspots.nth(2).click();
+  await expect(page.getByRole("dialog")).toBeVisible();
+  await expect(glowing).toHaveCount(0);
+  await page.keyboard.press("Escape");
+  await expect(glowing).toHaveCount(1);
+  await travel(page, 0.74);
+  await expect(glowing).toHaveCount(0);
+  await travel(page, 0);
+  await expect(hotspots.nth(1)).toHaveClass(/is-nearest/);
+  await expect(glowing).toHaveCount(1);
+});

@@ -510,6 +510,8 @@ export async function createGallery(elements: GalleryElements) {
     skyMaterial.uniforms.auroraMap.value = cursorField.texture;
     skyMaterial.uniforms.ambientMotion.value = reduced || paused ? 0 : 1;
     const active = exhibitAt(progress);
+    let nearestHotspot = -1;
+    let nearestDistance = Infinity;
     hotspots.forEach((el, i) => {
       if (active < 0 || focused || intro.value < 0.96) {
         el.style.opacity = "0";
@@ -521,15 +523,24 @@ export async function createGallery(elements: GalleryElements) {
         .copy(anchorVectors[i])
         .multiplyScalar(exhibits[Math.max(0, active)].size * 0.6);
       groups[active].localToWorld(projection);
+      const distance = projection.distanceToSquared(camera.position);
       projection.project(camera);
       const visible =
+        projection.z > -1 &&
         projection.z < 1 &&
         Math.abs(projection.x) < 0.95 &&
         Math.abs(projection.y) < 0.95;
+      if (visible && distance < nearestDistance) {
+        nearestDistance = distance;
+        nearestHotspot = i;
+      }
       el.tabIndex = visible ? 0 : -1;
       el.style.opacity = visible ? "1" : "0";
       el.style.pointerEvents = visible ? "auto" : "none";
       el.style.transform = `translate(${(projection.x * 0.5 + 0.5) * innerWidth}px,${(-projection.y * 0.5 + 0.5) * innerHeight}px) translate(-50%,-50%)`;
+    });
+    hotspots.forEach((el, i) => {
+      el.classList.toggle("is-nearest", i === nearestHotspot);
     });
     sampleFishMotion(progress, swimTime, fishPosition, fishDirection);
     if (!fishStarted) {

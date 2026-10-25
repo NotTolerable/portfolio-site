@@ -23,7 +23,7 @@ The owner subsequently requested these explicit changes (see [decision 0013](dec
 - A fish that swims along a real route, changes heading, bends its tail and crosses the particle formation.
 - Cursor-following aurora trails, occasional shooting stars, more prominent snow, and damped hover tilt on the ice while retaining drag.
 - A slower, multilingual greeting/name entrance matching the reference’s cadence.
-- Minimal typewritten detail popups with complete records still accessible.
+- Minimal typewritten detail popups with complete records still accessible. Only one clickable circle glows at a time: the visible anchor closest to the camera in 3D space.
 - Finish with the exact resume rendered as a complete page, visually like an image, with no nested scrolling viewport. Include links to the PDF, GitHub, LinkedIn and email. Preserve the existing `/resume` PDF viewer.
 
 ## Confirmed public content

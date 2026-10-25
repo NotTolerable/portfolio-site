@@ -285,11 +285,11 @@ svg {
   position: absolute;
   inset: 13px;
   border-radius: 50%;
-  border: 1px solid #e3f3ff;
-  box-shadow:
-    0 0 12px #e0efff8a,
-    inset 0 0 10px #e0efff33;
-  transition: transform 0.3s;
+  border: 1px solid #adc7d37a;
+  box-shadow: none;
+  transition:
+    transform 0.3s,
+    border-color 0.2s;
 }
 .gallery-hotspot i {
   position: absolute;
@@ -298,8 +298,34 @@ svg {
   border-radius: 50%;
   left: 22px;
   top: 22px;
+  background: #9bb2c580;
+  box-shadow: none;
+}
+.gallery-hotspot.is-nearest span {
+  border-color: #e3f3ff;
+  animation: hotspot-ring-glow 0.22s ease-out both;
+}
+.gallery-hotspot.is-nearest i {
   background: #e7f5ff;
-  box-shadow: 0 0 12px 4px #c7e6ff77;
+  animation: hotspot-core-glow 0.22s ease-out both;
+}
+@keyframes hotspot-ring-glow {
+  from {
+    box-shadow: none;
+  }
+  to {
+    box-shadow:
+      0 0 12px #e0efff8a,
+      inset 0 0 10px #e0efff33;
+  }
+}
+@keyframes hotspot-core-glow {
+  from {
+    box-shadow: none;
+  }
+  to {
+    box-shadow: 0 0 12px 4px #c7e6ff77;
+  }
 }
 .gallery-hotspot:hover span {
   transform: scale(1.3);
