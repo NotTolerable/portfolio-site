@@ -24,4 +24,6 @@ Run `node scripts/prepare-world-assets.mjs /absolute/path/to/source-directory` a
 
 `public/illustrations/observatory-poster.webp` is a capture of this actual scene for loading, reduced motion, no-JavaScript and graphics failure. It is not a project screenshot. The project display diagrams are original conceptual architecture illustrations; they do not claim live product output.
 
+The isolated `/camera-study` prototype reuses these same licensed models, maps and HDR, with original street/court staging geometry and camera choreography. `public/illustrations/camera-study-poster.webp` captures that actual staging scene for loading and graphics failure; it does not represent the finished city or a portfolio project.
+
 The owner’s public resume remains unchanged at `public/documents/Babisan-Pirapakaran-Resume.pdf`. Extended private experience notes are not assets and are not published.

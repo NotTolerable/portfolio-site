@@ -74,3 +74,9 @@ Potential case-study topics include the problem, personal contribution, architec
 - Which further refinements should follow review of the current design?
 - Should a new systems project be developed alongside the portfolio?
 - What hosting budget, domain, cloud experience, and existing accounts are available?
+
+## Critical cinematic-camera addition
+
+The owner requires a continuous physical journey forward through connected nighttime city streets, with old streets/buildings passing behind and new environments emerging ahead. Author distinct camera positions, heights, yaw, pitch and framing; use storefront approaches, side-looking views, controlled orbits and a deliberate transition into an empty nighttime basketball court. Keep translation and orientation independently controllable, transitions smooth and the horizon level. Native scrolling reverses the same route predictably; bounded cursor parallax and object-specific focus cannot disrupt it. Camera arrival, text and hotspots share one rendered progress state.
+
+Build a small prototype with at least four meaningfully different compositions before expanding the full city. `/camera-study` stages six compositions while preserving the current portfolio and all existing factual content/routes. See [DESIGN.md](../DESIGN.md) and [decision 0009](decisions/0009-authored-city-camera.md).

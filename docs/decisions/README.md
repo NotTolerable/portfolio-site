@@ -11,6 +11,8 @@
 - [0007: Grounded district and unified field journal](0007-grounded-district.md) — superseded by 0008.
 - [0008: Continuous camera-led observatory](0008-continuous-observatory.md) — accepted under the owner’s complete technical/creative redesign mandate.
 
+- [0009: Authored city camera and direction prototype](0009-authored-city-camera.md) — accepted; camera prototype before the full city build.
+
 Other choices labeled as proposals in [architecture](../architecture.md) remain undecided.
 
 Use a numbered record such as `0001-site-framework.md` for a significant technical decision. Keep records concise:

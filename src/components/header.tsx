@@ -9,7 +9,7 @@ export function Header(){
   useEffect(()=>{if(!menu)return;const close=(e:KeyboardEvent)=>{if(e.key==='Escape')setMenu(false);};addEventListener('keydown',close);return()=>removeEventListener('keydown',close);},[menu]);
   return <header className="site-header">
     <Link href="/" className="brand" aria-label="Babisan Pirapakaran, home"><Mark/><span className="brand-initials">bp</span><span className="brand-caption">BABISAN PIRAPAKARAN<br/><span>SOFTWARE ENGINEER</span></span></Link>
-    <span className="header-world-label mono">AFTER HOURS <i aria-hidden="true"/> A PERSONAL OBSERVATORY</span>
+    <span className="header-world-label mono">AFTER HOURS <i aria-hidden="true"/> {pathname==='/camera-study'?'CAMERA DIRECTION STUDY':'A PERSONAL OBSERVATORY'}</span>
     <button type="button" className="mobile-menu-toggle" aria-label={menu?'Close navigation':'Open navigation'} aria-expanded={menu} aria-controls="main-navigation" onClick={()=>setMenu(!menu)}>{menu?'Close −':'Index +'}</button>
     <nav id="main-navigation" aria-label="Main navigation" data-open={menu} onClick={()=>setMenu(false)}>
       <DestinationLink id="projects" className={pathname==='/'&&active===1?'is-current':''}>Work</DestinationLink>

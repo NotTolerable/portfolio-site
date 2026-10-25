@@ -1,6 +1,6 @@
 # Roadmap
 
-Updated: 2026-10-24. Current phase: continuous camera-led observatory and immersive content integration.
+Updated: 2026-10-24. Current phase: authored city-camera prototype; the published observatory remains the portfolio baseline.
 
 ## 1. Establish project context
 
@@ -74,3 +74,13 @@ This roadmap tracks product milestones, not temporary agent tasks or session log
 - [x] Preserve full server-rendered reading mode, no-JavaScript content, reduced-motion preferences and graphics/asset failure behavior.
 - [x] Complete final visual, responsive, accessibility and browser verification of the observatory.
 - [x] Publish and verify the redesigned production deployment, including the custom-domain Cloudflare contact-markup boundary.
+
+## 7. Cinematic camera direction prototype
+
+- [x] Record the owner’s independent-channel camera mandate and empty basketball court finale.
+- [x] Add an isolated `/camera-study` route and reuse existing licensed assets for limited street/court staging.
+- [x] Author independent translation, orientation, lens and pacing tracks with continuous forward travel and reversible scroll evaluation.
+- [x] Unify rendered camera progress, captions, composition navigation and spatial landmarks; add object-specific focus and bounded parallax.
+- [x] Complete numerical, browser, responsive, accessibility and visual review of the prototype.
+- [ ] Publish the prototype for camera-direction review.
+- [ ] Expand the full city after the camera prototype is reviewed; this milestone remains distinct from the staging scene.

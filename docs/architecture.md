@@ -1,6 +1,6 @@
 # Architecture
 
-Status: continuous observatory implementation; Next.js/Vercel portfolio; separate AWS showcase remains planned. Updated: 2026-10-24.
+Status: published observatory and isolated authored-camera prototype; Next.js/Vercel portfolio; separate AWS showcase remains planned. Updated: 2026-10-24.
 
 ## Application and hosting
 
@@ -64,3 +64,15 @@ Route 53 handles DNS, not HTTP proxying. CloudFront access to the private S3 ori
 - `tests/portfolio.spec.ts`: current navigation, records, content, preferences, graphics failure, responsive and no-JavaScript behavior.
 - `tests/resume.spec.ts`: native PDF, download, new-tab navigation and accessibility.
 - `src/archive/`: prior cube, image-city and walking-district notes/styles. Former renderer/rig helpers remain dormant; their retained logic tests do not define the active design.
+
+## Cinematic city-camera prototype
+
+[Decision 0009](decisions/0009-authored-city-camera.md) records the owner’s critical camera addition. `/camera-study` is a bounded prototype, not a replacement of the current home environment or a claim that the full city is complete. The shared `WorldProvider` suppresses its observatory canvas/loader on this route to avoid duplicate WebGL loops.
+
+- `src/lib/cinematic-journey.ts`: deterministic translation rail, arc-length pacing map, independent yaw/pitch/lens tracks, bounded additive parallax, quaternion focus blending, horizon leveling and the render-clock journey director.
+- `src/lib/camera-study-scene.ts`: a connected street, storefronts/service bay, corner relay, open gate and empty basketball court. Reuses the existing licensed GLBs/maps; owns its renderer and GPU resources. Projected targets use the director’s actual rendered progress and architectural occlusion proxies.
+- `src/components/camera-study.tsx` / `camera-study.css`: native scroll intent, actual-arrival captions/navigation, keyboard scrubber, object-specific focus dialogs, ambient pause and readable failure/no-JavaScript shot list. React does not receive per-frame pose state.
+- `tests/cinematic-journey.spec.ts`: forward progression, reversibility, smooth pose continuity, level horizon, display-rate consistency, bounded parallax and focus restoration.
+- `tests/camera-study.spec.ts`: real rendered camera poses/orientations, distinct compositions, forward/backward traversal, focus, mobile/keyboard/reduced-motion behavior and graphics failure.
+
+The main orientation track uses authored yaw/pitch channels converted to quaternions rather than six interpolated look targets. Quaternion interpolation handles independent focus transitions; the horizon is explicitly leveled after additive motion. Full city art direction, more detailed architectural assets and rendering polish remain later work.

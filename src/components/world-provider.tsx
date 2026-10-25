@@ -15,6 +15,7 @@ const subscribeMotion=(listener:()=>void)=>{const m=matchMedia('(prefers-reduced
 const motionSnapshot=()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
 export function WorldProvider({children}:{children:React.ReactNode}) {
   const pathname=usePathname();
+  const cameraStudy=pathname==='/camera-study';
   const enhanced=useSyncExternalStore(subscribeHydration,()=>true,()=>false);
   const reduced=useSyncExternalStore(subscribeMotion,motionSnapshot,()=>false);
   const [choice,setChoice]=useState<'auto'|'world'|'reading'>('auto');
@@ -26,7 +27,7 @@ export function WorldProvider({children}:{children:React.ReactNode}) {
   const progress=useRef(0),root=useRef<HTMLDivElement>(null);
   const mode=enhanced&&choice!=='reading'&&status!=='unavailable'&&(!reduced||choice==='world')?'world':'reading';
   const state=useRef<WorldView>({progress:0,project:0,skill:0,focused:false,paused:false,rain:true,reduced:false});
-  const shouldLoad=enhanced&&status!=='unavailable'&&(!reduced||choice==='world');
+  const shouldLoad=!cameraStudy&&enhanced&&status!=='unavailable'&&(!reduced||choice==='world');
   const goTo=useCallback((id:StationId)=>{
     const element=document.getElementById(id);if(!element)return;
     window.scrollTo({top:element.getBoundingClientRect().top+scrollY,behavior:reduced?'instant':'smooth'});
@@ -39,6 +40,7 @@ export function WorldProvider({children}:{children:React.ReactNode}) {
   useEffect(()=>{
     if(!shouldLoad||!canvas.current)return;
     const abort=new AbortController();let scene:Observatory|undefined;
+    queueMicrotask(()=>{if(!abort.signal.aborted)setStatus('loading');});
     import('@/lib/observatory-scene').then(m=>m.createObservatory(canvas.current!,hotspot.current,abort.signal,()=>setStatus('unavailable'))).then(s=>{
       if(abort.signal.aborted){s.dispose();return;}scene=s;engine.current=s;s.setView(state.current);setStatus('ready');
     }).catch(()=>{if(!abort.signal.aborted)setStatus('unavailable');});
@@ -77,16 +79,16 @@ export function WorldProvider({children}:{children:React.ReactNode}) {
     else location.href='mailto:babisanp@gmail.com';
   };
   return <WorldContext.Provider value={{active,enhanced,mode,ready:status==='ready',project,setProject,skill,setSkill,goTo,inspect,toggleMode}}>
-    <div ref={root} className="world-shell" data-mode={mode} data-enhanced={enhanced} data-scene={status} onPointerMove={e=>{if(e.pointerType==='mouse')engine.current?.setPointer((e.clientX/innerWidth-.5)*2,(e.clientY/innerHeight-.5)*2);}} onPointerLeave={()=>engine.current?.setPointer(0,0)}>
-      <div className="world-backdrop" aria-hidden="true"><Image src="/illustrations/observatory-poster.webp" alt="" fill priority sizes="100vw" unoptimized className="world-poster" /><canvas ref={canvas} className="observatory-canvas" /><div className="world-vignette" /><div className="world-grain" /></div>
+    <div ref={root} className="world-shell" data-mode={mode} data-enhanced={enhanced} data-scene={status} data-camera-study={cameraStudy} onPointerMove={e=>{if(e.pointerType==='mouse')engine.current?.setPointer((e.clientX/innerWidth-.5)*2,(e.clientY/innerHeight-.5)*2);}} onPointerLeave={()=>engine.current?.setPointer(0,0)}>
+      {!cameraStudy&&<div className="world-backdrop" aria-hidden="true"><Image src="/illustrations/observatory-poster.webp" alt="" fill priority sizes="100vw" unoptimized className="world-poster" /><canvas ref={canvas} className="observatory-canvas" /><div className="world-vignette" /><div className="world-grain" /></div>}
       {children}
       <button ref={hotspot} className="world-hotspot" type="button" hidden={mode!=='world'||pathname!=='/'||status!=='ready'||!!selection} onPointerEnter={()=>engine.current?.setHover(true)} onPointerLeave={()=>engine.current?.setHover(false)} onFocus={()=>engine.current?.setHover(true)} onBlur={()=>engine.current?.setHover(false)} onClick={hotspotAction}><span className="hotspot-reticle" aria-hidden="true">+</span><span>{['Enter the workshop','Inspect the build','Open the archive','A personal note','Explore the toolkit','Open a channel'][active]} <span aria-hidden="true">↗</span></span></button>
-      {enhanced&&<div className="world-utility">
+      {enhanced&&!cameraStudy&&<div className="world-utility">
         <button type="button" onClick={toggleMode} aria-pressed={mode==='reading'}>{mode==='world'?'Read portfolio':'Explore in 3D'} <span aria-hidden="true">{mode==='world'?'↗':'◈'}</span></button>
         <button type="button" className="atmosphere-button" aria-expanded={settings} aria-controls="atmosphere-settings" onClick={()=>setSettings(!settings)}>Atmosphere <span aria-hidden="true">{settings?'−':'+'}</span></button>
         {settings&&<div id="atmosphere-settings" className="atmosphere-settings"><button type="button" onClick={()=>setPaused(!paused)} aria-pressed={paused}>{paused?'Resume atmosphere':'Pause atmosphere'}</button><button type="button" onClick={()=>setRain(!rain)} aria-pressed={rain}>Rain {rain?'on':'off'}</button><p>{reduced?'Reduced motion is respected.':'Ambient motion only. Navigation stays available.'}</p></div>}
       </div>}
-      {status==='unavailable'&&<p className="graphics-notice" role="status">The 3D view is unavailable. Your full portfolio is here in reading mode.</p>}
+      {!cameraStudy&&status==='unavailable'&&<p className="graphics-notice" role="status">The 3D view is unavailable. Your full portfolio is here in reading mode.</p>}
       {enhanced&&mode==='world'&&pathname==='/'&&<footer className="world-navigation">
         <p className="place-label"><span className="status-dot" />{stations[active].place}<span className="mono">{stations[active].number} / 06</span></p>
         <nav aria-label="World destinations">{stations.map((s,i)=><a key={s.id} href={'/#'+s.id} aria-label={`${s.number} ${s.label}`} aria-current={active===i?'location':undefined} onClick={e=>{e.preventDefault();goTo(s.id);}}><span className="destination-number">{s.number}</span><span>{s.label}</span></a>)}</nav>

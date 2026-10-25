@@ -1,6 +1,6 @@
 # Babisan Pirapakaran — After Hours / The Observatory
 
-Status: owner-authorized continuous immersive redesign. Updated: 2026-10-24.
+Status: published observatory plus an owner-authorized cinematic city-camera prototype; full city expansion follows camera review. Updated: 2026-10-24.
 
 ## Current mandate
 
@@ -10,7 +10,20 @@ The owner explicitly grants full technical, creative, architectural and asset fr
 
 [Samana Studio](https://samanastudio.es/) informs cinematic camera progression, detailed reflective forms, atmosphere, spatial continuity, minimal chrome and negative space. Adapt those principles to an original night-city world. Do not copy its proprietary art, branding, source or studio contact information.
 
-## Art direction
+## Critical addition: cinematic city camera
+
+The owner’s latest direction prioritizes a connected nighttime **street journey ending in an empty basketball court**. The prior six-position rooftop/look-target camera is not the model for the new city. The current homepage remains the published baseline while the isolated `/camera-study` prototype demonstrates the new camera language before the full environment is built.
+
+- Author street-level establishment, storefront approaches, side-looking views, a controlled orbit, changes in elevation/pitch/yaw and a deliberate court finale. Previously visited buildings pass behind; new spaces emerge ahead.
+- Treat translation, orientation, lens and pacing as independent authored channels. A distance-aware spline may supply translation but cannot define the entire direction system. Keep the horizon level.
+- Native scroll advances and reverses the same physical route. Damped cursor parallax is additive and bounded; it cannot overturn the authored composition.
+- Camera arrival, captions, active interactions and projected landmarks share one authoritative rendered progress. Object-specific focus compositions replace the former generic adjustment and restore the same journey point on close.
+- Prototype at least four meaningfully different compositions. The implemented study stages six, using existing licensed models and limited street/court architecture. Its staging density is not the completed city’s visual target.
+- Preserve professional Inter/JetBrains Mono typography, portfolio identity, factual content, keyboard use, reduced motion and graphics-failure access.
+
+See [decision 0009](docs/decisions/0009-authored-city-camera.md). The observatory description below documents the existing published environment; it does not constrain the new city.
+
+## Existing observatory art direction
 
 **After Hours / The Observatory** is a rooftop workshop above a rain-washed city. A slowly moving orbital receiver, detailed optical instruments, an aged radio, electrical relay, work desks, lamp and communications antenna establish a place for curiosity and engineering. They are fictional spatial metaphors, not portraits, project screenshots or claims of laboratory experience.
 
