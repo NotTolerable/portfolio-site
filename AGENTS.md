@@ -3,7 +3,7 @@
 ## Working agreement
 
 - This repository is a job-seeking software engineering portfolio. Read `docs/product-requirements.md`, `docs/architecture.md`, and `docs/roadmap.md` before implementation work.
-- Website implementation is authorized. The current approved direction is a faithful Samana Studio underwater-gallery adaptation, personalized for Babisan Pirapakaran. Follow `DESIGN.md` and `docs/decisions/0012-underwater-portfolio.md`. The owner explicitly canceled the night city; prior character, observatory, court and city-stage requirements are historical, not active. Preserve factual content and `/resume` and `/infrastructure`.
+- Website implementation is authorized. The current approved direction is a faithful Samana Studio underwater-gallery adaptation, personalized for Babisan Pirapakaran. Follow `DESIGN.md`, `docs/decisions/0012-underwater-portfolio.md` and its personal black-ice refinement in `docs/decisions/0013-personal-black-ice.md`. The owner explicitly canceled the night city; prior character, observatory, court and city-stage requirements are historical, not active. Preserve factual content and `/resume` and `/infrastructure`.
 - Keep confirmed requirements separate from proposals and open questions. Do not silently turn a suggested stack or visual direction into an approved decision.
 - Describe demonstrated experience accurately. Do not invent certifications, project outcomes, benchmark results, employment history, or expertise.
 

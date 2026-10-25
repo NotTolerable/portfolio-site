@@ -1,6 +1,6 @@
 # Babisan Pirapakaran — Under the Surface
 
-A personal software engineering portfolio presented as an underwater gallery, closely adapting [Samana Studio](https://samanastudio.es/). Next.js, TypeScript, direct Three.js, GSAP and Lenis combine three project exhibits, authored camera passes, complete experience records and a particle-built processor.
+A personal software engineering portfolio presented as an underwater gallery, closely adapting [Samana Studio](https://samanastudio.es/). Next.js, TypeScript, direct Three.js, GSAP and Lenis combine three black-ice exhibits (introduction/basketball, experience/boxing gloves, projects/dumbbell), authored camera passes, typed detail HUDs, a rotating volumetric processor and a full-page resume finale.
 
 ## Current branches
 
@@ -30,9 +30,9 @@ Browser tests require installed Google Chrome and create a dedicated production 
 
 Axiom, Verilly and Behaviourly retain resume-backed descriptions. Complete experience includes 407 ETR, freelance/contract work, grouped multiplayer infrastructure/performance/anti-cheat/Java development, client builds, plugins, coursework and education. No missing project links, certifications or measured benchmarks are invented; CUDA remains an exploration interest.
 
-The menu offers complete reading mode and animation pause. No JavaScript or unavailable WebGL exposes server-rendered records automatically. Reduced motion skips the entrance/ambient animation and keeps direct scroll navigation. Native detail dialogs support keyboard focus and Escape.
+A multilingual greeting entrance, cursor-driven aurora trails, shooting stars, prominent marine snow, hover tilt and a travelling fish supply restrained interaction. The menu offers complete reading mode and animation pause. No JavaScript or unavailable WebGL exposes server-rendered records automatically. Reduced motion skips the entrance/ambient animation and keeps direct scroll navigation. Native detail dialogs support keyboard focus and Escape.
 
-`/resume` embeds the owner-authorized PDF and provides open/download actions. `/infrastructure` documents the clearly proposed separate AWS static-site flow; it does not claim the portfolio runs on AWS. Email, GitHub and LinkedIn use the owner’s existing public details.
+The finale presents the whole authorized resume page as an image, with PDF, GitHub, LinkedIn and email actions. `/resume` still embeds the original PDF and provides open/download actions. `/infrastructure` documents the clearly proposed separate AWS static-site flow; it does not claim the portfolio runs on AWS. Email, GitHub and LinkedIn use the owner’s existing public details.
 
 ## Design and provenance
 

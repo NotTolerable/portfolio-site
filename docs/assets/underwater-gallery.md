@@ -14,3 +14,9 @@ Sculpture licenses were independently confirmed in original model pages, embedde
 Geist is self-hosted through `@fontsource/geist` under SIL OFL1.1; JetBrains Mono uses its existing self-hosted Fontsource package/license. Runtime uses the CC0 Studio Small 08 HDRI by Sergej Majboroda / Poly Haven, with generated RoomEnvironment as a failure fallback; the original site’s unidentified HDR is not reused.
 
 The original reference’s ice, fish, third sculpture and HDR had no verified reusable provenance and are not included. Ice hulls, physical materials, processor, particle volume, atmosphere and shaders are independently authored here. Gallery artwork and project diagrams are illustrative; neither is an actual product screenshot. Old city/observatory assets remain dormant and retain their original separate provenance records.
+
+## Active personal black-ice exhibits
+
+The initial sculpture-based adaptation is superseded by [decision 0013](../decisions/0013-personal-black-ice.md). The active scene uses original procedural basketball, boxing gloves and dumbbell geometry with original leather, seams, stitching and machined-metal details. The angel and Nike files remain dormant with their attribution intact. Only the CC0 fish and studio HDR are fetched by the active renderer.
+
+`public/documents/resume-preview.png` is a 1530×1980 rendering of the exact one-page authorized resume PDF; the original file is unchanged. Recreate it with `scripts/render-resume-preview.swift` on macOS after changing the PDF. This preview contains the same owner-authorized public information as the PDF.

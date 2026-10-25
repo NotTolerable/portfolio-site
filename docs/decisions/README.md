@@ -44,3 +44,4 @@ Benefits, costs, limitations, and follow-up work.
 Mark a decision accepted only after it has actually been agreed. When a decision changes, preserve its history, mark it superseded, and link to the replacement record. Update the architecture document to describe the current design.
 
 - [0012: Reference-faithful underwater portfolio](0012-underwater-portfolio.md) — current accepted direction, implemented locally.
+- [0013: Personal black-ice exhibits and resume finale](0013-personal-black-ice.md) — current refinement of 0012, implemented locally.

@@ -182,39 +182,58 @@ export function processor() {
   group.rotation.set(0.12, -0.4, -0.17);
   return group;
 }
+/** Samples all six faces and internal layers of a thick CPU, its die, pins and contacts. */
 export function cpuParticleGeometry(count: number) {
   const r = randomSource(521),
     positions = new Float32Array(count * 3),
     seeds = new Float32Array(count);
-  for (let i = 0; i < count; i++) {
-    let x = (r() - 0.5) * 17,
-      y = (r() - 0.5) * 17,
-      z = (r() - 0.5) * 1.6;
-    if (i % 5 === 0) {
-      const side = Math.floor(r() * 4),
-        lane = Math.floor(r() * 28);
-      x = (lane - 13.5) * 0.52;
-      y = 9 + r() * 2;
-      z = (r() - 0.5) * 0.4;
-      const a = (side * Math.PI) / 2;
-      const rx = x * Math.cos(a) - y * Math.sin(a);
-      y = x * Math.sin(a) + y * Math.cos(a);
-      x = rx;
-    } else if (i % 3 === 0) {
-      x = (r() - 0.5) * 12;
-      y = (r() - 0.5) * 12;
-      z = 1.3 + (r() - 0.5) * 0.45;
-    } else {
-      const axis = i % 3;
-      if (axis === 0) x = Math.sign(x) * 8.5;
-      else if (axis === 1) y = Math.sign(y) * 8.5;
-      else z = Math.sign(z) * 0.8;
+  function box(
+    cx: number,
+    cy: number,
+    cz: number,
+    sx: number,
+    sy: number,
+    sz: number,
+  ) {
+    let x = (r() - 0.5) * sx,
+      y = (r() - 0.5) * sy,
+      z = (r() - 0.5) * sz;
+    if (r() > 0.12) {
+      const face = Math.floor(r() * 6);
+      if (face < 2) x = (face === 0 ? -1 : 1) * sx * 0.5;
+      else if (face < 4) y = (face === 2 ? -1 : 1) * sy * 0.5;
+      else z = (face === 4 ? -1 : 1) * sz * 0.5;
     }
-    positions.set([x, y, z], i * 3);
+    return [x + cx, y + cy, z + cz];
+  }
+  for (let i = 0; i < count; i++) {
+    let point: number[];
+    const section = r();
+    if (section < 0.19) {
+      const side = Math.floor(r() * 4),
+        lane = Math.floor(r() * 26);
+      point = box((lane - 12.5) * 0.61, 9.5, -0.35, 0.26, 3, 1);
+      const a = (side * Math.PI) / 2,
+        x = point[0],
+        y = point[1];
+      point[0] = x * Math.cos(a) - y * Math.sin(a);
+      point[1] = x * Math.sin(a) + y * Math.cos(a);
+    } else if (section < 0.49) point = box(0, 0, 2.8, 10.6, 10.6, 2.4);
+    else if (section < 0.56)
+      point = box(
+        (Math.floor(r() * 10) - 4.5) * 1.35,
+        (Math.floor(r() * 10) - 4.5) * 1.35,
+        -2.05,
+        0.42,
+        0.42,
+        0.6,
+      );
+    else point = box(0, 0, 0, 17, 17, 3.2);
+    positions.set(point, i * 3);
     seeds[i] = r();
   }
-  const g = new T.BufferGeometry();
-  g.setAttribute("position", new T.BufferAttribute(positions, 3));
-  g.setAttribute("seed", new T.BufferAttribute(seeds, 1));
-  return g;
+  const geometry = new T.BufferGeometry();
+  geometry.setAttribute("position", new T.BufferAttribute(positions, 3));
+  geometry.setAttribute("seed", new T.BufferAttribute(seeds, 1));
+  return geometry;
 }

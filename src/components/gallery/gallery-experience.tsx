@@ -1,24 +1,13 @@
 "use client";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { gsap } from "gsap";
-import {
-  AboutRecord,
-  ExperienceRecord,
-  ProjectRecord,
-  SkillsRecord,
-} from "@/components/portfolio-records";
-import { PublicContact } from "@/components/public-contact";
 import { exhibits, exhibitAt } from "@/lib/gallery/journey";
+import { loaderMinimumMs } from "@/lib/gallery/motion";
 import type { GalleryController } from "@/lib/gallery/renderer";
+import { SimplePanel, type Panel } from "./typed-panels";
+import { GreetingName } from "./greeting-loader";
+import { ResumeFinale } from "./resume-finale";
 
-type Panel =
-  | "project"
-  | "experience"
-  | "about"
-  | "skills"
-  | "contact"
-  | "credits"
-  | "menu";
 export function GalleryExperience({ children }: { children: ReactNode }) {
   const canvas = useRef<HTMLCanvasElement>(null),
     controller = useRef<GalleryController | null>(null),
@@ -35,6 +24,7 @@ export function GalleryExperience({ children }: { children: ReactNode }) {
     [reading, setReading] = useState(false),
     [active, setActive] = useState(0),
     [panel, setPanel] = useState<Panel | null>(null),
+    [subject, setSubject] = useState(0),
     [paused, setPaused] = useState(false);
   const skipped = useRef(false),
     activeRef = useRef(0),
@@ -69,7 +59,7 @@ export function GalleryExperience({ children }: { children: ReactNode }) {
           ),
           onFailure: failure,
           onLoad: (n) => {
-            if (!cancelled) setLoading(n);
+            if (!cancelled) setLoading((previous) => Math.max(previous, n));
           },
           onProgress: (p) => {
             const chapter = exhibitAt(p);
@@ -132,7 +122,13 @@ export function GalleryExperience({ children }: { children: ReactNode }) {
             else if (location.hash === "#about") openPanel("about");
             else if (location.hash === "#contact") instance.go(1, true);
           },
-          Math.max(0, 1200 - (performance.now() - started)),
+          Math.max(
+            0,
+            (matchMedia("(prefers-reduced-motion: reduce)").matches
+              ? 0
+              : loaderMinimumMs) -
+              (performance.now() - started),
+          ),
         );
       })
       .catch((error) => {
@@ -212,7 +208,8 @@ export function GalleryExperience({ children }: { children: ReactNode }) {
       span.textContent = text;
     };
   }, [active, ready]);
-  function openPanel(next: Panel) {
+  function openPanel(next: Panel, index = 0) {
+    setSubject(index);
     restoreFocus.current =
       document.activeElement instanceof HTMLElement
         ? document.activeElement
@@ -263,7 +260,7 @@ export function GalleryExperience({ children }: { children: ReactNode }) {
           role="status"
           aria-label="Loading interactive portfolio"
         >
-          <div className="loader-name">Babisan</div>
+          <GreetingName />
           <div className="loader-foot">
             <span className="loader-track">
               <i style={{ transform: `scaleX(${loading / 100})` }} />
@@ -304,7 +301,7 @@ export function GalleryExperience({ children }: { children: ReactNode }) {
             onClick={() =>
               reading
                 ? document.getElementById("reading-projects")?.scrollIntoView()
-                : go(0)
+                : go(0.423)
             }
           >
             Work
@@ -358,9 +355,13 @@ export function GalleryExperience({ children }: { children: ReactNode }) {
             </div>
             <button
               className="chapter-detail"
-              onClick={() => openPanel("project")}
+              onClick={() =>
+                openPanel(
+                  i === 0 ? "about" : i === 1 ? "experience" : "project",
+                )
+              }
             >
-              Explore project <span aria-hidden="true">↗</span>
+              {e.action} <span aria-hidden="true">↗</span>
             </button>
           </div>
         ))}
@@ -371,15 +372,24 @@ export function GalleryExperience({ children }: { children: ReactNode }) {
               hotspotRefs.current[i] = node;
             }}
             className="gallery-hotspot"
-            onClick={() =>
-              openPanel(i === 0 ? "project" : i === 1 ? "skills" : "experience")
-            }
+            onClick={() => {
+              if (active === 0)
+                openPanel(i === 0 ? "about" : i === 1 ? "education" : "skills");
+              else if (active === 1) openPanel("experience", [0, 1, 4][i]);
+              else openPanel("project", i);
+            }}
             aria-label={
-              i === 0
-                ? "Explore this project"
-                : i === 1
-                  ? "Explore technical skills"
-                  : "Explore professional experience"
+              active === 0
+                ? ["About Babisan", "Education", "Technical interests"][i]
+                : active === 1
+                  ? [
+                      "407 ETR experience",
+                      "DevRoom experience",
+                      "Game server engineering",
+                    ][i]
+                  : ["Explore Axiom", "Explore Verilly", "Explore Behaviourly"][
+                      i
+                    ]
             }
             tabIndex={active >= 0 ? 0 : -1}
           >
@@ -388,16 +398,14 @@ export function GalleryExperience({ children }: { children: ReactNode }) {
           </button>
         ))}
         <div className="gallery-closing" ref={closing} inert>
-          <h2>i’m babisan.</h2>
+          <h2>one layer deeper.</h2>
           <p className="closing-subtitle">
-            software engineer.
-            <br />
-            always one layer deeper.
+            systems. infrastructure. curiosity, in motion.
           </p>
           <h3>
-            From what it does,
+            Understand the details.
             <br />
-            to how it works.
+            Build the whole thing.
           </h3>
           <p>
             I study Computational Mathematics at Waterloo, with a Computer
@@ -409,46 +417,12 @@ export function GalleryExperience({ children }: { children: ReactNode }) {
             systems that keep everything running. Lately, I’m exploring GPU
             programming and CUDA.
           </p>
-          <button className="closing-link" onClick={() => openPanel("about")}>
-            A little more about me <span aria-hidden="true">↗</span>
+          <button className="closing-link" onClick={() => openPanel("skills")}>
+            Tools & interests <span aria-hidden="true">↗</span>
           </button>
         </div>
         <div className="gallery-finale" ref={finale} inert>
-          <h2>
-            Let’s build something
-            <br />
-            worth understanding.
-          </h2>
-          <button className="contact-cta" onClick={() => openPanel("contact")}>
-            LET’S TALK <span aria-hidden="true">→</span>
-          </button>
-          <div className="social-rail">
-            <a
-              href="https://github.com/NotTolerable"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="GitHub (opens in a new tab)"
-            >
-              GH
-            </a>
-            <a
-              href="https://linkedin.com/in/babisan-p"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="LinkedIn (opens in a new tab)"
-            >
-              in
-            </a>
-            <button
-              onClick={() => openPanel("contact")}
-              aria-label="Email Babisan"
-            >
-              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <rect x="2" y="4" width="20" height="16" rx="3" />
-                <path d="m3 6 9 7 9-7" />
-              </svg>
-            </button>
-          </div>
+          <ResumeFinale />
           <footer>
             © 2026 Babisan Pirapakaran <span>·</span>{" "}
             <button onClick={() => openPanel("credits")}>Credits</button>
@@ -498,13 +472,15 @@ export function GalleryExperience({ children }: { children: ReactNode }) {
               ? "Professional experience"
               : panel === "skills"
                 ? "Technical skills"
-                : panel === "about"
-                  ? "About Babisan"
-                  : panel === "credits"
-                    ? "Credits"
-                    : panel === "menu"
-                      ? "Portfolio menu"
-                      : "Contact Babisan"
+                : panel === "education"
+                  ? "Education"
+                  : panel === "about"
+                    ? "About Babisan"
+                    : panel === "credits"
+                      ? "Credits"
+                      : panel === "menu"
+                        ? "Portfolio menu"
+                        : "Contact Babisan"
         }
         data-lenis-prevent
       >
@@ -517,95 +493,11 @@ export function GalleryExperience({ children }: { children: ReactNode }) {
           >
             ×
           </button>
-          {panel === "project" ? (
-            <ProjectRecord id={exhibits[Math.max(0, active)].id} />
-          ) : panel === "experience" ? (
-            <ExperienceRecord />
-          ) : panel === "about" ? (
-            <AboutRecord />
-          ) : panel === "skills" ? (
-            <>
-              <SkillsRecord />
-              <a className="inline-link" href="/infrastructure">
-                The cloud & infrastructure lab ↗
-              </a>
-            </>
-          ) : panel === "contact" ? (
-            <div className="contact-record">
-              <p className="eyebrow">OPEN CHANNEL</p>
-              <h2>
-                A good place
-                <br />
-                to start.
-              </h2>
-              <p>
-                Opportunities, systems, or something worth exploring. I’d love
-                to hear from you.
-              </p>
-              <PublicContact />
-              <div className="reading-links">
-                <a
-                  href="https://github.com/NotTolerable"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  GitHub ↗
-                </a>
-                <a
-                  href="https://linkedin.com/in/babisan-p"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  LinkedIn ↗
-                </a>
-                <a href="/resume" target="_blank" rel="noopener">
-                  View resume ↗
-                </a>
-              </div>
-            </div>
-          ) : panel === "credits" ? (
-            <div>
-              <p className="eyebrow">CREDITS & ACKNOWLEDGEMENTS</p>
-              <h2>Behind the gallery.</h2>
-              <p>
-                Visual direction and journey reference:{" "}
-                <a
-                  href="https://samanastudio.es/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Samana Studio ↗
-                </a>
-                . Independently implemented for Babisan Pirapakaran with
-                Three.js, GSAP, Lenis and Next.js.
-              </p>
-              <p>
-                “Baby Angel Sculpture” by{" "}
-                <a href="https://skfb.ly/6FPQp">M.Reslan</a> and “Statue Bust of
-                Nike” by <a href="https://skfb.ly/oAvWs">skullreaper134</a>,
-                licensed under{" "}
-                <a href="https://creativecommons.org/licenses/by/4.0/">
-                  CC BY 4.0
-                </a>
-                . Web geometry optimized by Samana Studio; scale and materials
-                adapted here. Artworks are gallery illustrations, not project
-                models.
-              </p>
-              <p>
-                Ice geometry, processor, particle formation, shaders and
-                portfolio interface are original to this implementation.
-                Barramundi Fish by Microsoft is CC0, with resized textures and
-                procedural motion. Studio Small 08 HDRI by Sergej Majboroda /
-                Poly Haven is CC0. Geist is licensed under the SIL Open Font
-                License.
-              </p>
-              <a href="/gallery/ATTRIBUTION.txt">Asset attribution record ↗</a>
-            </div>
-          ) : panel === "menu" ? (
+          {panel === "menu" ? (
             <div className="portfolio-menu">
               <p className="eyebrow">BABISAN PIRAPAKARAN</p>
               <h2>Find your way.</h2>
-              <button onClick={() => go(0)}>
+              <button onClick={() => go(0.423)}>
                 Selected work <span>01</span>
               </button>
               <button onClick={() => setPanel("experience")}>
@@ -623,6 +515,9 @@ export function GalleryExperience({ children }: { children: ReactNode }) {
               <a href="/resume" target="_blank" rel="noopener">
                 Resume <span>↗</span>
               </a>
+              <button onClick={() => go(1)}>
+                Get in touch <span>↗</span>
+              </button>
               <div className="menu-preferences">
                 <button onClick={toggleReading}>
                   {reading ? "Return to gallery" : "Read portfolio without 3D"}
@@ -633,6 +528,12 @@ export function GalleryExperience({ children }: { children: ReactNode }) {
                 <button onClick={() => setPanel("credits")}>Credits</button>
               </div>
             </div>
+          ) : panel ? (
+            <SimplePanel
+              key={`${panel}-${subject}`}
+              panel={panel}
+              subject={subject}
+            />
           ) : null}
         </div>
       </dialog>

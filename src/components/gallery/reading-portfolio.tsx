@@ -4,7 +4,7 @@ import {
   ProjectRecord,
   SkillsRecord,
 } from "@/components/portfolio-records";
-import { PublicContact } from "@/components/public-contact";
+import { ResumeFinale } from "./resume-finale";
 export function ReadingPortfolio() {
   return (
     <div className="reading-portfolio" id="portfolio-record">
@@ -46,31 +46,7 @@ export function ReadingPortfolio() {
         <a href="/infrastructure">Cloud & infrastructure lab ↗</a>
       </section>
       <footer>
-        <h2>
-          Let’s build something
-          <br />
-          worth understanding.
-        </h2>
-        <PublicContact />
-        <div className="reading-links">
-          <a
-            href="https://github.com/NotTolerable"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            GitHub ↗
-          </a>
-          <a
-            href="https://linkedin.com/in/babisan-p"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            LinkedIn ↗
-          </a>
-          <a href="/resume" target="_blank" rel="noopener">
-            Resume ↗
-          </a>
-        </div>
+        <ResumeFinale />
       </footer>
     </div>
   );

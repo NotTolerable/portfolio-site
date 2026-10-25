@@ -13,6 +13,10 @@ Updated 2026-10-25. Active direction: faithful Samana Studio underwater-gallery 
 - [x] Integrate attributed licensed sculpture and CC0 fish assets; independently author ice, atmosphere and processor effects.
 - [x] Provide keyboard dialogs, reading mode, reduced motion, animation pause, mobile layout and graphics/no-script fallback.
 - [x] Update active architecture and visual direction; retain historical decisions and dormant source.
+- [x] Personalize the three black-ice exhibits as introduction/basketball, experience/boxing gloves and projects/dumbbell.
+- [x] Add multilingual entrance timing, minimal typed HUDs, hover tilt, cursor aurora and shooting stars.
+- [x] Replace limited fish/processor rocking with swimming choreography and continuous volumetric rotation.
+- [x] Finish with a complete-page resume preview and direct PDF/contact/social actions.
 - [ ] Publish the redesign if the owner requests deployment. No production merge/push is part of the current request.
 
 ## Content evidence and subsequent work

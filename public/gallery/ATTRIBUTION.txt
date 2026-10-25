@@ -36,3 +36,7 @@ Studio Small 08 HDRI — Sergej Majboroda / Poly Haven, CC0.
 https://polyhaven.com/a/studio_small_08
 https://polyhaven.com/license
 Changes: cool desaturated tint during PMREM preparation.
+
+Personal black-ice revision (2026-10-25): the Baby Angel and Nike assets are dormant and are not loaded by the active gallery. Their source attribution above is retained for the distributed archived files. Basketball, boxing gloves, dumbbell and leather/seam/metal details are original procedural geometry/materials.
+
+resume-preview.png is a full-page rendering of the owner-authorized Babisan-Pirapakaran-Resume.pdf, created using scripts/render-resume-preview.swift (macOS PDFKit). The original PDF remains available unchanged.

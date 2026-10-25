@@ -14,6 +14,18 @@ The owner explicitly canceled the entire city project and requested a faithful [
 
 Preserve the complete pre-redesign working state in a separate Git branch before changes. This is satisfied by `archive/3d-city-2026-10-25` at `8004668`. The redesign is isolated on `redesign/samana-portfolio`; production deployment is not part of this request. Old city/camera prototype URLs redirect to the new homepage.
 
+## Personal black-ice refinement
+
+The owner subsequently requested these explicit changes (see [decision 0013](decisions/0013-personal-black-ice.md)):
+
+- First iceberg: personal introduction with a basketball; second: work experience with boxing gloves; third: all projects with a dumbbell. Use black ice with enough clarity to recognize the interior objects.
+- A genuinely volumetric, continuously rotating particle processor. The separate sports exhibit replaces only the former solid processor.
+- A fish that swims along a real route, changes heading, bends its tail and crosses the particle formation.
+- Cursor-following aurora trails, occasional shooting stars, more prominent snow, and damped hover tilt on the ice while retaining drag.
+- A slower, multilingual greeting/name entrance matching the reference’s cadence.
+- Minimal typewritten detail popups with complete records still accessible.
+- Finish with the exact resume rendered as a complete page, visually like an image, with no nested scrolling viewport. Include links to the PDF, GitHub, LinkedIn and email. Preserve the existing `/resume` PDF viewer.
+
 ## Confirmed public content
 
 - Axiom: C++20 multi-venue execution, in-memory order books, Linux execution-path work, pre-trade risk, deterministic replay and latency benchmark tooling. Measured latency results are not yet published.
@@ -28,9 +40,9 @@ Preserve the complete pre-redesign working state in a separate Git branch before
 
 ## Functional acceptance
 
-1. One homepage renderer and one authoritative scroll journey synchronize the camera, exhibit labels, hotspots, closing copy and contact.
+1. One homepage renderer and one authoritative scroll journey synchronize the camera, exhibit labels, hotspots, closing copy and resume/contact finale.
 2. Scroll reversal returns through the same continuous positions; camera approach, orbit and descent remain smooth and horizon-stable.
-3. Drag rotates exhibits; subtle cursor response never disrupts framing. The processor uses a point volume rather than a solid logo or the original S.
+3. Drag rotates exhibits; subtle cursor response never disrupts framing. The processor uses a thick point volume with continuous Y rotation. Hover tilts the ice smoothly; cursor-driven aurora, marine snow, shooting stars and a travelling fish remain coherent with pause/reduced-motion preferences.
 4. Work, complete experience, resume, contact and infrastructure remain discoverable and functional. Native dialog readers support keyboard access, Escape, scroll and restored focus.
 5. Reading mode, no JavaScript and graphics failure expose all factual content. Reduced motion removes nonessential animation; pausing atmosphere preserves navigation.
 6. Narrow layouts remain readable, without horizontal overflow. Include visible focus, suitable contrast and a skip link.

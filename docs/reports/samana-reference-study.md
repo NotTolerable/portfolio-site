@@ -32,3 +32,15 @@ Browser comparison covers desktop1440×900 and narrow390×844 framing; automated
 - Final Chrome review at 1440×900/DPR1 and 390×844 showed no console errors or horizontal overflow. A short 120-callback desktop animation-frame sample had median and p95 intervals of16.7ms. This is a local browser cadence sample, not a sustained GPU benchmark or a cross-device guarantee.
 - The reference’s ice and processor simulation remain approximations; licensed sculpture matching, palette, framing, shot timing and page structure are verified against the observed reference. No claim of pixel-identical rendering is made.
 - The redesign is local; no GitHub push, production merge or deployment was performed.
+
+## Personal black-ice follow-up — 2026-10-25
+
+The current public reference bundle was rechecked and matched the previously inspected version. Verified greeting timing is ten 320ms slots plus an 800ms final name hold (minimum 4s); the intro approach takes 3.2s. The formation rotates around Y at.05rad/s, and the cursor effect is an advected fading field rather than a directly following disc. Fish behavior uses a scroll entrance, closed swim circuit and quadratic head-to-tail bend amplitude. These measurements informed independent implementations, not copied application code.
+
+The owner’s refinement replaces the sculptures with original sports objects, organizes chapters as introduction/experience/projects, simplifies records to typed HUDs with expandable full details, and replaces the CTA finale with a full-page resume preview and direct contact/PDF links. The processor now has a raised die, thick package, rear contacts and four pin banks; fish and formation motion clocks advance while their scene is visible.
+
+Validation: production build, ESLint and TypeScript pass. The updated full suite passed 22 tests, covering greetings/typing, CPU volume, fish continuity, complete record access, pause/reading, PDF, fallbacks and responsive resume bounds including 390×844, 320×740 and 1024×600. Desktop and mobile Chrome screenshots show all three requested objects through the dark ice, a complete resume page and no console errors or horizontal overflow.
+
+A final short Chrome sample at 1440×900/DPR1 retained median/p95 animation-frame intervals of 16.7ms while the aurora field was active. This is a local cadence sample, not a sustained or cross-device performance guarantee.
+
+After the visible-scene clock and cursor-trail refinements, all 11 gallery checks passed again. The additional complete-resume check also passed at 640×360 landscape and 320×500 portrait. The local preview was shut down after review; no push or deployment was performed.

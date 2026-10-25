@@ -1409,3 +1409,325 @@ svg {
     visibility: hidden !important;
   }
 }
+/* Personal gallery revision: quiet typed HUDs and a complete-page resume finale. */
+.loader-name {
+  font-size: clamp(26px, 6vw, 86px);
+  padding: 0 22px;
+  text-align: center;
+  font-family:
+    var(--font-body), "Nirmala UI", "Yu Gothic", "Microsoft YaHei", sans-serif;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+}
+.gallery-interface {
+  animation-delay: 2.6s;
+}
+.gallery-dialog {
+  width: min(460px, 43vw);
+  margin: auto 4vw auto auto;
+  border: 0;
+  border-top: 1px solid #b7d5e43b;
+  background: linear-gradient(125deg, #07101add, #07101a9e);
+  box-shadow: none;
+  border-radius: 0;
+  backdrop-filter: blur(12px);
+  max-height: 78dvh;
+}
+.gallery-dialog::backdrop {
+  background: #0106101c;
+  backdrop-filter: none;
+}
+.dialog-shell {
+  padding: 38px 28px 30px;
+}
+.dialog-close {
+  right: 4px;
+  top: 3px;
+  border: 0;
+  font-size: 24px;
+  width: 32px;
+  height: 32px;
+  border-radius: 0;
+}
+.hud-record > h2 {
+  font-size: clamp(24px, 2.4vw, 34px);
+  margin: 14px 0 20px;
+  letter-spacing: -0.025em;
+}
+.hud-record .typed-copy {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.95;
+  color: #c4d6e3;
+  white-space: pre-wrap;
+  margin: 0 0 24px;
+  min-height: 4em;
+}
+.type-caret {
+  display: none;
+  width: 6px;
+  height: 13px;
+  background: #bfd3df;
+  margin-left: 4px;
+  vertical-align: -2px;
+  animation: caret-blink 0.8s steps(1) infinite;
+}
+.typed-copy [data-typing="true"] + .type-caret {
+  display: inline-block;
+}
+@keyframes caret-blink {
+  0%,
+  45% {
+    opacity: 1;
+  }
+  46%,
+  100% {
+    opacity: 0;
+  }
+}
+.hud-selector {
+  display: flex;
+  gap: 8px 18px;
+  flex-wrap: wrap;
+  margin: 22px 0 10px;
+}
+.hud-selector button {
+  font-size: 10px;
+  padding: 7px 0;
+  color: #91a9bb;
+  border-bottom: 1px solid transparent;
+}
+.hud-selector button[aria-pressed="true"] {
+  color: #e8f0ff;
+  border-color: #c6e1ed8a;
+}
+.hud-link {
+  font-size: 11px;
+  display: inline-block;
+  padding: 8px 0;
+}
+.full-record {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid #b8d6e31a;
+}
+.full-record > summary {
+  list-style: none;
+  font-size: 11px;
+  color: #b1c6d6;
+  cursor: pointer;
+  padding: 8px 0;
+}
+.full-record > summary::-webkit-details-marker {
+  display: none;
+}
+.full-record > summary span {
+  margin-left: 16px;
+}
+.full-record[open] > div {
+  padding-top: 22px;
+}
+.full-record .record-visual {
+  margin-top: 20px;
+}
+.hud-credit {
+  font: 10px/1.8 var(--font-mono) !important;
+  color: #9fb6c7 !important;
+}
+.gallery-finale {
+  padding: 85px 48px 58px;
+  display: grid;
+  align-content: center;
+  justify-content: center;
+  text-align: left;
+}
+.resume-composition {
+  display: grid;
+  grid-template-columns: minmax(0, auto) minmax(200px, 270px);
+  align-items: center;
+  gap: clamp(30px, 5vw, 90px);
+  max-width: 1100px;
+}
+.resume-sheet {
+  display: block;
+  line-height: 0;
+  box-shadow:
+    0 20px 90px #0009,
+    0 0 70px #b8dce708;
+  transition: transform 0.5s;
+  max-width: 100%;
+}
+.resume-sheet:hover {
+  transform: translateY(-4px);
+}
+.resume-sheet img {
+  display: block;
+  width: auto;
+  height: calc(100dvh - 160px);
+  max-height: 850px;
+  max-width: 100%;
+  object-fit: contain;
+  aspect-ratio: 1530/1980;
+  background: white;
+}
+.gallery-finale .resume-contact h2 {
+  font-size: clamp(30px, 3.5vw, 48px);
+  line-height: 1.1;
+  letter-spacing: -0.035em;
+  text-shadow: none;
+  margin: 16px 0;
+}
+.resume-contact > p:not(.eyebrow) {
+  font-size: 14px;
+  color: #b0c7d8;
+  line-height: 1.7;
+  margin: 16px 0 26px;
+}
+.resume-final-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  font-size: 12px;
+}
+.resume-final-actions > a {
+  width: fit-content;
+  border-bottom: 1px solid #b2d1e344;
+  padding: 6px 0;
+}
+.resume-socials {
+  display: flex;
+  gap: 26px;
+  margin-top: 40px;
+  font-size: 12px;
+}
+.resume-contact .contact-address {
+  margin: 20px 0 0;
+}
+.resume-contact .contact-email {
+  font-size: 13px;
+  white-space: nowrap;
+}
+.gallery-finale footer {
+  font-size: 10px;
+  bottom: 25px;
+}
+@media (max-width: 700px) {
+  .gallery-dialog {
+    width: calc(100% - 32px);
+    max-width: unset;
+    margin: auto 16px 20px;
+    max-height: 76dvh;
+  }
+  .dialog-shell {
+    padding: 34px 22px 24px;
+  }
+  .hud-record > h2 {
+    font-size: 27px;
+  }
+  .hud-record .typed-copy {
+    font-size: 11px;
+  }
+  .gallery-finale {
+    padding: 82px 24px 54px;
+    align-content: center;
+  }
+  .resume-composition {
+    grid-template-columns: 1fr;
+    gap: 18px;
+    justify-items: center;
+  }
+  .resume-sheet img {
+    height: auto;
+    max-height: min(54dvh, 520px);
+    max-width: min(84vw, 400px);
+    width: auto;
+  }
+  .resume-contact {
+    text-align: center;
+  }
+  .resume-contact .eyebrow,
+  .resume-contact > p:not(.eyebrow) {
+    display: none;
+  }
+  .gallery-finale .resume-contact h2 {
+    font-size: 21px;
+    margin: 0 0 12px;
+  }
+  .resume-final-actions {
+    flex-direction: row;
+    justify-content: center;
+    font-size: 10px;
+    gap: 20px;
+  }
+  .resume-socials {
+    margin-top: 17px;
+    justify-content: center;
+    gap: 24px;
+    font-size: 11px;
+  }
+  .resume-contact .contact-address {
+    margin-top: 12px;
+  }
+  .resume-contact .contact-email {
+    font-size: 11px;
+  }
+  .gallery-finale footer {
+    font-size: 9px;
+    bottom: 18px;
+  }
+  .gallery-finale ~ .scroll-hint {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .gallery-interface {
+    animation-delay: 0s;
+  }
+  .type-caret {
+    animation: none;
+  }
+}
+@media (max-width: 700px) and (max-height: 650px) and (orientation: portrait) {
+  .resume-sheet img {
+    max-height: calc(100dvh - 310px);
+  }
+}
+@media (max-width: 700px) and (max-height: 600px) and (orientation: landscape) {
+  .gallery-finale {
+    padding: 70px 20px 45px;
+  }
+  .resume-composition {
+    grid-template-columns: auto minmax(130px, 180px);
+    gap: 24px;
+    align-items: center;
+  }
+  .resume-sheet img {
+    max-height: calc(100dvh - 130px);
+    max-width: 40vw;
+  }
+  .resume-contact {
+    text-align: left;
+  }
+  .gallery-finale .resume-contact h2 {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+  .resume-final-actions {
+    flex-direction: column;
+    gap: 4px;
+    align-items: flex-start;
+    font-size: 10px;
+  }
+  .resume-socials {
+    justify-content: flex-start;
+    gap: 18px;
+    margin-top: 16px;
+    font-size: 10px;
+  }
+  .resume-contact .contact-address {
+    margin-top: 12px;
+  }
+  .resume-contact .contact-email {
+    font-size: 10px;
+  }
+}

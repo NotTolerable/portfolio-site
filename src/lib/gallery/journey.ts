@@ -2,34 +2,40 @@
 import { Vector3 } from "three";
 export const exhibits = [
   {
-    id: "axiom",
-    title: "axiom",
-    subtitle: "closer to the machine",
-    phrases: ["C++20. Linux. Market data.", "The path from event to order."],
+    id: "introduction",
+    title: "babisan.",
+    subtitle: "software engineer. always curious.",
+    phrases: [
+      "Waterloo · Computational Mathematics",
+      "Systems, infrastructure, and what’s underneath.",
+    ],
     center: [0, 0, 0],
     size: 3.6,
+    action: "Meet Babisan",
   },
   {
-    id: "governance",
-    title: "verilly",
-    subtitle: "reasoning, with evidence",
+    id: "experience",
+    title: "experience",
+    subtitle: "built, shipped, and operated.",
     phrases: [
-      "Every claim needs a foundation.",
-      "AI governance & compliance verification.",
+      "Platforms. Infrastructure. Production.",
+      "From game servers to engineering platforms.",
     ],
     center: [-6, -2, -44],
     size: 6,
+    action: "View experience",
   },
   {
-    id: "interview",
-    title: "behaviourly",
-    subtitle: "signals into understanding",
+    id: "projects",
+    title: "projects",
+    subtitle: "ideas, made tangible.",
     phrases: [
-      "Video, speech, and the space between.",
-      "Multimodal interview analysis.",
+      "Axiom. Verilly. Behaviourly.",
+      "A closer look at what I’ve built.",
     ],
     center: [5, 1.5, -86],
     size: 4.5,
+    action: "Explore projects",
   },
 ] as const;
 const spans = [0, 0.25, 0.5, 1.5, 1.75, 2, 3, 3.25, 3.5, 5, 5.9, 7.1];
