@@ -4,7 +4,7 @@ Status: continuous observatory implementation; Next.js/Vercel portfolio; separat
 
 ## Application and hosting
 
-Next.js App Router, React, TypeScript and npm provide server-rendered content and interactive enhancement. Vercel hosts [babisanp.com](https://babisanp.com), project `portfolio-site` under `nottolerables-projects`, connected to `NotTolerable/portfolio-site`; `main` is production. No API, database or application environment variables are required. Credentials and `.vercel/` stay outside Git.
+Next.js App Router, React, TypeScript and npm provide server-rendered content and interactive enhancement. Vercel hosts [babisanp.com](https://babisanp.com), project `portfolio-site` under `nottolerables-projects`, connected to `NotTolerable/portfolio-site`; `main` is production. The custom domain is proxied through Cloudflare. The fixed public contact block uses Cloudflare’s documented `email_off` comments to prevent edge email rewriting from changing the markup before React hydrates; no zone-wide setting change is needed. No API, database or application environment variables are required. Credentials and `.vercel/` stay outside Git.
 
 The owner explicitly lifted previous technical restrictions and requested a complete camera-led portfolio world. [Decision 0008](decisions/0008-continuous-observatory.md) supersedes 0006/0007. Next.js and Three.js remain because they fit the revised requirements, not because the redesign is constrained to them. See [DESIGN.md](../DESIGN.md).
 

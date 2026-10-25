@@ -97,3 +97,10 @@ for(const width of [320,1440])test(`reading and document UI pass accessibility a
 test('the full portfolio works without JavaScript',async({browser})=>{
   const context=await browser.newContext({javaScriptEnabled:false,viewport:{width:375,height:850}});try{const page=await context.newPage();await page.goto('http://127.0.0.1:3012/');await expect(page.getByRole('heading',{level:1})).toBeVisible();for(const name of ['Verilly','Behaviourly','Axiom','Anti-cheat & exploit prevention','University of Waterloo'])await expect(page.getByRole('heading',{name,exact:true}).first()).toBeVisible();await expect(page.locator('#contact a[href="mailto:babisanp@gmail.com"]')).toBeVisible();expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await page.locator('#skills').getByRole('link',{name:'Cloud lab'}).click();await expect(page).toHaveURL(/\/infrastructure$/);}finally{await context.close();}
 });
+
+// The production custom domain uses Cloudflare email rewriting. This server-HTML
+// contract prevents its pre-hydration transform while retaining a native mailto link.
+test('the public contact link is protected from CDN HTML rewriting',async({request})=>{
+  const response=await request.get('/');const html=await response.text();
+  expect(html).toMatch(/<!--email_off--><a class="contact-email" href="mailto:babisanp@gmail\.com">[\s\S]*?<\/a><!--\/email_off-->/);
+});
