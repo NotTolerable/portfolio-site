@@ -1,6 +1,6 @@
 # 0006: A real street and character in the comic night city
 
-Status: accepted; supersedes the image-based rendering approach in 0005.
+Status: superseded by [0008](0008-continuous-observatory.md); previously accepted; supersedes the image-based rendering approach in 0005.
 Date: 2026-10-24
 
 ## Context

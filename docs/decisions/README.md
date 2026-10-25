@@ -6,9 +6,10 @@
 - [0003: Source cube materials](0003-source-cube-materials.md) — retained for the archived cube.
 - [0004: Personal systems composition](0004-personal-systems-portfolio.md) — superseded for the active design by 0005.
 - [0005: Anime-inspired night city](0005-anime-night-city.md) — rendering superseded by 0006; palette retained.
-- [0006: Real street and character journey](0006-street-character-journey.md) — accepted.
+- [0006: Real street and character journey](0006-street-character-journey.md) — superseded by 0008.
 
-- [0007: Grounded district and unified field journal](0007-grounded-district.md) — accepted under the owner’s independent creative/technical mandate.
+- [0007: Grounded district and unified field journal](0007-grounded-district.md) — superseded by 0008.
+- [0008: Continuous camera-led observatory](0008-continuous-observatory.md) — accepted under the owner’s complete technical/creative redesign mandate.
 
 Other choices labeled as proposals in [architecture](../architecture.md) remain undecided.
 

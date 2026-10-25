@@ -1,19 +1,13 @@
-# Babisan Pirapakaran — portfolio
+# Babisan Pirapakaran — After Hours
 
-A personal software engineering portfolio built with Next.js App Router, TypeScript, Three.js, GSAP and Motion. Hosted on Vercel at [babisanp.com](https://babisanp.com).
+A software engineering portfolio built as one continuous, camera-led night-city observatory. Next.js App Router, TypeScript and Three.js serve the experience and its complete server-rendered reading alternative. Hosted at [babisanp.com](https://babisanp.com).
 
-## Deployment
-
-The Vercel project `portfolio-site` is connected to [NotTolerable/portfolio-site](https://github.com/NotTolerable/portfolio-site). Pushes to `main` deploy to production. Vercel detects Next.js and uses its default build settings; no application environment variables are required. The local `.vercel/` account/project link and credentials are excluded from Git. The separate AWS showcase remains planned.
-
-## Local development
+## Development and verification
 
 ```sh
 npm ci
 npm run dev
 ```
-
-## Verification
 
 ```sh
 npm run build
@@ -22,28 +16,30 @@ npm run typecheck
 npm run test:e2e
 ```
 
-Browser checks require installed Google Chrome. They start a separate production server at `127.0.0.1:3012`; build first. Tests cover project/cloud navigation, interest tabs, scroll-driven street progression, scene controls, mouse/touch/keyboard input, reduced motion, responsive accessibility, offscreen drawing suppression, model/WebGL failures and no-JavaScript access. Archived cube state/motion tests remain.
+Browser checks require Google Chrome and start their own production server at `127.0.0.1:3012`; build first. They cover destinations, records/focus, content, persistent cross-route rendering, interests/cloud flow, ambient pause, reduced motion, model/WebGL/context failure, responsive accessibility, PDF download and no-JavaScript access. Retained cube/rig tests exercise dormant archived logic, not active design requirements.
 
 ## Experience
 
-- A real 3D night street with a fictional rigged character, ink-hatched architecture, procedural wet-road lighting, warm/cyan windows and GPU rain. Native scrolling, Auto walk and focused W/S drive a measured, grounded walk with a stable shoulder camera and field notes. No city panorama is projected as the live scene.
-- An immediate semantic introduction, self-hosted Barlow Condensed / Inter / JetBrains Mono, and a direct project link that skips the journey.
-- Bounded drag/arrow camera controls, rain/glow toggles and keyboard pause. One forward render, capped resolution, batched geometry, a sign atlas, instanced windows/contact shadows and adaptive resolution manage GPU cost. Offscreen/hidden scenes stop drawing.
-- A scene-rendered poster for loading, reduced motion and failed graphics/model downloads. Content and native project notes remain usable without JavaScript.
-- Three resume-backed project dossiers for Verilly, Behaviourly and Axiom, with original subject illustrations. Public source/demo links and reproducible results remain pending.
-- A complete experience ledger spanning the 407 ETR internship, freelance/contract development, grouped multiplayer infrastructure and development, AI-assisted client builds, public plugins and education. The owner-authorized resume is embedded at `/resume` with PDF/download links; extended experience notes remain private. GPU/CUDA remains an exploration interest.
-- A clearly labeled `/infrastructure` planning route for a separate static AWS showcase. The actual portfolio runs on Vercel.
+- One persistent rooftop world connects introduction, projects, complete experience, personal background, toolkit and contact. Native scroll drives a continuous camera rail; direct destination links and object-anchored controls provide alternatives.
+- Detailed licensed optical/radio/relay/desk/lamp/searchlight models, modular architecture, PBR surfaces, wet patches, HDR reflections, a static shadow map and GPU rain form the environment. See [asset provenance](docs/assets/observatory.md) and `public/world/LICENSE.txt`.
+- Project and domain selection respond in the actual scene. Native dialog readers present complete factual records with keyboard access, focus handling and readable document layout.
+- JetBrains Mono identity/annotations and professional Inter headings/body replace the former heavy comic typography.
+- Reading mode, initial reduced motion, failed graphics/assets and no JavaScript expose all records. The fallback poster is a capture of the actual world. Ambient movement can be paused independently of navigation.
+- Verilly, Behaviourly and Axiom retain resume-backed descriptions and conceptual illustrations; unprovided live demos/source links/results are not invented. GPU/CUDA remains a learning interest.
+- Complete experience includes 407 ETR, freelance/contract work, grouped multiplayer infrastructure/performance/anti-cheat/Java development, AI-assisted client builds, plugins, coursework and education.
+- `/resume` embeds the exact owner-authorized PDF with direct-file/download links. `/infrastructure` presents a clearly proposed separate AWS architecture. This portfolio runs on Vercel.
+- Owner email, GitHub and LinkedIn come from the published resume. Private extended experience notes are not published.
 
-See [character and scene provenance](docs/assets/street-character.md). Previous [image-city](src/archive/image-city/README.md) and [cube](src/archive/cube-portfolio/README.md) designs are archived and do not load on the active route.
+## Assets
 
-## Scene profiling
+`node scripts/prepare-world-assets.mjs /absolute/path/to/source-downloads` rebuilds the self-hosted model derivatives. See [preparation and licenses](docs/assets/observatory.md). Source geometry and 1k map detail are retained; repeated materials/geometry are shared and GLBs use meshopt compression. The tools are development-only.
 
-With a separate production server running on port 3012, run `node scripts/profile-district.mjs` (add `--walk` for locomotion). It records 100 frames at 1280×900 in headless Chrome with ANGLE SwiftShader, including draw calls, buffer resolution and character asset bytes. Adaptive resolution remains enabled. These figures diagnose regressions; they do not predict a device’s hardware frame rate.
+The former [grounded district](src/archive/grounded-district/README.md), [image-city](src/archive/image-city/README.md) and [cube](src/archive/cube-portfolio/README.md) are dormant archives. Old preparation/profiling scripts target those archived implementations.
 
-`node scripts/prepare-courier.mjs` regenerates the compact reference pose from the licensed source idle clip. The active scene does not download the idle/run FBXs.
+## Deployment
 
-## Context
+Vercel project `portfolio-site` under `nottolerables-projects` is connected to [NotTolerable/portfolio-site](https://github.com/NotTolerable/portfolio-site). Pushes to `main` deploy production with default Next.js settings. No application environment variables are required. `.vercel/`, credentials, environment files, dependencies, builds and browser artifacts are ignored. The separate AWS showcase remains planned.
 
-See [DESIGN.md](DESIGN.md), [product requirements](docs/product-requirements.md), [architecture](docs/architecture.md), [roadmap](docs/roadmap.md), and [decisions](docs/decisions/README.md).
+## Project context
 
-The supplied resume is public at `/resume`. Additional contact and public profile/project-source links are not configured. Supply publishable destinations before adding those links. Environment files, account credentials, dependencies, build output, and browser artifacts are ignored by Git.
+See [design](DESIGN.md), [requirements](docs/product-requirements.md), [architecture](docs/architecture.md), [roadmap](docs/roadmap.md) and [decisions](docs/decisions/README.md). The current experience follows [decision 0008](docs/decisions/0008-continuous-observatory.md), superseding the walking-character composition.

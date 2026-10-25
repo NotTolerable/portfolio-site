@@ -1,0 +1,25 @@
+Poly Haven assets used by the After Hours observatory
+License: CC0 1.0 Universal — https://creativecommons.org/publicdomain/zero/1.0/
+Source license: https://polyhaven.com/license
+
+optics.glb — Industrial Microscope, Lukas Walzer
+https://polyhaven.com/a/industrial_microscope
+radio.glb — Vintage Radio Transceiver, Mateusz Sadek
+https://polyhaven.com/a/vintage_radio_transceiver
+relay.glb — Utility Box 01, James Ray Cock
+https://polyhaven.com/a/utility_box_01
+lamp.glb — Desk Lamp Arm 01, Kuutti Siitonen and Yann Kervran
+https://polyhaven.com/a/desk_lamp_arm_01
+desk.glb — Metal Office Desk, Ulan Cabanilla
+https://polyhaven.com/a/metal_office_desk
+searchlight.glb — Portable Searchlight, Elijah Cragg
+https://polyhaven.com/a/portable_searchlight
+facade.glb — Modular Urban Apartments Facade, James Ray Cock
+https://polyhaven.com/a/modular_urban_apartments_facade
+concrete-*.webp — Concrete Floor Worn 001, Dimitrios Savva and Rico Cilliers
+https://polyhaven.com/a/concrete_floor_worn_001
+city-light.hdr — Modern Buildings Night, Greg Zaal
+https://polyhaven.com/a/modern_buildings_night
+
+Models are local derivatives: meshopt geometry, WebP textures, selected architecture modules.
+Original composition, code, typography, UI and project diagrams are not covered by these asset credits.

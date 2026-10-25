@@ -1,6 +1,6 @@
 # Roadmap
 
-Updated: 2026-10-24. Current phase: grounded After Hours district, unified journal and content refinement.
+Updated: 2026-10-24. Current phase: continuous camera-led observatory and immersive content integration.
 
 ## 1. Establish project context
 
@@ -63,3 +63,14 @@ The earlier systems/cube design was implemented and deployed before this rebrand
 - Any backend, database, analytics, or contact-form service; no current requirement establishes a need.
 
 This roadmap tracks product milestones, not temporary agent tasks or session logs. Revisit it as scope and priorities change.
+
+## 6. Continuous observatory redesign
+
+- [x] Accept the owner’s full creative/technical mandate and supersede the character-led opening/stacked-section composition.
+- [x] Study the public Samana reference and select an original night-city rooftop observatory direction.
+- [x] Integrate properly licensed detailed models, PBR concrete, HDR lighting and original receiver geometry; document provenance and reproducible preparation.
+- [x] Replace character controls with one continuous camera rail, native scroll, direct destinations, bounded parallax and projected landmarks.
+- [x] Integrate projects, complete experience, about, toolkit, contact, embedded resume and the cloud-planning route into the shared world/reader.
+- [x] Preserve full server-rendered reading mode, no-JavaScript content, reduced-motion preferences and graphics/asset failure behavior.
+- [x] Complete final visual, responsive, accessibility and browser verification of the observatory.
+- [ ] Publish and verify the redesigned production deployment.

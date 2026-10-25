@@ -1,6 +1,6 @@
 # 0007: Grounded district and unified field journal
 
-Status: accepted under the owner’s comprehensive creative/technical implementation mandate; refines 0006.
+Status: superseded for the active experience by [0008](0008-continuous-observatory.md); the grounded district is archived.
 Date: 2026-10-24
 
 ## Context

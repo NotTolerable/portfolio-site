@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Header } from "@/components/header";
 
 export const metadata: Metadata = {
   title: "Resume — Babisan Pirapakaran",
@@ -11,11 +10,10 @@ const resume = "/documents/Babisan-Pirapakaran-Resume.pdf";
 
 export default function ResumePage() {
   return <>
-    <Header />
-    <main id="main" className="resume-page shell">
+    <main id="content" className="resume-page route-page shell">
       <Link href="/" className="text-link back-link">← Back to the portfolio</Link>
       <div className="resume-page-heading">
-        <div><p className="eyebrow">BABISAN PIRAPAKARAN / SOFTWARE ENGINEER</p><h1>MY <em>RESUME.</em></h1></div>
+        <div><p className="eyebrow">BABISAN PIRAPAKARAN / SOFTWARE ENGINEER</p><h1>My <em>resume.</em></h1></div>
         <div className="resume-actions">
           <a href={resume} download="Babisan-Pirapakaran-Resume.pdf" className="resume-download">Download PDF <span aria-hidden="true">↓</span></a>
           <a href={resume} target="_blank" rel="noopener" className="resume-direct">Open PDF <span aria-hidden="true">↗</span><span className="visually-hidden"> (opens in a new tab)</span></a>

@@ -1,52 +1,52 @@
-# Babisan Pirapakaran — After hours
+# Babisan Pirapakaran — After Hours / The Observatory
 
-Status: owner-authorized comprehensive game-inspired refinement; After Hours district and field journal. Updated: 2026-10-24.
+Status: owner-authorized continuous immersive redesign. Updated: 2026-10-24.
 
-## Approved brief
+## Current mandate
 
-A personal software engineering portfolio with a cinematic, anime/game-inspired **night city**. The owner clarified that a character must stand and move on an actual street, rather than a projected city panorama. Keep the established navy, cyan, amber and restrained vermilion palette, with rain. The circuit-board city, floating garden, earlier cube, serif composition and flashing/splatter entrances are archived directions.
+The whole portfolio is one continuous, camera-led interactive world. Remove the walking character, its game mechanics and the separation between a 3D opening and conventional stacked portfolio sections. Preserve the identity, all factual portfolio content, resume, cloud planning and working links.
 
-The specific [owner reference](https://www.instagram.com/p/De1njZtRl4t/) shows **Santioni Spirits / The Notturno Experience**, by [Active Theory](https://activetheory.net/), also available at [Santioni](https://santionispirits.com/). Its public video was inspected: engraved 3D surfaces, illustrated characters, moving cameras, bordered caption boxes and sweeping transitions. Adapt that spatial comic language to an original night street; do not copy its alcohol branding, red/ivory world, character, assets or source.
+The owner explicitly grants full technical, creative, architectural and asset freedom. Prior engine, one-pass, procedural-only, character and implementation-preservation constraints are superseded. Keep the night-city atmosphere and prioritize visual quality; asset compression must not become an excuse for simplified placeholder art.
 
-## Creative direction
+[Samana Studio](https://samanastudio.es/) informs cinematic camera progression, detailed reflective forms, atmosphere, spatial continuity, minimal chrome and negative space. Adapt those principles to an original night-city world. Do not copy its proprietary art, branding, source or studio contact information.
 
-The owner authorized an independent, comprehensive refinement of the entire experience: grounded third-person movement, complete environment, deliberate camera, cohesive UI and lower rendering cost. The direction is **After Hours**: a quiet rain-washed district and a personal engineering field journal. Serious third-person games inform weight, pacing and camera restraint; their assets, environments and animation clips are not copied.
+## Art direction
 
-Keep one cool ink/cyan and warm amber material language across the street, project notes, experience ledger, cloud planning and resume. The character remains an original use of the existing stylized licensed rig, not an owner likeness or a promise of photorealistic game fidelity. Prioritize believable contact and a consistent world over more effects.
+**After Hours / The Observatory** is a rooftop workshop above a rain-washed city. A slowly moving orbital receiver, detailed optical instruments, an aged radio, electrical relay, work desks, lamp and communications antenna establish a place for curiosity and engineering. They are fictional spatial metaphors, not portraits, project screenshots or claims of laboratory experience.
 
-## Identity and composition
+Cool blue-black architecture and concrete contrast with warm paper text, restrained cyan illumination and amber practical lights. Reflective metal, worn PBR surfaces, wet patches, cables, repeated architectural details, distant windows and fog establish foreground, midground and depth. Licensed detailed models complement original receiver geometry and authored composition. Keep lighting motivated and contrast deliberate rather than washing every object in ambient light.
 
-- Deep ink `#0b1119`, raised surfaces `#101821`, warm paper `#f3efe5`, cyan illumination and warm muted amber accents. Project dossiers use dark journal panels with light diagrams; warm paper is reserved for small primary actions and the actual resume document.
-- Self-hosted Barlow Condensed bold/black italic headlines, Inter prose and JetBrains Mono chapter labels.
-- The `bp` wordmark, owner’s complete name, software engineering identity and direct project link remain clear and personal. No invented experience, metrics, certifications, studio positioning or decorative Japanese text.
-- Real façades, shop windows, cables, awnings, pavement, street furniture and skyline silhouettes create scale. Fine surface hatching and dark edges supply the comic finish. Wet-road reflections and rain share the character’s world space.
-- A fictional CC0 rigged character with a procedurally authored measured walk inhabits the street; it is not a portrait of the owner. See [character provenance](docs/assets/street-character.md).
+The owner’s latest typography instruction replaces the bold comic face: use self-hosted JetBrains Mono for the name and code annotations, and regular/medium Inter for headings and readable prose. Avoid the former condensed, heavy, italic comic treatment. The owner’s name and software-engineering identity remain immediately clear. Keep the small box mark and `bp` initials. Never add invented certifications, expertise, decorative Japanese copy or fictional portfolio metrics.
 
-## Experience
+## Composition and journey
 
-1. The server-rendered opening shows the name and an actual render of this street while the 3D scene prepares. No blocking loader or separate intro film.
-2. Native scrolling supplies travel intent. The walker accelerates and brakes along a bounded route, while a damped shoulder camera follows actual movement. Auto walk and focused W/S controls also explore the street. Dark field notes link directly to real content. Chapter buttons revisit positions; the persistent project link skips the journey entirely. The horizon/fog fades into journal panels without a large animated wipe.
-3. Drag/Left/Right adjust the view within bounds; hover does not steer. Rain, neon glow and pause controls remain compact. Space pauses automatic motion on the focused scene. Touch preserves native vertical scrolling.
-4. Three resume-backed project dossiers use implementation summaries, original subject illustrations and native expandable notes. Full case studies, public code and reproducible results remain pending.
-5. An editorial Experience ledger covers professional/contract work, grouped multiplayer infrastructure and development, additional client/plugin/coursework builds and education. Use readable task lists, clear role/date metadata and restrained cyan accents; avoid individual game server names and project job titles; label AI-assisted client builds.
-6. A dedicated `/resume` page embeds the owner-supplied PDF. Header and Experience buttons open it in a new tab; a download and direct PDF link remain available. Match the ink/cyan palette and keep navigation usable on narrow screens.
-7. A personal chapter, keyboard-accessible interest tabs and a planned AWS ticket complete the portfolio. Distinguish demonstrated systems/infrastructure work from future interests such as GPU/CUDA.
+One camera rail traverses one connected terrace:
 
-## Movement and rendering
+1. **Arrival / The observatory.** Personal name, software engineering identity, current 407 ETR work, direct Work and Resume links. Receiver and workshop occupy the visual focal area. No blocking movie or loading gate.
+2. **Work / The workshop.** Axiom, Verilly and Behaviourly are selected in a compact index; the physical display switches conceptual architecture diagrams. Each project opens a focused reader with description, technologies, implementation notes and original conceptual illustration. No invented demo/source links or fabricated performance values.
+3. **Experience / The relay archive.** Select professional roles and open the complete record, including grouped game server infrastructure, performance, anti-cheat, Java tooling, client builds, coursework and education. Preserve all owner-confirmed dates and per-network metrics. Omit individual game server names and ownership/volunteer/project job titles. Label AI-assisted client development.
+4. **About / After hours.** A lamp and desk accompany a personal note, Waterloo background, engineering curiosity and anime influence.
+5. **Toolkit / The toolbench.** Explore systems, demonstrated platforms/delivery work and future GPU/CUDA interests. Selection subtly changes the relay’s material response. Link to the planned cloud lab; do not imply it is already deployed on AWS.
+6. **Contact / Open channel.** Direct owner email, verified GitHub/LinkedIn, resume and hosting explanation. Keep navigation open and reversible.
 
-Walking is driven by travelled distance, with bounded speed, acceleration/braking, controlled turns, torso counter-rotation, alternating arms, breathing and weight transfer. Two-bone leg IK anchors feet during stance, lifts them during swing and settles into double support on stop. The route is deliberately flat and bounded; this is not a physics sandbox or a general terrain traversal system.
+The primary experience uses fixed, restrained typography alongside the moving world. Project and experience records open in a native dialog with focus containment, Escape/close and scrollable readable content; the world stays behind it. This reader is intentional document access, not a set of scattered floating cards.
 
-Reuse the existing CC0 model and texture. A small derived reference pose replaces runtime idle/run FBX downloads. The earlier run loader selected a targeting pose rather than its locomotion clip; the new controller does not rely on that clip.
+## Interaction language
 
-Batch geometry, instance windows and contact shadows, and atlas signs. Use one forward render, diffuse architectural lighting, procedural wet-road light pools and selective light halos. No planar reflection render, shadow-map redraw or fullscreen bloom chain. The glow control adjusts the same local light treatment.
+Native scrolling advances the camera; destination links give immediate discoverability. Camera movement eases without sudden zooms or snapping. Pointer parallax is subtle and bounded. A projected landmark control follows its actual 3D position and responds to hover/focus. Never make important information depend on discovering a hotspot.
 
-Cap DPR at 1.25 desktop / 1 mobile, falling to .85 after sustained slow frames. Rain uses 560 / 240 lines in one draw. Stop the render loop when hidden/offscreen, avoid identical paused draws, reuse animation scratch objects and dispose resources on unmount. See [architecture](docs/architecture.md).
+The shared scene persists through internal navigation to `/infrastructure`. `/resume` keeps the same visual shell and embeds the supplied PDF, with direct-file and download controls; requested resume buttons still open it in a new tab.
 
-Keep native scrolling, direct project/resume links and keyboard navigation. A fixed shared header tracks the current journal section. Initial reduced motion avoids WebGL; later changes hold the current scene. Model/graphics failure restores a still captured from the actual district. Native content and PDF links remain usable without JavaScript. Do not promise universal frame rates.
+Use restrained glass on small actions, soft highlights, thin boundaries and clear focus states. Keep text readable without covering the whole environment. On narrow screens, reframe the camera and place a shorter reading area lower in the viewport, with a collapsible index and direct destination navigation.
 
-## Archives
+## Resilience and rendering
 
-- [Former image-based night city](src/archive/image-city/README.md).
-- [Former cube portfolio](src/archive/cube-portfolio/README.md).
+PBR models, HDR environment reflections and material detail are primary tools. Environmental reflections are image-based; they do not mirror local objects in real time. Use a frozen shadow map, batched static geometry, instanced distant windows/buildings, GPU rain and local halos where useful. Retain high-quality source geometry and reduce repeated work before reducing visual detail.
 
-Neither is imported into the active scene.
+The default motion preference, pause/rain controls, tab visibility handling, conservative initial pixel ratio and adaptive fill-rate adjustment prevent unnecessary work. Initial reduced motion defaults to a complete reading view and a still captured from the actual world. An explicit opt-in may show the world with ambient movement disabled and immediate camera navigation. Required model, WebGL or context failure returns to complete reading mode. Core content is server rendered and works without JavaScript. Do not promise universal frame rates.
+
+See [architecture](docs/architecture.md), [decision 0008](docs/decisions/0008-continuous-observatory.md) and [asset provenance](docs/assets/observatory.md).
+
+## Superseded directions
+
+The walking district is [archived](src/archive/grounded-district/README.md). The [image-city](src/archive/image-city/README.md) and [cube](src/archive/cube-portfolio/README.md) remain dormant. Prior serif layouts, circuit-board cities, floating gardens, character controls, splatter/blade/impact entrances and company-style stacked landing sections are not active requirements.

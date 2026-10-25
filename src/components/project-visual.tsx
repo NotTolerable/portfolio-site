@@ -1,10 +1,12 @@
+import { useId } from "react";
 /** Abstract subject illustrations; these are not screenshots or product UIs. */
 export function ProjectVisual({ kind }: { kind: "governance" | "interview" | "axiom" }) {
+  const uid = useId();
   return (
     <div className={`project-visual project-visual-${kind}`} aria-hidden="true">
       <svg viewBox="0 0 600 360" fill="none">
-        <defs><pattern id={`grid-${kind}`} width="28" height="28" patternUnits="userSpaceOnUse"><path d="M28 0H0V28" stroke="currentColor" strokeOpacity=".07" /></pattern></defs>
-        <rect width="600" height="360" fill={`url(#grid-${kind})`} />
+        <defs><pattern id={`${uid}-grid`} width="28" height="28" patternUnits="userSpaceOnUse"><path d="M28 0H0V28" stroke="currentColor" strokeOpacity=".07" /></pattern></defs>
+        <rect width="600" height="360" fill={`url(#${uid}-grid)`} />
         {kind === "axiom" ? <>
           <path d="M70 180h80m300 0h80" stroke="currentColor" strokeWidth="2" />
           <rect x="150" y="70" width="300" height="220" rx="5" fill="#152a35" stroke="currentColor" strokeWidth="2" />

@@ -1,30 +1,21 @@
-"use client";
-
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
-
-export function Header() {
-  const pathname = usePathname();
-  const [section, setSection] = useState("main");
-  useEffect(() => {
-    if (pathname !== "/") return;
-    const sections = ["main", "projects", "experience", "about"].map((id) => document.getElementById(id)).filter((node): node is HTMLElement => !!node);
-    const observer = new IntersectionObserver(() => {
-      const next = sections.filter((node) => node.id !== "main" && node.getBoundingClientRect().top < innerHeight * .42).at(-1)?.id ?? "main";
-      setSection((old) => old === next ? old : next);
-    }, { rootMargin: "-15% 0px -45% 0px", threshold: 0 });
-    sections.forEach((node) => observer.observe(node));
-    return () => observer.disconnect();
-  }, [pathname]);
-  return <header className="site-header shell">
-    <Link href="/#main" className="brand" aria-label="Babisan Pirapakaran, home"><span className="brand-symbol" aria-hidden="true">bp<span>✳</span></span><span className="brand-caption">BABISAN<br />PIRAPAKARAN</span></Link>
-    <nav aria-label="Main navigation">
-      <Link href="/#projects" aria-current={pathname === "/" && section === "projects" ? "location" : undefined}><span>02</span> Work</Link>
-      <Link href="/#experience" aria-current={pathname === "/" && section === "experience" ? "location" : undefined}><span>03</span> Experience</Link>
-      <Link href="/#about" aria-current={pathname === "/" && section === "about" ? "location" : undefined}><span>04</span> About</Link>
-      <Link href="/infrastructure" aria-current={pathname === "/infrastructure" ? "page" : undefined}><span>05</span> Cloud lab <span aria-hidden="true">↗</span></Link>
+'use client';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { Mark } from './icons';
+import { DestinationLink, useWorld } from './world-provider';
+export function Header(){
+  const pathname=usePathname(),{active}=useWorld();const [menu,setMenu]=useState(false);
+  useEffect(()=>{if(!menu)return;const close=(e:KeyboardEvent)=>{if(e.key==='Escape')setMenu(false);};addEventListener('keydown',close);return()=>removeEventListener('keydown',close);},[menu]);
+  return <header className="site-header">
+    <Link href="/" className="brand" aria-label="Babisan Pirapakaran, home"><Mark/><span className="brand-initials">bp</span><span className="brand-caption">BABISAN PIRAPAKARAN<br/><span>SOFTWARE ENGINEER</span></span></Link>
+    <span className="header-world-label mono">AFTER HOURS <i aria-hidden="true"/> A PERSONAL OBSERVATORY</span>
+    <button type="button" className="mobile-menu-toggle" aria-label={menu?'Close navigation':'Open navigation'} aria-expanded={menu} aria-controls="main-navigation" onClick={()=>setMenu(!menu)}>{menu?'Close −':'Index +'}</button>
+    <nav id="main-navigation" aria-label="Main navigation" data-open={menu} onClick={()=>setMenu(false)}>
+      <DestinationLink id="projects" className={pathname==='/'&&active===1?'is-current':''}>Work</DestinationLink>
+      <DestinationLink id="experience" className={pathname==='/'&&active===2?'is-current':''}>Experience</DestinationLink>
+      <DestinationLink id="about" className={pathname==='/'&&active===3?'is-current':''}>About</DestinationLink>
+      <a href="/resume" target="_blank" rel="noopener" className="header-resume">Resume <span aria-hidden="true">↗</span><span className="visually-hidden"> (opens in a new tab)</span></a>
     </nav>
-    <a href="/resume" target="_blank" rel="noopener" className="header-resume" aria-label="Resume (opens in a new tab)" aria-current={pathname === "/resume" ? "page" : undefined}>Resume <span aria-hidden="true">↗</span></a>
   </header>;
 }

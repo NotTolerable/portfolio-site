@@ -5,11 +5,11 @@ test("the resume button opens a new page with the real embedded PDF and a workin
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/");
   const popupPromise = page.waitForEvent("popup");
-  await page.getByRole("link", { name: "Resume (opens in a new tab)", exact: true }).click();
+  await page.getByRole("navigation", { name: "Main navigation" }).getByRole("link", { name: "Resume (opens in a new tab)", exact: true }).click();
   const resumePage = await popupPromise;
   try {
     await expect(resumePage).toHaveURL(/\/resume$/);
-    await expect(resumePage.getByRole("heading", { level: 1 })).toHaveText("MY RESUME.");
+    await expect(resumePage.getByRole("heading", { level: 1 })).toHaveText("My resume.");
     const viewer = resumePage.locator("object[type='application/pdf']");
     await expect(viewer).toBeVisible();
     const resource = (await viewer.getAttribute("data"))!.split("#")[0];

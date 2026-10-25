@@ -1,249 +1,99 @@
-import { expect, test, type Page } from "@playwright/test";
-import AxeBuilder from "@axe-core/playwright";
+import { expect, test, type Page } from '@playwright/test';
+import AxeBuilder from '@axe-core/playwright';
 
-test.use({ viewport: { width: 1280, height: 900 } });
+test.use({viewport:{width:1280,height:900}});
+test.setTimeout(45000);
+async function ready(page:Page){await expect(page.locator('.world-shell')).toHaveAttribute('data-scene','ready',{timeout:25000});}
+async function destination(page:Page,id:string){await page.locator(`.world-navigation a[href='/#${id}']`).click();await expect(page.locator('#'+id)).toHaveAttribute('data-active','true');}
+async function audit(page:Page){const result=await new AxeBuilder({page}).options({iframes:false}).withTags(['wcag2a','wcag2aa','wcag21aa']).analyze();expect(result.violations).toEqual([]);}
 
-async function ready(page: Page) {
-  await expect(page.locator(".world-hero")).toHaveAttribute("data-world", "webgl", { timeout: 20000 });
-  await page.waitForTimeout(1400);
-}
-
-test("the portfolio introduces its owner and keeps project notes and cloud planning accessible", async ({ page }) => {
-  const errors: string[] = [];
-  page.on("pageerror", (e) => errors.push(e.message));
-  await page.goto("/");
-  await expect(page.getByRole("heading", { level: 1, name: "Babisan Pirapakaran" })).toBeVisible();
-  await page.getByRole("link", { name: "Explore my work" }).click();
-  await expect(page).toHaveURL(/#projects$/);
-  const article = page.getByRole("article", { name: /AI GOVERNANCE COMPLIANCE CHECKER/i });
-  await article.locator("summary").focus(); await page.keyboard.press("Enter");
-  await expect(article.getByText("DETAILED WRITE-UP IN PROGRESS")).toBeVisible();
-  await page.keyboard.press("Enter"); await expect(article.locator("details")).not.toHaveAttribute("open");
-  await expect(page.getByRole("article", { name: /AI MOCK INTERVIEW/i })).toBeVisible();
-  await page.getByRole("link", { name: "Explore the plan" }).click();
-  await expect(page).toHaveURL(/\/infrastructure$/);
-  await page.getByRole("button", { name: /02 \/ DELIVERY CloudFront/ }).click();
-  await expect(page.locator(".flow-description")).toContainText("deliver cached assets");
-  await page.getByRole("button", { name: /03 \/ ORIGIN Private S3/ }).click();
-  await expect(page.locator(".flow-description")).toContainText("origin access control");
-  expect(errors).toEqual([]);
-});
-
-test("experience is directly reachable and includes professional, technical game server and AI-assisted work", async ({ page }) => {
-  await page.emulateMedia({ reducedMotion: "reduce" });
-  await page.goto("/");
-  await page.getByRole("navigation", { name: "Main navigation" }).getByRole("link", { name: /Experience/ }).click();
-  await expect(page).toHaveURL(/#experience$/);
-  const experience = page.locator("#experience");
-  await expect(experience.getByRole("heading", { level: 2 })).toBeInViewport();
-  await expect(experience.getByRole("article", { name: "407 ETR" })).toContainText("160 lifecycle policies");
-  await expect(experience.getByRole("heading", { name: "Anti-cheat & exploit prevention" })).toBeVisible();
-  await expect(experience.getByRole("term").filter({ hasText: "Peak concurrent players" })).toBeVisible();
-  await expect(experience.getByText("Client website · AI-assisted development", { exact: true })).toBeVisible();
-  await expect(experience).not.toContainText(/Minecraft|Volunteer|Network Owner/);
-  await expect(page.getByRole("article", { name: /Axiom.*Low-latency/i })).toBeVisible();
-});
-
-test("interests support roving keyboard navigation and distinguish learning from experience", async ({ page }) => {
-  await page.goto("/#about");
-  const systems = page.getByRole("tab", { name: "Systems" });
-  await systems.focus(); await page.keyboard.press("ArrowRight");
-  await expect(page.getByRole("tab", { name: "GPUs" })).toBeFocused();
-  await expect(page.getByRole("tabpanel")).toContainText("areas I’m exploring");
-  await page.keyboard.press("End");
-  await expect(page.getByRole("tab", { name: "Cloud" })).toBeFocused();
-  await expect(page.getByRole("tabpanel")).toContainText("next experiment on the drawing board");
-  await page.keyboard.press("Home");
-  await expect(systems).toBeFocused();
-  await expect(page.getByRole("tabpanel")).toContainText("where I want to go deeper");
-});
-
-test("city motion, pause, lighting and rain controls work without loading the old cube", async ({ page }) => {
-  const requests: string[] = [], errors: string[] = [];
-  page.on("request", (r) => requests.push(r.url()));
-  page.on("pageerror", (e) => errors.push(e.message));
-  page.on("console", (m) => { if (m.type() === "error") errors.push(m.text()); });
-  await page.goto("/"); await ready(page);
-  const canvas = page.locator(".world-stage canvas");
-  const moving = await canvas.screenshot(); await page.waitForTimeout(220);
-  expect((await canvas.screenshot()).equals(moving), "the city atmosphere should animate").toBe(false);
-  await page.getByRole("button", { name: "Pause scene motion" }).click();
-  await page.waitForTimeout(1800);
-  const paused = await canvas.screenshot(); await page.waitForTimeout(220);
-  expect((await canvas.screenshot()).equals(paused), "paused atmosphere must hold still").toBe(true);
-  const rain = page.getByRole("button", { name: "Rain on" }); await rain.click();
-  await expect(page.getByRole("button", { name: "Rain off" })).toHaveAttribute("aria-pressed", "false");
-  await page.getByRole("button", { name: "Neon glow" }).click(); await page.waitForTimeout(1400);
-  expect((await canvas.screenshot()).equals(paused), "neon grading must affect the scene").toBe(false);
-  await page.getByRole("button", { name: "Resume scene motion" }).click();
-  await expect(page.getByRole("button", { name: "Pause scene motion" })).toHaveAttribute("aria-pressed", "false");
-  expect(await canvas.evaluate((c) => (c as HTMLCanvasElement).width / c.clientWidth)).toBeLessThanOrEqual(1.5);
-  expect(requests.filter((r) => r.includes("/textures/resend/") || r.includes("/floating-garden") || r.includes("/illustrations/night-city.webp"))).toEqual([]);
-  await expect(page.locator(".cube-figure, .site-intro, .opening-paper")).toHaveCount(0);
-  expect(requests.some((r) => r.includes("/models/courier/character.fbx"))).toBe(true);
-  expect(requests.filter((r) => /\/(idle|run)\.fbx/.test(r))).toEqual([]);
-  expect(errors).toEqual([]);
-});
-
-test("drag and arrow input change the city view; hover does not", async ({ page }) => {
-  await page.goto("/"); await ready(page);
-  await page.getByRole("button", { name: "Pause scene motion" }).click(); await page.waitForTimeout(1600);
-  const stage = page.getByRole("group", { name: /Interactive 3D night street/ });
-  const canvas = page.locator(".world-stage canvas");
-  const before = await canvas.screenshot();
-  await page.mouse.move(800, 450); await page.mouse.move(950, 500, { steps: 8 }); await page.waitForTimeout(250);
-  expect((await canvas.screenshot()).equals(before), "hover must not steer the camera").toBe(true);
-  await page.mouse.down(); await page.mouse.move(1080, 530, { steps: 8 }); await page.mouse.up(); await page.waitForTimeout(1600);
-  const dragged = await canvas.screenshot(); expect(dragged.equals(before)).toBe(false);
-  await stage.focus(); await page.keyboard.press("ArrowLeft"); await page.waitForTimeout(1600);
-  expect((await canvas.screenshot()).equals(dragged)).toBe(false);
-  await page.keyboard.press(" "); await expect(page.getByRole("button", { name: "Pause scene motion" })).toBeVisible();
-});
-
-
-test("scrolling follows the character through real street geometry and returns to the arrival", async ({ page }) => {
-  await page.goto("/"); await ready(page);
-  await page.getByRole("button", { name: "Pause scene motion" }).click();
-  await page.waitForTimeout(1200);
-  const canvas = page.locator(".world-stage canvas"); const arrival = await canvas.screenshot();
-  await page.getByRole("button", { name: "Chapter 3: Experience" }).click();
-  await expect(page.locator(".world-hero")).toHaveAttribute("data-chapter", "2");
-  await expect(page.locator(".journey-caption-1")).toBeVisible();
-  await page.waitForTimeout(1600);
-  expect((await canvas.screenshot()).equals(arrival), "the camera must travel beyond its initial street view").toBe(false);
-  await page.getByRole("button", { name: "Chapter 1: Arrival" }).click();
-  await expect(page.locator(".world-hero")).toHaveAttribute("data-chapter", "0");
-  await page.waitForTimeout(1800);
-  await expect(page.locator(".hero-copy")).toHaveCSS("opacity", "1");
-});
-
-test("auto walk and focused keyboard travel move the camera through the district", async ({ page }) => {
-  await page.addInitScript(() => {
-    const names = new WeakMap<WebGLUniformLocation, string>();
-    const locate = WebGL2RenderingContext.prototype.getUniformLocation;
-    const update = WebGL2RenderingContext.prototype.uniformMatrix4fv;
-    WebGL2RenderingContext.prototype.getUniformLocation = function (program, name) {
-      const location = locate.call(this, program, name); if (location) names.set(location, name); return location;
-    };
-    WebGL2RenderingContext.prototype.uniformMatrix4fv = function (location, transpose, data, ...offsets) {
-      if (location && names.get(location) === "viewMatrix") (window as Window & { __districtCamera?: number[] }).__districtCamera = Array.from(data);
-      return update.call(this, location, transpose, data, ...offsets);
-    };
-  });
-  await page.goto("/"); await ready(page);
-  const camera = () => page.evaluate(() => (window as Window & { __districtCamera?: number[] }).__districtCamera?.[14] ?? 0);
-  const arrival = await camera();
-  await page.getByRole("button", { name: /Auto walk/ }).click(); await page.waitForTimeout(1200);
-  expect(Math.abs(await camera() - arrival), "auto walk must advance the actual 3D camera").toBeGreaterThan(.15);
-  await page.getByRole("button", { name: /Auto walk/ }).click(); await page.waitForTimeout(1800);
-  const stage = page.getByRole("group", { name: /Interactive 3D night street/ }); await stage.focus();
-  const stopped = await camera(); await page.keyboard.down("w"); await page.waitForTimeout(900); await page.keyboard.up("w");
-  expect(Math.abs(await camera() - stopped), "W must produce physical travel").toBeGreaterThan(.1);
-  await page.getByRole("button", { name: "Pause scene motion" }).click(); await page.waitForTimeout(1800);
-  const paused = await camera(); await page.waitForTimeout(300);
-  expect(await camera()).toBe(paused);
-});
-
-test("the scene stops issuing draw calls offscreen", async ({ page }) => {
-  await page.addInitScript(() => {
-    const state = window as Window & { __worldDraws?: number }; state.__worldDraws = 0;
-    for (const method of ["drawArrays", "drawElements"] as const) {
-      const original = WebGL2RenderingContext.prototype[method];
-      Object.defineProperty(WebGL2RenderingContext.prototype, method, { value: function (this: WebGL2RenderingContext, ...args: unknown[]) { state.__worldDraws!++; return Reflect.apply(original, this, args); } });
-    }
-  });
-  await page.goto("/"); await ready(page);
-  const draws = () => page.evaluate(() => (window as Window & { __worldDraws?: number }).__worldDraws ?? 0);
-  expect(await draws()).toBeGreaterThan(0);
-  await page.locator("#about").scrollIntoViewIfNeeded(); await page.waitForTimeout(1000);
-  const before = await draws(); await page.waitForTimeout(300);
-  expect(await draws(), "hidden scene must not use the GPU").toBe(before);
-});
-
-test("responsive pages and reduced motion remain readable and pass automated accessibility checks", async ({ page }) => {
-  await page.emulateMedia({ reducedMotion: "reduce" });
-  for (const width of [320, 390, 768, 1280]) {
-    await page.setViewportSize({ width, height: 900 }); await page.goto("/"); await page.evaluate(() => document.fonts.ready);
-    await expect(page.locator(".world-hero")).toHaveAttribute("data-world", "still");
-    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `overflow at ${width}px`).toBe(true);
-    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-    expect(await page.locator(".world-poster img").evaluate((i) => (i as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
-    if (width === 390 || width === 1280) {
-      await page.screenshot({ path: `test-results/night-city-${width}.png`, fullPage: true });
-      const result = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa"]).analyze(); expect(result.violations).toEqual([]);
-    }
+test('one persistent world connects every destination and contains no character/game controls',async({page})=>{
+  test.setTimeout(60000);const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));const requests:string[]=[];page.on('request',r=>requests.push(r.url()));
+  await page.goto('/');await ready(page);await expect(page.getByRole('heading',{level:1})).toContainText('Pirapakaran');
+  await page.locator('canvas').evaluate(c=>c.setAttribute('data-persistence-test','retained'));
+  for(const [id,name]of [['projects','Things'],['experience','systems'],['about','deeper'],['skills','curiosity'],['contact','hello']]){
+    await destination(page,id);await expect(page.locator('#'+id).getByRole('heading',{level:2}).first()).toContainText(name);
   }
-  await page.keyboard.press("Tab"); await expect(page.getByRole("link", { name: "Skip to content" })).toBeFocused();
-  await page.goto("/infrastructure");
-  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-  const result = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa"]).analyze(); expect(result.violations).toEqual([]);
+  await expect.poll(async()=>Number(await page.locator('canvas').getAttribute('data-camera')),{timeout:12000}).toBeGreaterThan(4.8);
+  await expect(page.locator('canvas')).toHaveAttribute('data-persistence-test','retained');
+  await expect(page.locator('#contact a[href="mailto:babisanp@gmail.com"]')).toBeVisible();
+  expect(requests.some(r=>/courier|character\.fbx|run\.fbx|resend/.test(r))).toBe(false);expect(errors).toEqual([]);
 });
 
-test("unavailable WebGL preserves the artwork and project navigation", async ({ page }) => {
-  await page.addInitScript(() => {
-    const original = HTMLCanvasElement.prototype.getContext;
-    HTMLCanvasElement.prototype.getContext = function (this: HTMLCanvasElement, ...args: Parameters<typeof original>) {
-      if (String(args[0]).includes("webgl")) return null;
-      return original.apply(this, args);
-    } as typeof original;
-  });
-  await page.goto("/");
-  await expect(page.locator(".world-hero")).toHaveAttribute("data-world", "fallback", { timeout: 20000 });
-  await expect(page.getByRole("img", { name: "Illustrated night street with a character." })).toBeVisible();
-  await expect(page.locator(".world-poster")).toHaveCSS("opacity", "1");
-  await page.getByRole("link", { name: "Explore my work" }).click(); await expect(page).toHaveURL(/#projects$/);
+test('project selection opens complete records, traps focus and restores the initiating button',async({page})=>{
+  await page.goto('/#projects');await ready(page);
+  const switcher=page.getByRole('group',{name:'Select a project'});
+  for(const name of ['Verilly','Behaviourly','Axiom']){
+    await switcher.getByRole('button',{name:new RegExp(name)}).click();
+    const trigger=page.getByRole('button',{name:'Inside '+name});await trigger.focus();await page.keyboard.press('Enter');
+    const dialog=page.getByRole('dialog',{name:'Project dossier'});await expect(dialog).toBeVisible();await expect(dialog.getByRole('heading',{level:2})).toHaveText(name);
+    await expect(dialog.getByText('Behind the build',{exact:true})).toBeVisible();
+    await page.keyboard.press('Shift+Tab');expect(await page.evaluate(()=>!!document.activeElement?.closest('dialog'))).toBe(true);
+    await page.keyboard.press('Escape');await expect(dialog).not.toBeVisible();await expect(trigger).toBeFocused();
+  }
 });
 
-test("a failed character download preserves the poster, owner and project links", async ({ page }) => {
-  const errors: string[] = []; page.on("pageerror", (e) => errors.push(e.message));
-  await page.route("**/models/courier/character.fbx", (route) => route.abort());
-  await page.goto("/");
-  await expect(page.locator(".world-hero")).toHaveAttribute("data-world", "fallback", { timeout: 20000 });
-  await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-  await page.getByRole("link", { name: "Explore my work" }).click(); await expect(page).toHaveURL(/#projects$/);
-  expect(errors).toEqual([]);
+test('the experience archive preserves complete, accurate technical history',async({page})=>{
+  await page.goto('/#experience');await expect(page.locator('#experience')).toHaveAttribute('data-active','true');
+  await page.getByRole('button',{name:'DevRoom',exact:true}).click();await expect(page.locator('.role-preview')).toContainText('20+ client deployments');
+  await page.getByRole('button',{name:'Open the complete experience archive'}).click();const dialog=page.getByRole('dialog');
+  for(const value of ['160 lifecycle policies','more than four hours to 15 minutes','50+ developers','40+ AWS','100+ engineers','more than ten','Sep 2024','May 2023','80%','550 users','Polaris Studios','Anti-cheat & exploit prevention','vector math','Grand River Analytics','CaseCommons','Coursework builds','Expected 2029'])await expect(dialog).toContainText(value);
+  await expect(dialog).not.toContainText(/Minecraft|Volunteer|Network Owner/);await expect(dialog).toContainText('On an individual game server network');
 });
 
-test("a lost GPU context restores the still city and leaves navigation usable", async ({ page }) => {
-  await page.goto("/"); await ready(page);
-  const supported = await page.locator(".world-stage canvas").evaluate((canvas) => {
-    const gl = (canvas as HTMLCanvasElement).getContext("webgl2");
-    const extension = gl?.getExtension("WEBGL_lose_context");
-    extension?.loseContext(); return Boolean(extension);
-  });
-  expect(supported).toBe(true);
-  await expect(page.locator(".world-hero")).toHaveAttribute("data-world", "fallback");
-  await expect(page.locator(".world-poster")).toHaveCSS("opacity", "1");
-  await expect(page.getByRole("button", { name: "Pause scene motion" })).toHaveCount(0);
-  await page.getByRole("link", { name: "Explore my work" }).click(); await expect(page).toHaveURL(/#projects$/);
+test('toolkit interests support keyboard navigation and cloud planning preserves the same canvas',async({page})=>{
+  await page.goto('/#skills');await ready(page);await page.locator('canvas').evaluate(c=>c.setAttribute('data-persistence-test','retained'));
+  await page.getByRole('button',{name:'Exploration',exact:true}).click();await expect(page.locator('.domain-preview')).toContainText('learning interests');
+  await page.locator('#skills').getByRole('button',{name:'Explore the toolkit',exact:true}).click();const dialog=page.getByRole('dialog');const tabs=dialog.getByRole('tablist',{name:'Engineering interests'});
+  await tabs.getByRole('tab',{name:'Systems'}).focus();await page.keyboard.press('ArrowRight');await expect(tabs.getByRole('tab',{name:'GPUs'})).toBeFocused();await expect(dialog.getByRole('tabpanel')).toContainText('areas I’m exploring');
+  await page.keyboard.press('End');await expect(tabs.getByRole('tab',{name:'Cloud'})).toHaveAttribute('aria-selected','true');await page.keyboard.press('Escape');
+  await page.locator('#skills').getByRole('link',{name:'Cloud lab'}).click();await expect(page).toHaveURL('/infrastructure');await expect(page.locator('canvas')).toHaveAttribute('data-persistence-test','retained');
+  await page.getByRole('button',{name:/02 \/ DELIVERY CloudFront/}).click();await expect(page.locator('.flow-description')).toContainText('deliver cached assets');
+  await page.getByRole('button',{name:/03 \/ ORIGIN Private S3/}).click();await expect(page.locator('.flow-description')).toContainText('origin access control');await expect(page.getByText('This portfolio is a Next.js app hosted on Vercel.',{exact:false})).toBeVisible();
+  await page.getByRole('navigation',{name:'Main navigation'}).getByRole('link',{name:'Experience',exact:true}).click();await expect(page).toHaveURL('/#experience');await expect(page.locator('#experience')).toHaveAttribute('data-active','true');await expect(page.locator('canvas')).toHaveAttribute('data-persistence-test','retained');
 });
 
-test("mobile touch dragging and cancellation work within the reduced pixel budget", async ({ browser }) => {
-  const context = await browser.newContext({ viewport: { width: 390, height: 900 }, deviceScaleFactor: 3, hasTouch: true, isMobile: true });
-  try {
-    const page = await context.newPage(); await page.goto("http://127.0.0.1:3012/"); await ready(page);
-    await page.getByRole("button", { name: "Pause scene motion" }).click(); await page.waitForTimeout(1000);
-    const canvas = page.locator(".world-stage canvas"); const before = await canvas.screenshot();
-    const session = await context.newCDPSession(page);
-    await session.send("Input.dispatchTouchEvent", { type: "touchStart", touchPoints: [{ x: 220, y: 530 }] });
-    for (let i = 1; i <= 5; i++) await session.send("Input.dispatchTouchEvent", { type: "touchMove", touchPoints: [{ x: 220 + i * 14, y: 530 }] });
-    await session.send("Input.dispatchTouchEvent", { type: "touchCancel", touchPoints: [] }); await page.waitForTimeout(1700);
-    const dragged = await canvas.screenshot(); expect(dragged.equals(before)).toBe(false);
-    await page.mouse.move(280, 540); await page.mouse.move(330, 545, { steps: 5 }); await page.waitForTimeout(300);
-    expect((await canvas.screenshot()).equals(dragged), "cancelled touches must release the camera").toBe(true);
-    expect(await canvas.evaluate((c) => (c as HTMLCanvasElement).width / c.clientWidth)).toBeLessThanOrEqual(1.25);
-    await session.detach();
-  } finally { await context.close(); }
+test('ambient pause stops unchanged rendering while camera navigation still works',async({page})=>{
+  await page.goto('/');await ready(page);await page.getByRole('button',{name:'Atmosphere'}).click();await page.getByRole('button',{name:'Pause atmosphere'}).click();await page.mouse.move(0,0);await page.waitForTimeout(2500);
+  const before=Number(await page.locator('canvas').getAttribute('data-draws'));await page.waitForTimeout(600);const after=Number(await page.locator('canvas').getAttribute('data-draws'));expect(after-before).toBeLessThan(3);
+  await destination(page,'projects');await expect.poll(async()=>Number(await page.locator('canvas').getAttribute('data-camera')),{timeout:10000}).toBeGreaterThan(.9);
+  await page.getByRole('button',{name:'Rain on'}).click();await expect(page.getByRole('button',{name:'Rain off'})).toHaveAttribute('aria-pressed','false');
 });
 
-test("without JavaScript the full portfolio and native project notes remain usable", async ({ browser }) => {
-  const context = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 390, height: 900 } });
-  try {
-    const page = await context.newPage(); await page.goto("http://127.0.0.1:3012/");
-    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-    await expect(page.locator(".world-poster")).toBeVisible();
-    const article = page.getByRole("article", { name: /AI MOCK INTERVIEW/i }); await article.locator("summary").click();
-    await expect(article.getByText("DETAILED WRITE-UP IN PROGRESS")).toBeVisible();
-    await page.getByRole("link", { name: "Explore the plan" }).click(); await expect(page).toHaveURL(/\/infrastructure$/);
-  } finally { await context.close(); }
+test('reduced motion defaults to complete reading mode and permits an explicit still world',async({page})=>{
+  const requests:string[]=[];page.on('request',r=>requests.push(r.url()));await page.emulateMedia({reducedMotion:'reduce'});await page.goto('/');
+  await expect(page.locator('.world-shell')).toHaveAttribute('data-mode','reading');await expect(page.getByRole('heading',{name:'Anti-cheat & exploit prevention',exact:true})).toBeVisible();expect(requests.some(r=>r.endsWith('.glb'))).toBe(false);
+  await audit(page);await page.getByRole('button',{name:'Explore in 3D'}).click();await ready(page);await destination(page,'projects');await expect.poll(async()=>Number(await page.locator('canvas').getAttribute('data-camera'))).toBe(1);
+  await page.waitForTimeout(700);const draws=await page.locator('canvas').getAttribute('data-draws');await page.waitForTimeout(400);expect(await page.locator('canvas').getAttribute('data-draws')).toBe(draws);
+});
+
+test('reading view is reversible without losing content or the scene',async({page})=>{
+  await page.goto('/');await ready(page);await page.getByRole('button',{name:'Read portfolio'}).click();await expect(page.locator('.world-shell')).toHaveAttribute('data-mode','reading');
+  await expect(page.getByRole('heading',{name:'Verilly',exact:true})).toBeVisible();await expect(page.getByRole('heading',{name:'Anti-cheat & exploit prevention',exact:true})).toBeVisible();
+  await page.getByRole('button',{name:'Explore in 3D'}).click();await expect(page.locator('.world-shell')).toHaveAttribute('data-mode','world');await expect(page.getByRole('heading',{level:1})).toBeVisible();
+});
+
+for(const failure of ['webgl','asset','context'])test(`${failure} failure leaves all content and resume links usable`,async({page})=>{
+  if(failure==='webgl')await page.addInitScript(()=>{const original=HTMLCanvasElement.prototype.getContext;HTMLCanvasElement.prototype.getContext=function(this:HTMLCanvasElement,type:string,...args:unknown[]){if(type==='webgl'||type==='webgl2')return null;return Reflect.apply(original,this,[type,...args]);} as typeof original;});
+  if(failure==='asset')await page.route('**/world/optics.glb',r=>r.abort());
+  await page.goto('/');if(failure==='context'){await ready(page);await page.locator('canvas').evaluate(c=>c.dispatchEvent(new Event('webglcontextlost',{cancelable:true})));}
+  await expect(page.locator('.world-shell')).toHaveAttribute('data-scene','unavailable',{timeout:25000});await expect(page.locator('.world-shell')).toHaveAttribute('data-mode','reading');
+  await expect(page.getByRole('heading',{name:'Axiom',exact:true})).toBeVisible();await expect(page.getByRole('heading',{name:'Anti-cheat & exploit prevention',exact:true})).toBeVisible();await expect(page.locator('#contact a[href="mailto:babisanp@gmail.com"]')).toBeVisible();
+  const pdf=await page.request.get('/documents/Babisan-Pirapakaran-Resume.pdf');expect(pdf.ok()).toBe(true);
+});
+
+test('mobile destinations, index, records and native touch scrolling remain usable',async({page})=>{
+  await page.setViewportSize({width:390,height:844});await page.goto('/');await ready(page);await expect(page.getByRole('heading',{level:1})).toBeInViewport();expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+  await page.getByRole('button',{name:'Open navigation'}).click();await page.getByRole('navigation',{name:'Main navigation'}).getByRole('link',{name:'Experience',exact:true}).click();await expect(page.locator('#experience')).toHaveAttribute('data-active','true');
+  await page.getByRole('button',{name:'Open the complete experience archive'}).click();await expect(page.getByRole('dialog')).toBeVisible();expect(await page.evaluate(()=>document.querySelector('dialog')!.getBoundingClientRect().right<=innerWidth)).toBe(true);await page.getByRole('button',{name:'Close record'}).click();
+  await page.mouse.wheel(0,900);await expect(page.locator('#about')).toHaveAttribute('data-active','true');await audit(page);
+});
+
+for(const width of [320,1440])test(`reading and document UI pass accessibility and overflow checks at ${width}px`,async({page})=>{
+  await page.setViewportSize({width,height:900});await page.emulateMedia({reducedMotion:'reduce'});await page.goto('/');expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await audit(page);
+  await page.goto('/infrastructure');await audit(page);expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+});
+
+test('the full portfolio works without JavaScript',async({browser})=>{
+  const context=await browser.newContext({javaScriptEnabled:false,viewport:{width:375,height:850}});try{const page=await context.newPage();await page.goto('http://127.0.0.1:3012/');await expect(page.getByRole('heading',{level:1})).toBeVisible();for(const name of ['Verilly','Behaviourly','Axiom','Anti-cheat & exploit prevention','University of Waterloo'])await expect(page.getByRole('heading',{name,exact:true}).first()).toBeVisible();await expect(page.locator('#contact a[href="mailto:babisanp@gmail.com"]')).toBeVisible();expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await page.locator('#skills').getByRole('link',{name:'Cloud lab'}).click();await expect(page).toHaveURL(/\/infrastructure$/);}finally{await context.close();}
 });
