@@ -1,6 +1,6 @@
 # Technical decision records
 
-Current: [0012 — Underwater portfolio](0012-underwater-portfolio.md). The owner canceled the city/observatory directions in 0005–0011; they remain historical records.
+Current refinement: [0014 — Systems chamber, sound and adaptive graphics](0014-systems-chamber-and-adaptive-graphics.md), building on [0012 — Underwater portfolio](0012-underwater-portfolio.md) and 0013. The owner canceled the city/observatory directions in 0005–0011; they remain historical records.
 
 - [0001: Main portfolio stack and initial hosting](0001-main-portfolio-stack.md) — accepted.
 - [0002: Current design reference and visual implementation](0002-design-reference.md) — superseded for the active composition by 0004 and 0005.
@@ -45,3 +45,4 @@ Mark a decision accepted only after it has actually been agreed. When a decision
 
 - [0012: Reference-faithful underwater portfolio](0012-underwater-portfolio.md) — current accepted direction, implemented locally.
 - [0013: Personal black-ice exhibits and resume finale](0013-personal-black-ice.md) — current refinement of 0012, implemented locally.
+- [0014: Systems chamber, original sound and adaptive graphics](0014-systems-chamber-and-adaptive-graphics.md) — current local-only game-style refinement.

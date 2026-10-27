@@ -7,10 +7,14 @@ import type { GalleryController } from "@/lib/gallery/renderer";
 import { SimplePanel, type Panel } from "./typed-panels";
 import { GreetingName } from "./greeting-loader";
 import { ResumeFinale } from "./resume-finale";
+import { ExperienceControls } from "./experience-controls";
+import { createAmbientAudio, type AmbientAudio } from "@/lib/gallery/audio";
+import type { GraphicsState, GraphicsMode } from "@/lib/gallery/quality";
 
 export function GalleryExperience({ children }: { children: ReactNode }) {
   const canvas = useRef<HTMLCanvasElement>(null),
     controller = useRef<GalleryController | null>(null),
+    audio = useRef<AmbientAudio | null>(null),
     hotspotRefs = useRef<(HTMLButtonElement | null)[]>([]),
     depth = useRef<HTMLOutputElement>(null),
     closing = useRef<HTMLDivElement>(null),
@@ -25,7 +29,15 @@ export function GalleryExperience({ children }: { children: ReactNode }) {
     [active, setActive] = useState(0),
     [panel, setPanel] = useState<Panel | null>(null),
     [subject, setSubject] = useState(0),
-    [paused, setPaused] = useState(false);
+    [paused, setPaused] = useState(false),
+    [sound, setSound] = useState(false),
+    [soundPending, setSoundPending] = useState(false),
+    [audioUnavailable, setAudioUnavailable] = useState(false),
+    [graphics, setGraphics] = useState<GraphicsState>({
+      mode: "auto",
+      tier: 0,
+      label: "High",
+    });
   const skipped = useRef(false),
     activeRef = useRef(0),
     restoreFocus = useRef<HTMLElement | null>(null);
@@ -41,6 +53,8 @@ export function GalleryExperience({ children }: { children: ReactNode }) {
       setReady(false);
       skipped.current = true;
       owned?.dispose();
+      audio.current?.dispose();
+      audio.current = null;
       controller.current = null;
       window.scrollTo(0, 0);
       document.documentElement.classList.remove(
@@ -58,13 +72,19 @@ export function GalleryExperience({ children }: { children: ReactNode }) {
             (n): n is HTMLButtonElement => !!n,
           ),
           onFailure: failure,
+          onQuality: (state) => {
+            if (!cancelled) setGraphics(state);
+          },
           onLoad: (n) => {
             if (!cancelled) setLoading((previous) => Math.max(previous, n));
           },
           onProgress: (p) => {
+            if (cancelled) return;
+            audio.current?.update(p);
             const chapter = exhibitAt(p);
             if (chapter !== activeRef.current) {
               activeRef.current = chapter;
+              if (chapter >= 0) audio.current?.cue("chapter");
               setActive(chapter);
             }
             if (depth.current)
@@ -139,6 +159,8 @@ export function GalleryExperience({ children }: { children: ReactNode }) {
       cancelled = true;
       clearTimeout(timer);
       owned?.dispose();
+      audio.current?.dispose();
+      audio.current = null;
       controller.current = null;
       document.documentElement.classList.remove(
         "gallery-enhanced",
@@ -209,6 +231,7 @@ export function GalleryExperience({ children }: { children: ReactNode }) {
     };
   }, [active, ready]);
   function openPanel(next: Panel, index = 0) {
+    audio.current?.cue("open");
     setSubject(index);
     restoreFocus.current =
       document.activeElement instanceof HTMLElement
@@ -217,6 +240,7 @@ export function GalleryExperience({ children }: { children: ReactNode }) {
     setPanel(next);
   }
   function closePanel() {
+    audio.current?.cue("close");
     dialog.current?.close();
   }
   function closed() {
@@ -232,6 +256,10 @@ export function GalleryExperience({ children }: { children: ReactNode }) {
     closePanel();
     const next = !reading;
     setReading(next);
+    if (next) {
+      void audio.current?.setEnabled(false);
+      setSound(false);
+    }
     controller.current?.suspend(next);
     document.documentElement.classList.toggle("gallery-reading", next);
     window.scrollTo(0, 0);
@@ -241,10 +269,31 @@ export function GalleryExperience({ children }: { children: ReactNode }) {
     setPaused(next);
     controller.current?.pause(next);
   }
+  async function toggleSound() {
+    if (soundPending) return;
+    setSoundPending(true);
+    try {
+      audio.current ??= createAmbientAudio();
+      const enabled = await audio.current.setEnabled(!sound);
+      setSound(enabled);
+    } catch {
+      setAudioUnavailable(true);
+      setSound(false);
+      audio.current?.dispose();
+      audio.current = null;
+    } finally {
+      setSoundPending(false);
+    }
+  }
+  function selectGraphics(mode: GraphicsMode) {
+    controller.current?.setGraphics(mode);
+    audio.current?.cue("select");
+  }
   return (
     <main
       id="content"
-      className={`gallery-page ${ready ? "is-ready" : ""} ${failed ? "has-failed" : ""} ${reading ? "is-reading" : ""}`}
+      data-graphics-tier={graphics.tier}
+      className={`gallery-page ${ready ? "is-ready" : ""} ${failed ? "has-failed" : ""} ${reading ? "is-reading" : ""} ${paused ? "motion-paused" : ""}`}
     >
       <div className="gallery-stage" aria-hidden="true">
         <canvas
@@ -372,6 +421,7 @@ export function GalleryExperience({ children }: { children: ReactNode }) {
               hotspotRefs.current[i] = node;
             }}
             className="gallery-hotspot"
+            onPointerEnter={() => audio.current?.cue("hover")}
             onClick={() => {
               if (active === 0)
                 openPanel(i === 0 ? "about" : i === 1 ? "education" : "skills");
@@ -398,14 +448,15 @@ export function GalleryExperience({ children }: { children: ReactNode }) {
           </button>
         ))}
         <div className="gallery-closing" ref={closing} inert>
+          <p className="chamber-eyebrow">04 / THE SYSTEMS CHAMBER</p>
           <h2>one layer deeper.</h2>
           <p className="closing-subtitle">
             systems. infrastructure. curiosity, in motion.
           </p>
           <h3>
-            Understand the details.
+            Built from curiosity.
             <br />
-            Build the whole thing.
+            Closer to the machine.
           </h3>
           <p>
             I study Computational Mathematics at Waterloo, with a Computer
@@ -446,6 +497,16 @@ export function GalleryExperience({ children }: { children: ReactNode }) {
           −000 M
         </output>
       </div>
+      {ready && !reading && !failed && (
+        <ExperienceControls
+          graphics={graphics}
+          sound={sound}
+          pending={soundPending}
+          audioUnavailable={audioUnavailable}
+          onSound={() => void toggleSound()}
+          onGraphics={selectGraphics}
+        />
+      )}
       {failed && (
         <p className="fallback-notice">
           The interactive gallery is unavailable on this device. Everything is

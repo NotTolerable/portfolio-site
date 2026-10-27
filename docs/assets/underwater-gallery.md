@@ -20,3 +20,7 @@ The original reference’s ice, fish, third sculpture and HDR had no verified re
 The initial sculpture-based adaptation is superseded by [decision 0013](../decisions/0013-personal-black-ice.md). The active scene uses original procedural basketball, boxing gloves and dumbbell geometry with original leather, seams, stitching and machined-metal details. The angel and Nike files remain dormant with their attribution intact. Only the CC0 fish and studio HDR are fetched by the active renderer.
 
 `public/documents/resume-preview.png` is a 1530×1980 rendering of the exact one-page authorized resume PDF; the original file is unchanged. Recreate it with `scripts/render-resume-preview.swift` on macOS after changing the PDF. This preview contains the same owner-authorized public information as the PDF.
+
+## Current systems-chamber refinement — 2026-10-27
+
+The active fish scene is superseded by [decision 0014](../decisions/0014-systems-chamber-and-adaptive-graphics.md). No fish or sculpture GLB is fetched by the active renderer. Original instanced processor detail, instrument-platform geometry, identity decal, signal arcs and synthesized sound define the later stage. Studio Small 08 remains the active external HDR under CC0, with generated RoomEnvironment fallback. Previous attribution remains for the dormant distributed assets. No Igloo geometry, textures, application source or audio recordings are included.

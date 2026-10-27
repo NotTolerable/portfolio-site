@@ -3,7 +3,6 @@ import AxeBuilder from "@axe-core/playwright";
 import { Vector3 } from "three";
 import { cameraTrack, sampleTrack } from "../src/lib/gallery/journey";
 import { cpuParticleGeometry } from "../src/lib/gallery/art";
-import { sampleFishMotion } from "../src/lib/gallery/motion";
 
 test.use({ launchOptions: { args: [] } });
 async function ready(page: Page) {
@@ -44,7 +43,7 @@ test("the authored camera is continuous and reversible through its complete dept
   }
 });
 
-test("the processor is volumetric on both faces and the fish actually travels a smooth circuit", () => {
+test("the processor transition is volumetric on both faces", () => {
   const geometry = cpuParticleGeometry(12000);
   geometry.computeBoundingBox();
   const size = geometry.boundingBox!.getSize(new Vector3());
@@ -61,18 +60,6 @@ test("the processor is volumetric on both faces and the fish actually travels a 
   expect(front).toBeGreaterThan(500);
   expect(back).toBeGreaterThan(500);
   geometry.dispose();
-  const previous = new Vector3(),
-    current = new Vector3(),
-    direction = new Vector3();
-  sampleFishMotion(0.76, 0, previous, direction);
-  const initial = previous.clone();
-  for (let i = 1; i <= 240; i++) {
-    sampleFishMotion(0.76, i / 30, current, direction);
-    expect(current.distanceTo(previous)).toBeLessThan(0.5);
-    expect(direction.length()).toBeCloseTo(1, 4);
-    previous.copy(current);
-  }
-  expect(current.distanceTo(initial)).toBeGreaterThan(4);
 });
 
 test("introduction, experience and projects lead to a complete resume with working links", async ({
@@ -85,7 +72,11 @@ test("introduction, experience and projects lead to a complete resume with worki
     if (m.type() === "error") errors.push(m.text());
   });
   page.on("request", (r) => {
-    if (/\/(city|world|models\/courier)\/|baby-angel|nike.glb/.test(r.url()))
+    if (
+      /\/(city|world|models\/courier)\/|baby-angel|nike.glb|fish.glb/.test(
+        r.url(),
+      )
+    )
       oldAssets.push(r.url());
   });
   await page.emulateMedia({ reducedMotion: "reduce" });
@@ -361,34 +352,36 @@ test("skipping pending loading cannot enable the gallery after the assets arrive
   await expect(page.locator(".gallery-interface")).toBeHidden();
 });
 
-test("only the camera-nearest visible hotspot glows through camera turns and panel focus", async ({
+test("the breathing highlight follows scroll reading order, independent of block rotation", async ({
   page,
 }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await ready(page);
   const hotspots = page.locator(".gallery-hotspot"),
-    glowing = page.locator(".gallery-hotspot.is-nearest");
+    glowing = page.locator(".gallery-hotspot.is-active");
   await expect(glowing).toHaveCount(1);
-  // In the establishing composition the middle anchor is physically closest.
-  await expect(hotspots.nth(1)).toHaveClass(/is-nearest/);
-  for (const i of [0, 2])
+  await expect(hotspots.nth(0)).toHaveClass(/is-active/);
+  for (const i of [1, 2])
     expect(
       await hotspots
         .nth(i)
         .locator("span")
         .evaluate((node) => getComputedStyle(node).boxShadow),
     ).toBe("none");
-  // The reverse-side composition brings the lower anchor closest instead.
-  await travel(page, 0.5 / 7.1);
-  await expect(hotspots.nth(2)).toHaveClass(/is-nearest/);
+  await page.mouse.move(730, 450);
+  await page.mouse.down();
+  await page.mouse.move(790, 470, { steps: 12 });
+  await page.mouse.up();
+  await expect(hotspots.nth(0)).toHaveClass(/is-active/);
+  await travel(page, 0.04);
+  await expect(hotspots.nth(1)).toHaveClass(/is-active/);
   await expect(glowing).toHaveCount(1);
-  expect(
-    await hotspots
-      .nth(1)
-      .locator("span")
-      .evaluate((node) => getComputedStyle(node).boxShadow),
-  ).toBe("none");
-  await hotspots.nth(2).click();
+  await travel(page, 0.08);
+  await expect(hotspots.nth(2)).toHaveClass(/is-active/);
+  await expect(glowing).toHaveCount(1);
+  await travel(page, 0.04);
+  await expect(hotspots.nth(1)).toHaveClass(/is-active/);
+  await hotspots.nth(1).click();
   await expect(page.getByRole("dialog")).toBeVisible();
   await expect(glowing).toHaveCount(0);
   await page.keyboard.press("Escape");
@@ -396,6 +389,83 @@ test("only the camera-nearest visible hotspot glows through camera turns and pan
   await travel(page, 0.74);
   await expect(glowing).toHaveCount(0);
   await travel(page, 0);
-  await expect(hotspots.nth(1)).toHaveClass(/is-nearest/);
-  await expect(glowing).toHaveCount(1);
+  await expect(hotspots.nth(0)).toHaveClass(/is-active/);
+});
+
+test("graphics selection reduces canvas resolution while HTML stays sharp and persists on reload", async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await ready(page);
+  const canvas = page.locator("canvas"),
+    control = page.getByLabel("Graphics quality");
+  const fullWidth = await canvas.evaluate(
+    (node: HTMLCanvasElement) => node.width,
+  );
+  const headingSize = await page
+    .locator(".wordmark")
+    .evaluate((node) => getComputedStyle(node).fontSize);
+  await control.selectOption("performance");
+  await expect(canvas).toHaveAttribute("data-graphics-tier", "2");
+  expect(
+    await canvas.evaluate((node: HTMLCanvasElement) => node.width),
+  ).toBeLessThan(fullWidth * 0.8);
+  expect(
+    await page
+      .locator(".wordmark")
+      .evaluate((node) => getComputedStyle(node).fontSize),
+  ).toBe(headingSize);
+  await ready(page);
+  await expect(control).toHaveValue("performance");
+  await expect(canvas).toHaveAttribute("data-graphics-tier", "2");
+  await control.selectOption("auto");
+  await expect(control).toHaveValue("auto");
+});
+
+test("automatic quality responds to sustained slow browser frames", async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.addInitScript(() => {
+    const native = requestAnimationFrame;
+    window.requestAnimationFrame = (callback) =>
+      native(() => {
+        window.setTimeout(() => callback(performance.now()), 30);
+      });
+  });
+  await ready(page);
+  await expect
+    .poll(() => page.locator("canvas").getAttribute("data-graphics-tier"), {
+      timeout: 16000,
+    })
+    .not.toBe("0");
+  await expect(page.getByLabel("Graphics quality")).toHaveValue("auto");
+});
+
+test("sound is opt-in and can be enabled and muted without external audio assets", async ({
+  page,
+}) => {
+  const audioRequests: string[] = [],
+    errors: string[] = [];
+  page.on("request", (r) => {
+    if (/\.(mp3|ogg|wav)(\?|$)/.test(r.url())) audioRequests.push(r.url());
+  });
+  page.on("pageerror", (e) => errors.push(e.message));
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await ready(page);
+  await expect(
+    page.getByRole("button", { name: "Turn sound on" }),
+  ).toHaveAttribute("aria-pressed", "false");
+  await page.getByRole("button", { name: "Turn sound on" }).click();
+  await expect(
+    page.getByRole("button", { name: "Turn sound off" }),
+  ).toHaveAttribute("aria-pressed", "true");
+  await page.getByRole("button", { name: "Meet Babisan", exact: true }).click();
+  await page.keyboard.press("Escape");
+  await page.getByRole("button", { name: "Turn sound off" }).click();
+  await expect(
+    page.getByRole("button", { name: "Turn sound on" }),
+  ).toHaveAttribute("aria-pressed", "false");
+  expect(audioRequests).toEqual([]);
+  expect(errors).toEqual([]);
 });

@@ -1,6 +1,6 @@
 # Roadmap
 
-Updated 2026-10-25. Active direction: faithful Samana Studio underwater-gallery portfolio adaptation. The city project is canceled and archived.
+Updated 2026-10-27. Active direction: faithful Samana Studio underwater-gallery portfolio adaptation. The city project is canceled and archived.
 
 ## Current redesign
 
@@ -17,7 +17,10 @@ Updated 2026-10-25. Active direction: faithful Samana Studio underwater-gallery 
 - [x] Add multilingual entrance timing, minimal typed HUDs, hover tilt, cursor aurora and shooting stars.
 - [x] Replace limited fish/processor rocking with swimming choreography and continuous volumetric rotation.
 - [x] Finish with a complete-page resume preview and direct PDF/contact/social actions.
-- [ ] Publish the redesign if the owner requests deployment. No production merge/push is part of the current request.
+- [x] Record the owner’s report that they deployed the earlier version themselves.
+- [x] Build the local-only game-style refinement: scroll-driven breathing glints, frosted auto-rotating objects, systems chamber and optional original audio.
+- [x] Add measured adaptive graphics tiers, manual overrides and a distinct low-spec canvas treatment.
+- [ ] Review this version at localhost:3000 with the owner. Do not push or deploy this refinement unless explicitly requested.
 
 ## Content evidence and subsequent work
 

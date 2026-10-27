@@ -97,3 +97,13 @@ export function sampleTrack(
 export function exhibitAt(progress: number) {
   return progress < 0.15 ? 0 : progress < 0.36 ? 1 : progress < 0.535 ? 2 : -1;
 }
+
+/** Reading order follows the three authored views, independently of cursor or spin. */
+export function hotspotForProgress(
+  progress: number,
+  exhibit = exhibitAt(progress),
+) {
+  if (exhibit < 0) return -1;
+  const base = exhibit * 3;
+  return progress >= stops[base + 2] ? 2 : progress >= stops[base + 1] ? 1 : 0;
+}

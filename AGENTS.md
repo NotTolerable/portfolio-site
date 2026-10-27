@@ -3,7 +3,7 @@
 ## Working agreement
 
 - This repository is a job-seeking software engineering portfolio. Read `docs/product-requirements.md`, `docs/architecture.md`, and `docs/roadmap.md` before implementation work.
-- Website implementation is authorized. The current approved direction is a faithful Samana Studio underwater-gallery adaptation, personalized for Babisan Pirapakaran. Follow `DESIGN.md`, `docs/decisions/0012-underwater-portfolio.md` and its personal black-ice refinement in `docs/decisions/0013-personal-black-ice.md`. The owner explicitly canceled the night city; prior character, observatory, court and city-stage requirements are historical, not active. Preserve factual content and `/resume` and `/infrastructure`.
+- Website implementation is authorized. The current approved direction is a faithful Samana Studio underwater-gallery adaptation, personalized for Babisan Pirapakaran. Follow `DESIGN.md`, `docs/decisions/0012-underwater-portfolio.md` and its personal black-ice refinement in `docs/decisions/0013-personal-black-ice.md`, followed by the local game-style systems chamber in `docs/decisions/0014-systems-chamber-and-adaptive-graphics.md`. The owner explicitly canceled the night city; prior character, observatory, court and city-stage requirements are historical, not active. Preserve factual content and `/resume` and `/infrastructure`.
 - Keep confirmed requirements separate from proposals and open questions. Do not silently turn a suggested stack or visual direction into an approved decision.
 - Describe demonstrated experience accurately. Do not invent certifications, project outcomes, benchmark results, employment history, or expertise.
 
@@ -20,7 +20,7 @@
 
 ## Implementation conventions
 
-- Use Next.js App Router, TypeScript and npm, with direct Three.js, GSAP and Lenis for the gallery. One homepage renderer owns authored scroll/camera poses, ice/sculpture exhibits, atmosphere, particles and the processor formation. Content routes remain HTML and do not initialize WebGL. Update the existing content records rather than inventing new experience. See `docs/architecture.md`.
+- Use Next.js App Router, TypeScript and npm, with direct Three.js, GSAP and Lenis for the gallery. Preserve scroll-ordered breathing hotspots, elapsed-time idle rotation, optional original Web Audio, adaptive graphics tiers and sharp HTML controls. One homepage renderer owns authored scroll/camera poses, ice/sculpture exhibits, atmosphere, particles and the processor formation. Content routes remain HTML and do not initialize WebGL. Update the existing content records rather than inventing new experience. See `docs/architecture.md`.
 - Preserve `archive/3d-city-2026-10-25` (snapshot `8004668`) as the complete pre-redesign working state. Work on `redesign/samana-portfolio`; do not deploy or push unless requested. Existing GitHub-connected `main` remains production. Old experimental URLs redirect home; old city integration tests live under `tests/archive` and are excluded from the active browser suite.
 - Respect third-party asset licenses. Keep model authors, source URLs, licenses and modifications in `public/gallery/ATTRIBUTION.txt`, with visible Credits access. Original reference code and unidentified-license assets are not application dependencies.
 - Prefer accessible, semantic markup, responsive layouts, and restrained dependencies.

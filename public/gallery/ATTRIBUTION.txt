@@ -40,3 +40,5 @@ Changes: cool desaturated tint during PMREM preparation.
 Personal black-ice revision (2026-10-25): the Baby Angel and Nike assets are dormant and are not loaded by the active gallery. Their source attribution above is retained for the distributed archived files. Basketball, boxing gloves, dumbbell and leather/seam/metal details are original procedural geometry/materials.
 
 resume-preview.png is a full-page rendering of the owner-authorized Babisan-Pirapakaran-Resume.pdf, created using scripts/render-resume-preview.swift (macOS PDFKit). The original PDF remains available unchanged.
+
+2026-10-27 local game-style refinement: the fish model is dormant and not loaded by the active renderer. The physical systems chamber, processor label, instrument platform, signal arcs, synthesized Web Audio ambience/cues and adaptive rendering logic are original. Igloo Inc. informed composition and interaction research only; no Igloo models, code or audio recordings are included.

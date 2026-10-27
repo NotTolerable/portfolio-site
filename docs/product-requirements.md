@@ -1,6 +1,6 @@
 # Product requirements
 
-Status: underwater portfolio redesign authorized and implemented locally; not deployed. Updated 2026-10-25.
+Status: owner reports deploying the earlier gallery; the 2026-10-27 game-style refinement is local-only and not deployed.
 
 ## Audience and purpose
 
@@ -14,17 +14,30 @@ The owner explicitly canceled the entire city project and requested a faithful [
 
 Preserve the complete pre-redesign working state in a separate Git branch before changes. This is satisfied by `archive/3d-city-2026-10-25` at `8004668`. The redesign is isolated on `redesign/samana-portfolio`; production deployment is not part of this request. Old city/camera prototype URLs redirect to the new homepage.
 
-## Personal black-ice refinement
+## Personal black-ice baseline (2026-10-25; amendments below)
 
 The owner subsequently requested these explicit changes (see [decision 0013](decisions/0013-personal-black-ice.md)):
 
 - First iceberg: personal introduction with a basketball; second: work experience with boxing gloves; third: all projects with a dumbbell. Use black ice with enough clarity to recognize the interior objects.
 - A genuinely volumetric, continuously rotating particle processor. The separate sports exhibit replaces only the former solid processor.
-- A fish that swims along a real route, changes heading, bends its tail and crosses the particle formation.
+- Former fish choreography is superseded by the systems chamber in the current refinement below.
 - Cursor-following aurora trails, occasional shooting stars, more prominent snow, and damped hover tilt on the ice while retaining drag.
 - A slower, multilingual greeting/name entrance matching the reference’s cadence.
-- Minimal typewritten detail popups with complete records still accessible. Only one clickable circle glows at a time: the visible anchor closest to the camera in 3D space.
+- Minimal typewritten detail popups with complete records still accessible. Superseded selection rule: the 2026-10-27 request replaces nearest-camera selection with scroll-driven reading order. Only one circle glows, with a gentle breathing halo.
 - Finish with the exact resume rendered as a complete page, visually like an image, with no nested scrolling viewport. Include links to the PDF, GitHub, LinkedIn and email. Preserve the existing `/resume` PDF viewer.
+
+## Current refinement — 2026-10-27
+
+The owner explicitly requested a local review at `localhost:3000` and prohibited deploying this version. They reported deploying the earlier version themselves; this is an owner report, not a new verified deployment action by the agent.
+
+- Frostier, more opaque black ice; slow automatic rotation layered with hover/drag.
+- Hotspot reading order driven only by scroll progress, with one softly breathing halo at a time.
+- More visible drifting particles and atmospheric rays/aurora, while retaining dark personal portfolio colors rather than adopting Igloo’s Arctic theme.
+- Original optional audio with an explicit mute control and browser-appropriate activation.
+- An independently designed game-style continuation after the former fish section. The implemented systems chamber replaces the fish and water crossing while preserving all content, navigation and the complete resume finale.
+- Automatic graphics adjustment for sustained sub-target frame cadence, with cheaper resolution/effects and an intentional low-spec visual treatment. Keep HTML text and controls sharp, provide manual overrides, honor reduced motion and avoid universal frame-rate guarantees.
+
+See [decision 0014](decisions/0014-systems-chamber-and-adaptive-graphics.md).
 
 ## Confirmed public content
 
@@ -42,7 +55,7 @@ The owner subsequently requested these explicit changes (see [decision 0013](dec
 
 1. One homepage renderer and one authoritative scroll journey synchronize the camera, exhibit labels, hotspots, closing copy and resume/contact finale.
 2. Scroll reversal returns through the same continuous positions; camera approach, orbit and descent remain smooth and horizon-stable.
-3. Drag rotates exhibits; subtle cursor response never disrupts framing. The processor uses a thick point volume with continuous Y rotation. Hover tilts the ice smoothly; cursor-driven aurora, marine snow, shooting stars and a travelling fish remain coherent with pause/reduced-motion preferences.
+3. Drag rotates exhibits; subtle cursor response never disrupts framing. The processor uses a thick point volume with continuous Y rotation. Hover tilts the ice smoothly; cursor-driven aurora, marine snow, shooting stars and the systems-chamber motion remain coherent with pause/reduced-motion preferences.
 4. Work, complete experience, resume, contact and infrastructure remain discoverable and functional. Native dialog readers support keyboard access, Escape, scroll and restored focus.
 5. Reading mode, no JavaScript and graphics failure expose all factual content. Reduced motion removes nonessential animation; pausing atmosphere preserves navigation.
 6. Narrow layouts remain readable, without horizontal overflow. Include visible focus, suitable contrast and a skip link.

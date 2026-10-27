@@ -16,19 +16,19 @@ export const skyFragment = `
   float curtain=exp(-pow((uv.y-.78-fold*.075)*10.,2.));
   float fibers=.55+.45*sin(uv.x*80.+noise(uv*4.)*12.+time*.12);
   float plume=trail*(.45+noise(uv*vec2(8.,3.)+time*.025));
-  c+=mix(vec3(.009,.019,.03),vec3(.01,.04,.035),depth*.6+trail*.25)*(curtain*fibers*.24+plume*2.4);
+  c+=mix(vec3(.009,.019,.03),vec3(.01,.04,.035),depth*.6+trail*.25)*(curtain*fibers*.45+plume*2.7);
   float star=meteor(uv,vec2(.92,.95),vec2(.45,.64),mod(time+12.,17.))+meteor(uv,vec2(.68,.9),vec2(.28,.7),mod(time+5.,23.));
   c+=vec3(.35,.55,.7)*star;
   gl_FragColor=vec4(c,1.);
  }`;
 export const snowVertex = `
 uniform float time;uniform float moving;uniform float pixelRatio;attribute float seed;varying float alpha;
-void main(){vec3 p=position;p.y=mod(p.y-time*(.14+seed*.24),85.)-42.5;p.x+=sin(time*.1+seed*80.)*.5;vec4 view=modelViewMatrix*vec4(p,1.);float size=(3.+seed*9.8)*pixelRatio;gl_PointSize=clamp(size*28./max(2.,-view.z),.7,18.);alpha=(.34+seed*.6)*smoothstep(0.,4.,-view.z);gl_Position=projectionMatrix*view;}`;
+void main(){vec3 p=position;p.y=mod(p.y-time*(.14+seed*.24),85.)-42.5;p.x+=sin(time*.1+seed*80.)*.5;vec4 view=modelViewMatrix*vec4(p,1.);float size=(3.4+seed*10.2)*pixelRatio;gl_PointSize=clamp(size*32./max(2.,-view.z),.7,18.);alpha=(.28+seed*.54)*smoothstep(0.,4.,-view.z);gl_Position=projectionMatrix*view;}`;
 export const snowFragment = `varying float alpha;void main(){float d=length(gl_PointCoord-.5)*2.;float core=exp(-d*d*7.);gl_FragColor=vec4(.69,.81,.87,alpha*core);}`;
 export const cpuVertex = `
 uniform float time;uniform float still;uniform float pixelRatio;uniform vec3 cursor;uniform vec3 swimmer;attribute float seed;varying float energy;varying float opacity;
 void main(){vec3 p=position;float wave=sin(p.y*.5+time*.8+seed*6.28)*.06*(1.-still);vec2 delta=p.xy-cursor.xy;float mouse=exp(-dot(delta,delta)*.045);vec3 fd=p-swimmer;float wake=exp(-dot(fd,fd)*.035)*1.4;float force=max(mouse,wake)*(1.-still);p.xy+=normalize(delta+vec2(.001))*force*(1.+sin(time+seed*30.)*.3);p.z+=wave+force*sin(seed*50.+time)*1.4;energy=force;opacity=.5+.5*sin(seed*60.+time*.7);vec4 view=modelViewMatrix*vec4(p,1.);gl_PointSize=clamp((1.3+seed*.8)*pixelRatio*23./(-view.z),.5,4.);gl_Position=projectionMatrix*view;}`;
-export const cpuFragment = `varying float energy;varying float opacity;void main(){float d=length(gl_PointCoord-.5);if(d>.5)discard;vec3 color=mix(vec3(.9,.95,1.),vec3(.26,.85,.79),energy);gl_FragColor=vec4(color,(.45+opacity*.35)*smoothstep(.5,.1,d));}`;
+export const cpuFragment = `uniform float presence;varying float energy;varying float opacity;void main(){float d=length(gl_PointCoord-.5);if(d>.5)discard;vec3 color=mix(vec3(.9,.95,1.),vec3(.26,.85,.79),energy);gl_FragColor=vec4(color,(.45+opacity*.35)*smoothstep(.5,.1,d)*presence);}`;
 export const gradeShader = {
   uniforms: {
     tDiffuse: { value: null },

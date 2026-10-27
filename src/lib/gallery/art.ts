@@ -166,19 +166,31 @@ export function processor() {
     roughness: 0.3,
   });
   const pinGeo = new T.BoxGeometry(0.045, 0.24, 0.05);
+  const pins = new T.InstancedMesh(pinGeo, traces, 64);
+  const matrix = new T.Matrix4(),
+    position = new T.Vector3(),
+    rotation = new T.Quaternion(),
+    axis = new T.Vector3(0, 0, 1),
+    unit = new T.Vector3(1, 1, 1);
   for (let side = 0; side < 4; side++)
     for (let i = 0; i < 16; i++) {
-      const pin = new T.Mesh(pinGeo, traces);
-      pin.position.set((i - 7.5) * 0.098, 1, 0);
-      pin.position.applyAxisAngle(new T.Vector3(0, 0, 1), (side * Math.PI) / 2);
-      pin.rotation.z = (side * Math.PI) / 2;
-      group.add(pin);
+      const angle = (side * Math.PI) / 2;
+      position.set((i - 7.5) * 0.098, 1, 0).applyAxisAngle(axis, angle);
+      rotation.setFromAxisAngle(axis, angle);
+      matrix.compose(position, rotation, unit);
+      pins.setMatrixAt(side * 16 + i, matrix);
     }
+  group.add(pins);
+  const lines = new T.InstancedMesh(
+    new T.BoxGeometry(0.008, 0.8, 0.008),
+    traces,
+    7,
+  );
   for (let i = 0; i < 7; i++) {
-    const line = new T.Mesh(new T.BoxGeometry(0.008, 0.8, 0.008), traces);
-    line.position.set((i - 3) * 0.115, 0, 0.218);
-    group.add(line);
+    matrix.makeTranslation((i - 3) * 0.115, 0, 0.218);
+    lines.setMatrixAt(i, matrix);
   }
+  group.add(lines);
   group.rotation.set(0.12, -0.4, -0.17);
   return group;
 }
