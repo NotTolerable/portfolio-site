@@ -38,7 +38,7 @@ Updated 2026-10-29. Active direction: Nightfall, a personal black-ice gallery/Ig
 - [x] Shorten the greeting sequence and curtain lift slightly while preserving resource readiness and the visible first-exhibit reveal.
 - [x] Record the owner’s later request to add a large name behind the first ice exhibit and deploy the complete version, superseding the glove/intro local-only holds.
 - [x] Implement responsive two-line Babisan / Pirapakaran scene typography behind the first ice, with true occlusion/refraction and an early reversible scroll fade.
-- [ ] Verify the complete opening-name, hanging-glove and quicker-intro update, deploy it to Vercel production, and confirm the public gallery and preserved routes.
+- [x] Verify the complete opening-name, hanging-glove and quicker-intro update with build, lint, typecheck and all 37 tests; publish release `801fa92` to Vercel production and confirm the public gallery, scene name, experience navigation, resume/PDF, infrastructure and assets.
 
 ## Content evidence and subsequent work
 

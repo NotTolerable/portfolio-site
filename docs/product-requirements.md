@@ -1,6 +1,6 @@
 # Product requirements
 
-Status: Nightfall is hosted on Vercel production at [babisanp.com](https://babisanp.com) following the 2026-10-29 release. Production refinements require build, lint, typecheck, browser checks and public-site verification. The published copy/hosting refinement remains production. The owner has now authorized a production update combining the large opening name, hanging-glove pose and faster-loading adjustments. Preparation and verification are in progress; this update is not yet verified as deployed.
+Status: Nightfall is hosted on Vercel production at [babisanp.com](https://babisanp.com) following the 2026-10-29 release. Production refinements require build, lint, typecheck, browser checks and public-site verification. The published copy/hosting refinement remains production. The owner has now authorized a production update combining the large opening name, hanging-glove pose and faster-loading adjustments. Release `801fa92` is deployed and publicly verified. Build, lint, typecheck and all 37 production tests passed.
 
 ## Audience and purpose
 
