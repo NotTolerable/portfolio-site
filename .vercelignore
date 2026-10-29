@@ -1,0 +1,12 @@
+# Local backups and generated files are not production source.
+archives/
+.next/
+node_modules/
+.git/
+.vercel/
+playwright-report/
+test-results/
+*.tsbuildinfo
+.env*
+!.env.example
+.DS_Store
