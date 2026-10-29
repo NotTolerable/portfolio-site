@@ -1,6 +1,6 @@
 # Babisan Pirapakaran — Nightfall
 
-Status: approved hybrid refinement implemented on `redesign/samana-portfolio`; preparing the owner-authorized production release after completion and verification. Updated 2026-10-29. Supersedes the physical chamber direction in [0014](docs/decisions/0014-systems-chamber-and-adaptive-graphics.md), with geometric interaction/GPU refinement in [0016](docs/decisions/0016-frost-frontier-and-modern-gpu.md) and the current greeting/music refinement in [0017](docs/decisions/0017-multilingual-arrival-and-ambient-score.md). The city, observatory, characters, court, cube and anime-impact directions remain historical.
+Status: approved hybrid refinement deployed from `redesign/samana-portfolio` as release `18648cc` at [babisanp.com](https://babisanp.com). Updated 2026-10-29. Supersedes the physical chamber direction in [0014](docs/decisions/0014-systems-chamber-and-adaptive-graphics.md), with geometric interaction/GPU refinement in [0016](docs/decisions/0016-frost-frontier-and-modern-gpu.md) and the current greeting/music refinement in [0017](docs/decisions/0017-multilingual-arrival-and-ambient-score.md). The city, observatory, characters, court, cube and anime-impact directions remain historical.
 
 ## Direction
 
