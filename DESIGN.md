@@ -6,7 +6,7 @@ Status: approved hybrid refinement implemented on `redesign/samana-portfolio`; p
 
 Combine the suspended gallery/camera language of [Samana Studio](https://samanastudio.es/) with the localized material contact, fine geometric fields and layered interaction sound studied at [Igloo Inc.](https://www.igloo.inc/). The original identity is **Nightfall**: black glacier ice in a deep blue environment, descending toward a blue-hour upper-atmosphere horizon. It is a personal software engineering portfolio with direct access to content, not an Arctic clone or a game visitors must solve.
 
-The owner reported deploying an earlier version and explicitly requested Vercel production deployment of this completed refinement on 2026-10-29. That request supersedes the earlier local-only restriction; the current release is being prepared and has not yet been verified as deployed. See [decision 0015](docs/decisions/0015-nightfall-contact-and-atmosphere.md), its [0016](docs/decisions/0016-frost-frontier-and-modern-gpu.md) and [0017](docs/decisions/0017-multilingual-arrival-and-ambient-score.md) refinements, and the [reference study](docs/reports/igloo-hybrid-study.md).
+The owner reported deploying an earlier version and explicitly requested Vercel production deployment of this completed refinement on 2026-10-29. That request supersedes the earlier local-only restriction; release `18648cc` is deployed and verified at babisanp.com. See [decision 0015](docs/decisions/0015-nightfall-contact-and-atmosphere.md), its [0016](docs/decisions/0016-frost-frontier-and-modern-gpu.md) and [0017](docs/decisions/0017-multilingual-arrival-and-ambient-score.md) refinements, and the [reference study](docs/reports/igloo-hybrid-study.md).
 
 ## Composition and movement
 

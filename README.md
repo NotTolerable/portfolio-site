@@ -4,9 +4,9 @@ A personal software engineering portfolio combining [Samana Studio](https://sama
 
 ## Current branches
 
-- `redesign/samana-portfolio`: current 2026-10-29 refinement; the owner has authorized production deployment after completion and verification. Release preparation is in progress.
+- `redesign/samana-portfolio`: current Nightfall implementation. Release `18648cc` was deployed to Vercel production on 2026-10-29.
 - `archive/3d-city-2026-10-25`: complete pre-redesign working state, snapshot `8004668`.
-- `main`: configured GitHub-connected Vercel production branch. This release will deploy explicitly from `redesign/samana-portfolio` without changing `main`.
+- `main`: configured GitHub-connected Vercel production branch. The current release was deployed explicitly from `redesign/samana-portfolio` without changing `main`.
 
 The previous ZIP snapshot remains in ignored `archives/`. City/observatory/cube source is dormant; old city integration checks are preserved under `tests/archive`. `/camera-study` and `/city-preview` now redirect home.
 
@@ -40,4 +40,4 @@ See [DESIGN.md](DESIGN.md), [architecture](docs/architecture.md), [current decis
 
 Former attributed CC BY4 sculptures and the CC0 Microsoft fish remain dormant, with provenance retained. The active mineral shaders, basketball/dumbbell artwork, geometric fields, sky and sound design are original. The 3D renderer fetches the CC0 studio HDR and Joachim Bornemann’s CC0 Vintage boxing gloves; the gloves supply particle positions only. Ice, GPU and shaders are original approximations; the source application, S data and unidentified-license reference assets are not bundled. Credits are visible in the site.
 
-Vercel project `portfolio-site` under `nottolerables-projects` remains connected to `NotTolerable/portfolio-site`; pushes to `main` deploy production automatically. The owner’s 2026-10-29 request authorizes publishing the completed, verified refinement to Vercel production, superseding the earlier local-only restriction. The planned release uses `vercel --prod --yes --scope nottolerables-projects` from the committed `redesign/samana-portfolio` checkout against the existing linked project; it does not merge or change `main`. This release is being prepared and is not yet verified as deployed. No application environment variables or backend services are required.
+Vercel project `portfolio-site` under `nottolerables-projects` remains connected to `NotTolerable/portfolio-site`; pushes to `main` deploy production automatically. The owner’s 2026-10-29 request authorizes publishing the completed, verified refinement to Vercel production, superseding the earlier local-only restriction. The release used `vercel --prod --yes --scope nottolerables-projects` from the committed `redesign/samana-portfolio` checkout against the existing linked project; it does not merge or change `main`. Production deployment `dpl_ewAZAUq6yAtbGjVfe4wpPkghfPKX` is Ready at [babisanp.com](https://babisanp.com), serving release `18648cc`. Build, lint, typecheck and all 36 tests passed; public Chrome verification confirmed scene initialization, the sculpted glove asset, experience navigation, resume/PDF and infrastructure routes without JavaScript errors. No application environment variables or backend services are required.

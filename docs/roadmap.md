@@ -30,7 +30,7 @@ Updated 2026-10-29. Active direction: Nightfall, a personal black-ice gallery/Ig
 - [x] Verify the white particle basketball, glove pair and dumbbell through the ice, and the first geometric reveal starting after the loading curtain clears.
 - [x] Sharpen interior refraction and replace the primitive glove source with a detailed, attributed CC0 sculpted pair.
 - [x] Record the owner’s 2026-10-29 request to deploy the completed refinement to Vercel production, superseding the earlier local-only restriction.
-- [ ] Complete verification, publish the committed redesign to the existing Vercel production project, and verify its production aliases and preserved routes.
+- [x] Publish verified release `18648cc` to Vercel production at babisanp.com; confirm the production aliases, live gallery/asset, experience navigation, resume/PDF and infrastructure routes. Build, lint, typecheck and all 36 tests passed.
 
 ## Content evidence and subsequent work
 

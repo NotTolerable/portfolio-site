@@ -1,6 +1,6 @@
 # Product requirements
 
-Status: preparing the Nightfall refinement for the owner-authorized Vercel production release after completion and verification. The 2026-10-29 production request supersedes the earlier local-only restriction; the current release has not yet been verified as deployed.
+Status: Nightfall release `18648cc` deployed to Vercel production at [babisanp.com](https://babisanp.com) on 2026-10-29. Build, lint, typecheck, all 36 production checks and the public-site smoke check passed. The owner’s production request supersedes the earlier local-only restriction.
 
 ## Audience and purpose
 
