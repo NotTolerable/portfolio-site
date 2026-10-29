@@ -65,5 +65,5 @@ Asset version: 57dfa5ed-fdd0-4380-829a-3d4816925c1f
 License: Creative Commons Zero (CC0 1.0 Universal)
 https://creativecommons.org/publicdomain/zero/1.0/
 Author/license verified against the original model page and official BlenderKit asset API on 2026-10-29. Downloaded through the official anonymous download endpoint.
-Changes: geometry-only Blender export from the low-texture source variant, decimation, Meshopt compression, centering/orientation and one-time surface sampling into all-white particles. Leather textures/materials are omitted. The solid source model is not rendered; it replaces the original procedural glove shape in the normal path, which remains a missing-asset fallback.
+Changes: geometry-only Blender export from the low-texture source variant, decimation, Meshopt compression, centering/orientation and one-time surface sampling into all-white particles. The local pose refinement independently arranges the pair hanging cuff-up at staggered heights, with an original white particle lace; the source GLB remains unchanged. Leather textures/materials are omitted. The solid source model is not rendered; it replaces the original procedural glove shape in the normal path, which remains a missing-asset fallback.
 Preparation: scripts/prepare-glove-asset.py and scripts/compress-glove-asset.mjs. No endorsement is implied.

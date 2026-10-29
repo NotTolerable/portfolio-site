@@ -28,6 +28,8 @@ function releaseArtwork(art: T.Group) {
 
 /** Consume the original sports meshes once, retaining only white 3D point data. */
 export function createParticleSport(art: T.Group, exhibitSize: number, seed: number) {
+  const detailShare = typeof art.userData.particleDetailShare === "number"
+    ? T.MathUtils.clamp(art.userData.particleDetailShare, 0, 1) : .23;
   fitSportsArt(art, exhibitSize);
   art.updateWorldMatrix(true, true);
   const body: T.BufferGeometry[] = [], details: T.BufferGeometry[] = [];
@@ -84,7 +86,7 @@ export function createParticleSport(art: T.Group, exhibitSize: number, seed: num
   for (let i = 0; i < MAX_POINTS; i++) {
     // Randomly interleave details throughout the buffer so each quality prefix
     // retains the entire shape, including the basketball's curved seam paths.
-    const feature = !!detailSampler && random() < .23;
+    const feature = !!detailSampler && random() < detailShare;
     (feature ? detailSampler! : bodySampler).sample(position, normal);
     normal.normalize();
     if (feature) position.addScaledVector(normal, exhibitSize * .00012);

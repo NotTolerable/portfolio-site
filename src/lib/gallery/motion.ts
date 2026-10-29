@@ -60,8 +60,8 @@ export function sampleFishMotion(
   }
 }
 
-export const loaderGreetingStepMs = 500;
-export const loaderWordTransitionMs = 320;
+export const loaderGreetingStepMs = 420;
+export const loaderWordTransitionMs = 280;
 export const loaderGreetings = [
   { text: "Hello", lang: "en" },
   { text: "வணக்கம்", lang: "ta" },
@@ -72,4 +72,4 @@ export const loaderGreetings = [
   { text: "Bonjour", lang: "fr" },
   { text: "Babisan Pirapakaran", lang: "en" },
 ] as const;
-export const loaderMinimumMs = loaderGreetingStepMs * (loaderGreetings.length - 1) + 1000;
+export const loaderMinimumMs = loaderGreetingStepMs * (loaderGreetings.length - 1) + 850;

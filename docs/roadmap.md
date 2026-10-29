@@ -34,6 +34,12 @@ Updated 2026-10-29. Active direction: Nightfall, a personal black-ice gallery/Ig
 
 - [x] Simplify copy across the gallery, dialogs, reading mode and content routes; explain the running Vercel setup on the hosting page.
 
+- [x] Pose the sculpted gloves as a close hanging pair with staggered heights and a shared white particle lace.
+- [x] Shorten the greeting sequence and curtain lift slightly while preserving resource readiness and the visible first-exhibit reveal.
+- [x] Record the owner’s later request to add a large name behind the first ice exhibit and deploy the complete version, superseding the glove/intro local-only holds.
+- [x] Implement responsive two-line Babisan / Pirapakaran scene typography behind the first ice, with true occlusion/refraction and an early reversible scroll fade.
+- [ ] Verify the complete opening-name, hanging-glove and quicker-intro update, deploy it to Vercel production, and confirm the public gallery and preserved routes.
+
 ## Content evidence and subsequent work
 
 - [ ] Add owner-provided project source repositories, real screenshots and demos where available.

@@ -35,6 +35,7 @@ import { createBlackIceMaterial, iceContactUv } from "./black-ice";
 import { createFrostField } from "./frost-field";
 import { createTrianglePattern } from "./triangle-pattern";
 import { createExhibitSignals } from "./signals";
+import { createIntroName } from "./intro-name";
 import {
   skyVertex,
   skyFragment,
@@ -90,6 +91,7 @@ export async function createGallery(elements: GalleryElements) {
     room = new RoomEnvironment();
   // Start alongside the HDR; the loader owns a missing-asset fallback.
   const gloveArtwork = loadGloveArt();
+  const openingName = createIntroName();
   let environment = pmrem.fromScene(room, 0.045);
   room.dispose();
   try {
@@ -214,6 +216,8 @@ export async function createGallery(elements: GalleryElements) {
     group.add(light);
   }
   let disposed = false;
+  const introName = await openingName;
+  scene.add(introName.mesh);
   const particleSports = [basketball(), await gloveArtwork, dumbbell()].map((art, i) => {
     const cloud = createParticleSport(art, exhibits[i].size, 1201 + i * 37);
     sculptures[i].add(cloud.group);
@@ -380,6 +384,7 @@ export async function createGallery(elements: GalleryElements) {
     track = cameraTrack(mobile(), innerHeight < 650);
     camera.aspect = innerWidth / innerHeight;
     camera.updateProjectionMatrix();
+    introName.layout(track.positions[0], track.targets[0], camera, mobile(), innerHeight < 650);
     applyGraphics();
     quality.resetSampling(1800);
     lenis.resize();
@@ -446,6 +451,7 @@ export async function createGallery(elements: GalleryElements) {
       const t = firstRevealElapsed / firstRevealDuration;
       firstReveal = t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
     }
+    introName.update(progress, firstReveal);
     smoothPointer.lerp(pointer, 1 - Math.exp(-4 * dt));
     sampleTrack(progress, track, desired, look);
     if (intro.value < 1) {

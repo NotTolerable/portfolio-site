@@ -31,3 +31,7 @@ The owner subsequently requested clearer interior particles and a better glove m
 Separate rough exterior reflection from the clearer central transmission calculation, disable dispersion and increase High/Balanced transmission-target resolution. Retain frosted edges, contact effects and cheaper no-transmission modes. This improves particle definition without claiming an unchanged GPU cost or universal frame rate. The owner also explicitly authorized Vercel production deployment after completion, superseding the earlier local-only release boundary.
 
 The complete refinement passed build, lint, typecheck and all 36 production tests, including a regression for quantized model coordinates and existing missing-asset/context-loss handling. Native Chrome review covered desktop and 390×844/320×500 layouts, with no JavaScript errors or horizontal overflow. These checks do not establish performance on the owner’s other devices.
+
+## Faster local arrival refinement
+
+The owner requested a slightly faster loading introduction and explicitly held deployment. The current local timing uses 420ms greeting steps, 280ms word blends and an 850ms final-name slot (3.79 seconds total), followed by a 1.8-second curtain lift after a 100ms delay. This shortens the minimum animation from approximately 6.62 to 5.69 seconds when resources are ready. All greetings, resource gating, reduced motion, reading escape and the after-curtain first-exhibit reveal remain unchanged. The earlier timing above records the original implementation.

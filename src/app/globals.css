@@ -1913,6 +1913,13 @@ svg {
 
 /* Nightfall: physical black ice, a luminous upper-atmosphere descent, clear wayfinding. */
 .gallery-enhanced:not(.gallery-reading) .gallery-page { height: 760vh; }
+.gallery-chapter.chapter-0 h2 { font: 400 12px/1.4 var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+@media (max-height: 650px) {
+  .chapter-0 .chapter-phrases { display: none; }
+  .gallery-chapter.chapter-0 h2 { font-size: 10px; }
+  .chapter-0 .chapter-subtitle { font-size: 13px; }
+  .chapter-0 .chapter-detail { margin-top: 8px; padding: 8px 14px; }
+}
 .gallery-header { text-shadow: 0 1px 15px #02080fea; }
 .gallery-header nav { font-family: var(--font-mono); font-size: 10px; gap: 25px; }
 .gallery-header nav > button:not(.menu-trigger), .gallery-header nav > a { position: relative; }
@@ -2019,12 +2026,12 @@ svg {
   overflow: hidden;
   opacity: 1;
   transform: translateY(0);
-  transition: transform 2s cubic-bezier(.87,0,.13,1) .12s, visibility 0s 2.12s;
+  transition: transform 1.8s cubic-bezier(.87,0,.13,1) .1s, visibility 0s 1.9s;
 }
 .loader-content {
   position: absolute; inset: 0;
   display: grid; place-items: center;
-  transition: transform 2s cubic-bezier(.87,0,.13,1) .12s;
+  transition: transform 1.8s cubic-bezier(.87,0,.13,1) .1s;
 }
 .loader-greetings {
   width: calc(100% - 48px);

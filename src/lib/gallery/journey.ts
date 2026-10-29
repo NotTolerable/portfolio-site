@@ -3,7 +3,7 @@ import { Vector3 } from "three";
 export const exhibits = [
   {
     id: "introduction",
-    title: "Babisan",
+    title: "About me",
     subtitle: "Software engineer & Waterloo student.",
     phrases: [
       "Waterloo · Computational Mathematics",

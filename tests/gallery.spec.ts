@@ -1,5 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
+import sharp from "sharp";
 import { BoxGeometry, BufferAttribute, Group, Mesh, MeshBasicMaterial, Points, Vector3 } from "three";
 import { cameraTrack, sampleTrack } from "../src/lib/gallery/journey";
 import { gpuParticleGeometry } from "../src/lib/gallery/gpu-hologram";
@@ -86,6 +87,32 @@ test("compressed model coordinates retain their shape when sampled into particle
   (points.material as MeshBasicMaterial).dispose();
 });
 
+test("the large opening name fades on scroll and returns when travelling back", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await ready(page);
+  await page.getByLabel("Graphics quality").selectOption("high");
+  const canvas = page.locator(".gallery-canvas");
+  async function titlePixels() {
+    const { data, info } = await sharp(await canvas.screenshot()).resize(720, 450).removeAlpha().raw().toBuffer({ resolveWithObject: true });
+    let bright = 0;
+    // The wide letters extend beyond the central ice. Sample the actual
+    // rendered side bands, excluding the DOM interface and central sculpture.
+    for (let y = 100; y < 310; y++) for (let x = 0; x < 720; x++) {
+      if (x >= 180 && x <= 540) continue;
+      const offset = (y * info.width + x) * info.channels;
+      if (data[offset] > 150 && data[offset + 1] > 150 && data[offset + 2] > 150) bright++;
+    }
+    return bright;
+  }
+  const opening = await titlePixels();
+  expect(opening).toBeGreaterThan(6000);
+  await travel(page, .03);
+  await expect.poll(titlePixels).toBeLessThan(opening * .35);
+  await travel(page, 0);
+  await expect.poll(titlePixels).toBeGreaterThan(opening * .8);
+});
+
 test("introduction, experience and projects lead to a complete resume with working links", async ({
   page,
 }) => {
@@ -107,7 +134,7 @@ test("introduction, experience and projects lead to a complete resume with worki
   await ready(page);
   await expect(page.locator("canvas")).toHaveCount(1);
   await expect(
-    page.getByRole("heading", { name: "Babisan", exact: true }),
+    page.getByRole("heading", { name: "About me", exact: true }),
   ).toBeVisible();
   await travel(page, 0.25);
   await expect(
@@ -237,7 +264,7 @@ test("multilingual greetings finish before the loading curtain opens into the li
   await expect(loader).toBeVisible();
   const words = page.locator(".loader-content");
   for (const [lang, text] of [["ta", "வணக்கம்"], ["zh-CN", "你好"], ["es", "Hola"], ["ar", "مرحبا"], ["hi", "नमस्ते"], ["fr", "Bonjour"]]) {
-    await expect(words).toHaveAttribute("data-language", lang);
+    await expect.poll(() => words.getAttribute("data-language"), { intervals: [50] }).toBe(lang);
     await expect(words.locator(`[lang="${lang}"]`)).toHaveText(text);
     await expect(page.locator("html")).not.toHaveClass(/gallery-enhanced/);
   }
@@ -281,7 +308,7 @@ test("reading and pause controls preserve all content and navigation", async ({
   await page.getByRole("button", { name: "Return to the gallery" }).click();
   await expect(page.locator(".reading-portfolio")).toBeHidden();
   await expect(
-    page.getByRole("heading", { name: "Babisan", exact: true }),
+    page.getByRole("heading", { name: "About me", exact: true }),
   ).toBeVisible();
 });
 
