@@ -1,12 +1,12 @@
 # Babisan Pirapakaran — Nightfall
 
-Status: approved hybrid refinement deployed from `redesign/samana-portfolio` as release `18648cc` at [babisanp.com](https://babisanp.com). Updated 2026-10-29. Supersedes the physical chamber direction in [0014](docs/decisions/0014-systems-chamber-and-adaptive-graphics.md), with geometric interaction/GPU refinement in [0016](docs/decisions/0016-frost-frontier-and-modern-gpu.md) and the current greeting/music refinement in [0017](docs/decisions/0017-multilingual-arrival-and-ambient-score.md). The city, observatory, characters, court, cube and anime-impact directions remain historical.
+Status: approved hybrid refinement deployed from `redesign/samana-portfolio` at [babisanp.com](https://babisanp.com). Updated 2026-10-29. Supersedes the physical chamber direction in [0014](docs/decisions/0014-systems-chamber-and-adaptive-graphics.md), with geometric interaction/GPU refinement in [0016](docs/decisions/0016-frost-frontier-and-modern-gpu.md) and the current greeting/music refinement in [0017](docs/decisions/0017-multilingual-arrival-and-ambient-score.md). The city, observatory, characters, court, cube and anime-impact directions remain historical.
 
 ## Direction
 
 Combine the suspended gallery/camera language of [Samana Studio](https://samanastudio.es/) with the localized material contact, fine geometric fields and layered interaction sound studied at [Igloo Inc.](https://www.igloo.inc/). The original identity is **Nightfall**: black glacier ice in a deep blue environment, descending toward a blue-hour upper-atmosphere horizon. It is a personal software engineering portfolio with direct access to content, not an Arctic clone or a game visitors must solve.
 
-The owner reported deploying an earlier version and explicitly requested Vercel production deployment of this completed refinement on 2026-10-29. That request supersedes the earlier local-only restriction; release `18648cc` is deployed and verified at babisanp.com. See [decision 0015](docs/decisions/0015-nightfall-contact-and-atmosphere.md), its [0016](docs/decisions/0016-frost-frontier-and-modern-gpu.md) and [0017](docs/decisions/0017-multilingual-arrival-and-ambient-score.md) refinements, and the [reference study](docs/reports/igloo-hybrid-study.md).
+The owner reported deploying an earlier version and explicitly requested Vercel production deployment of this completed refinement on 2026-10-29. That request supersedes the earlier local-only restriction; the gallery is hosted at babisanp.com. See [decision 0015](docs/decisions/0015-nightfall-contact-and-atmosphere.md), its [0016](docs/decisions/0016-frost-frontier-and-modern-gpu.md) and [0017](docs/decisions/0017-multilingual-arrival-and-ambient-score.md) refinements, and the [reference study](docs/reports/igloo-hybrid-study.md).
 
 ## Composition and movement
 
@@ -38,6 +38,8 @@ The owner reported deploying an earlier version and explicitly requested Vercel 
 Depth comes from physical artifact highlights, near/far particles, local geometry, cursor atmosphere, a moving camera and the developing cloud horizon. No fast meteor decoration or fictional meter-depth UI. Grain and travel chromatic separation remain restrained. Avoid ornamental chrome, bright neon fog and excessive bloom.
 
 ## Navigation and content
+
+Use casual first-person copy with straightforward headings such as About me, Experience, Projects and Interests. Avoid dramatic slogans, entrepreneurial positioning and forced technical metaphors. Preserve useful engineering detail within factual project and experience records. The hosting page describes the current Vercel/Cloudflare setup in present tense, including prebuilt pages and browser-side graphics.
 
 The header opens About, Projects and Experience directly and links to the PDF resume. A labeled five-stop rail — About, Experience, Projects, Interests, Resume — drives the same scroll journey and shows the active destination. The section readout uses names, not game terminology. Recruiters can read records without discovering hotspots.
 

@@ -496,25 +496,20 @@ export function GalleryExperience({ children }: { children: ReactNode }) {
           </button>
         ))}
         <div className="gallery-closing" ref={closing} inert>
-          <p className="chamber-eyebrow">04 / SYSTEMS & INTERESTS</p>
-          <h2>one layer deeper.</h2>
+          <p className="chamber-eyebrow">04 / INTERESTS</p>
+          <h2>Interests</h2>
           <p className="closing-subtitle">
-            systems. infrastructure. curiosity, in motion.
+            What I’m learning and what I enjoy.
           </p>
-          <h3>
-            Built from curiosity.
-            <br />
-            Closer to the machine.
-          </h3>
+          <h3>Currently learning</h3>
           <p>
-            I study Computational Mathematics at Waterloo, with a Computer
-            Science minor. My work spans platforms, infrastructure, backend
-            development, and game server operations.
+            I’m interested in backend development, infrastructure, and
+            low-latency systems. I’ve been learning more about memory,
+            concurrency, and performance.
           </p>
           <p>
-            I’m drawn to the details: memory, concurrency, latency, and the
-            systems that keep everything running. Lately, I’m exploring GPU
-            programming and CUDA.
+            I’m also exploring GPU programming and CUDA. Away from my desk,
+            I like basketball, boxing, lifting, and anime.
           </p>
           <button className="closing-link" onClick={() => openPanel("skills")}>
             Tools & interests <span aria-hidden="true">↗</span>
@@ -526,7 +521,7 @@ export function GalleryExperience({ children }: { children: ReactNode }) {
             © 2026 Babisan Pirapakaran <span>·</span>{" "}
             <button onClick={() => openPanel("credits")}>Credits</button>
             <span>·</span>
-            <a href="/infrastructure">Infrastructure</a>
+            <a href="/infrastructure">How this site is hosted</a>
           </footer>
         </div>
         <nav className="journey-nav" aria-label="Explore portfolio sections">
@@ -613,9 +608,9 @@ export function GalleryExperience({ children }: { children: ReactNode }) {
           {panel === "menu" ? (
             <div className="portfolio-menu">
               <p className="eyebrow">BABISAN PIRAPAKARAN</p>
-              <h2>Find your way.</h2>
+              <h2>Menu</h2>
               <button onClick={() => go(0.423)}>
-                Selected work <span>01</span>
+                Projects <span>01</span>
               </button>
               <button onClick={() => setPanel("experience")}>
                 Experience <span>02</span>
@@ -627,7 +622,7 @@ export function GalleryExperience({ children }: { children: ReactNode }) {
                 Technical skills <span>04</span>
               </button>
               <a href="/infrastructure">
-                Infrastructure lab <span>↗</span>
+                How this site is hosted <span>↗</span>
               </a>
               <a href="/resume" target="_blank" rel="noopener">
                 Resume <span>↗</span>

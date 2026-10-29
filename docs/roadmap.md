@@ -32,6 +32,8 @@ Updated 2026-10-29. Active direction: Nightfall, a personal black-ice gallery/Ig
 - [x] Record the owner’s 2026-10-29 request to deploy the completed refinement to Vercel production, superseding the earlier local-only restriction.
 - [x] Publish verified release `18648cc` to Vercel production at babisanp.com; confirm the production aliases, live gallery/asset, experience navigation, resume/PDF and infrastructure routes. Build, lint, typecheck and all 36 tests passed.
 
+- [x] Simplify copy across the gallery, dialogs, reading mode and content routes; explain the running Vercel setup on the hosting page.
+
 ## Content evidence and subsequent work
 
 - [ ] Add owner-provided project source repositories, real screenshots and demos where available.

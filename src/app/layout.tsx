@@ -10,7 +10,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Babisan Pirapakaran — Software Engineer",
   description:
-    "Babisan Pirapakaran — software engineer and Waterloo Computational Mathematics student. Platforms, infrastructure, game server operations and low-latency systems.",
+    "Babisan Pirapakaran’s portfolio — software engineering projects, work experience and a little about me. Computational Mathematics student at the University of Waterloo.",
 };
 
 export default function RootLayout({

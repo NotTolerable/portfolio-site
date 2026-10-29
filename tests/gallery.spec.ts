@@ -107,16 +107,16 @@ test("introduction, experience and projects lead to a complete resume with worki
   await ready(page);
   await expect(page.locator("canvas")).toHaveCount(1);
   await expect(
-    page.getByRole("heading", { name: "babisan.", exact: true }),
+    page.getByRole("heading", { name: "Babisan", exact: true }),
   ).toBeVisible();
   await travel(page, 0.25);
   await expect(
-    page.getByRole("heading", { name: "experience", exact: true }),
+    page.getByRole("heading", { name: "Experience", exact: true }),
   ).toBeVisible();
   await expect(page.locator(".depth-meter")).toHaveText("02 / 05 · Experience");
   await travel(page, 0.48);
   await expect(
-    page.getByRole("heading", { name: "projects", exact: true }),
+    page.getByRole("heading", { name: "Projects", exact: true }),
   ).toBeVisible();
   await page
     .getByRole("button", { name: "Explore Verilly", exact: true })
@@ -129,12 +129,12 @@ test("introduction, experience and projects lead to a complete resume with worki
   await page.keyboard.press("Escape");
   await travel(page, 0.74);
   await expect(
-    page.getByRole("heading", { name: "one layer deeper.", exact: true }),
+    page.getByRole("heading", { name: "Interests", exact: true }),
   ).toBeVisible();
   await travel(page, 1);
   const finale = page.locator(".gallery-finale");
   await expect(
-    finale.getByRole("heading", { name: "My resume." }),
+    finale.getByRole("heading", { name: "My resume" }),
   ).toBeVisible();
   const image = finale.getByRole("img", {
     name: "Full-page preview of Babisan Pirapakaran’s resume",
@@ -180,7 +180,7 @@ test("minimal panels preserve full experience and projects, scrolling and restor
     .getByRole("navigation", { name: "Main navigation" })
     .getByRole("link", { name: "Experience", exact: true })
     .click();
-  await panel.getByText("Full technical record", { exact: false }).click();
+  await panel.getByText("More details", { exact: false }).click();
   for (const name of [
     "407 ETR",
     "DevRoom",
@@ -281,7 +281,7 @@ test("reading and pause controls preserve all content and navigation", async ({
   await page.getByRole("button", { name: "Return to the gallery" }).click();
   await expect(page.locator(".reading-portfolio")).toBeHidden();
   await expect(
-    page.getByRole("heading", { name: "babisan.", exact: true }),
+    page.getByRole("heading", { name: "Babisan", exact: true }),
   ).toBeVisible();
 });
 
@@ -352,16 +352,16 @@ test("no JavaScript and unavailable WebGL retain all public content and the resu
   }
 });
 
-test("infrastructure stays honest and legacy prototypes redirect home", async ({
+test("the hosting page explains the live setup and legacy prototypes redirect home", async ({
   page,
 }) => {
   await page.goto("/infrastructure");
-  await page.getByRole("button", { name: /CloudFront/ }).click();
+  await page.getByRole("button", { name: /Vercel CDN/ }).click();
   await expect(page.locator(".flow-description")).toContainText(
-    "restricted access",
+    "built ahead of time",
   );
   await expect(page.locator(".infra-notes")).toContainText(
-    "Next.js app hosted on Vercel",
+    "Cloudflare handles the domain’s DNS",
   );
   for (const route of ["/camera-study", "/city-preview"]) {
     await page.goto(route);
@@ -572,7 +572,7 @@ test("contact shaders and the atmosphere journey render at every manual quality 
     await page.mouse.move(810,490,{steps:8});
     await travel(page,.55);
     await travel(page,.73);
-    await expect(page.getByRole("heading",{name:"one layer deeper.",exact:true})).toBeVisible();
+    await expect(page.getByRole("heading",{name:"Interests",exact:true})).toBeVisible();
     await travel(page,1);
     await expect(page.locator(".gallery-finale img")).toBeVisible();
     await travel(page,0);

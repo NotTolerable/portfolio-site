@@ -21,12 +21,12 @@ export function ResumeFinale() {
         />
       </a>
       <div className="resume-contact">
-        <p className="eyebrow">THE FULL PICTURE</p>
-        <h2>My resume.</h2>
+        <p className="eyebrow">RESUME & CONTACT</p>
+        <h2>My resume</h2>
         <p>
-          Experience, projects,
+          My work, projects,
           <br />
-          and what’s next.
+          and education in one place.
         </p>
         <div className="resume-final-actions">
           <a href="/resume" target="_blank" rel="noopener">

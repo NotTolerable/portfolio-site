@@ -3,11 +3,11 @@ import { Vector3 } from "three";
 export const exhibits = [
   {
     id: "introduction",
-    title: "babisan.",
-    subtitle: "software engineer. always curious.",
+    title: "Babisan",
+    subtitle: "Software engineer & Waterloo student.",
     phrases: [
       "Waterloo · Computational Mathematics",
-      "Systems, infrastructure, and what’s underneath.",
+      "A bit about me and what I’ve worked on.",
     ],
     center: [0, 0, 0],
     size: 3.6,
@@ -15,11 +15,11 @@ export const exhibits = [
   },
   {
     id: "experience",
-    title: "experience",
-    subtitle: "built, shipped, and operated.",
+    title: "Experience",
+    subtitle: "Places I’ve worked.",
     phrases: [
-      "Platforms. Infrastructure. Production.",
-      "From game servers to engineering platforms.",
+      "Software, infrastructure, and game servers.",
+      "Here’s what I worked on.",
     ],
     center: [-6, -2, -44],
     size: 6,
@@ -27,11 +27,11 @@ export const exhibits = [
   },
   {
     id: "projects",
-    title: "projects",
-    subtitle: "ideas, made tangible.",
+    title: "Projects",
+    subtitle: "Some things I’ve been working on.",
     phrases: [
       "Axiom. Verilly. Behaviourly.",
-      "A closer look at what I’ve built.",
+      "What each project does and how I built it.",
     ],
     center: [5, 1.5, -86],
     size: 4.5,

@@ -9,15 +9,15 @@ export function ReadingPortfolio() {
   return (
     <div className="reading-portfolio" id="portfolio-record">
       <header>
-        <p className="eyebrow">BABISAN PIRAPAKARAN / SOFTWARE ENGINEER</p>
+        <p className="eyebrow">SOFTWARE ENGINEER / WATERLOO STUDENT</p>
         <h1>
-          Software, one
+          Babisan
           <br />
-          layer deeper.
+          Pirapakaran
         </h1>
         <p>
-          Computational Mathematics at the University of Waterloo. Platforms,
-          infrastructure, and low-latency systems.
+          I study Computational Mathematics at the University of Waterloo.
+          Here are my projects, work experience, and a little about me.
         </p>
         <nav aria-label="Portfolio content">
           <a href="#reading-projects">Projects</a>
@@ -28,7 +28,7 @@ export function ReadingPortfolio() {
         </nav>
       </header>
       <section id="reading-projects">
-        <h2 className="section-heading">Selected work</h2>
+        <h2 className="section-heading">Projects</h2>
         {["axiom", "governance", "interview"].map((id) => (
           <article key={id}>
             <ProjectRecord id={id} />
@@ -43,7 +43,7 @@ export function ReadingPortfolio() {
       </section>
       <section>
         <SkillsRecord />
-        <a href="/infrastructure">Cloud & infrastructure lab ↗</a>
+        <a href="/infrastructure">How this site is hosted ↗</a>
       </section>
       <footer>
         <ResumeFinale />

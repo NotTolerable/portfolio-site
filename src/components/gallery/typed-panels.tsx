@@ -85,7 +85,7 @@ function Record({
       {complete && (
         <details className="full-record">
           <summary>
-            Full technical record <span aria-hidden="true">↗</span>
+            More details <span aria-hidden="true">↗</span>
           </summary>
           <div>{complete}</div>
         </details>
@@ -99,7 +99,7 @@ export function ProjectPanel({ initial = 0 }: { initial?: number }) {
     project = ordered[selected];
   return (
     <Record
-      eyebrow="SELECTED WORK"
+      eyebrow="PROJECTS"
       title={project.shortName}
       text={project.description + " " + project.context}
       complete={<ProjectRecord id={project.id} />}
@@ -171,9 +171,9 @@ export function SimplePanel({
   if (panel === "about")
     return (
       <Record
-        eyebrow="INTRODUCTION"
+        eyebrow="ABOUT ME"
         title="Babisan Pirapakaran"
-        text="I’m a software engineer studying Computational Mathematics at the University of Waterloo, with a Computer Science minor. I work on platforms and infrastructure at 407 ETR, and I’m drawn to low-latency systems, backend engineering, and the details beneath the abstractions. Outside the code: basketball, boxing, lifting, and anime."
+        text="I’m a software engineer studying Computational Mathematics at the University of Waterloo, with a Computer Science minor. I work on platforms and infrastructure at 407 ETR. I’m interested in backend development and low-latency systems. Outside work, I like basketball, boxing, lifting, and anime."
         complete={<AboutRecord />}
       />
     );
@@ -190,21 +190,21 @@ export function SimplePanel({
     return (
       <Record
         eyebrow="TOOLS & INTERESTS"
-        title="One layer deeper."
+        title="Skills & interests"
         text="C++20, Java, Python and Linux. AWS, Kubernetes, Helm, OpenShift, Terraform and delivery pipelines. I’m interested in memory, concurrency and latency; GPU programming and CUDA are areas I’m exploring."
         complete={<SkillsRecord />}
       >
         <a className="hud-link" href="/infrastructure">
-          Cloud & infrastructure lab ↗
+          How this site is hosted ↗
         </a>
       </Record>
     );
   if (panel === "contact")
     return (
       <Record
-        eyebrow="OPEN CHANNEL"
-        title="Let’s talk."
-        text="Opportunities, engineering, or something worth exploring. I’d love to hear from you."
+        eyebrow="CONTACT"
+        title="Get in touch"
+        text="Feel free to email me about a role, a project, or just to say hi."
       >
         <PublicContact />
         <div className="reading-links">
@@ -232,12 +232,13 @@ export function SimplePanel({
     return (
       <Record
         eyebrow="CREDITS"
-        title="Under the surface."
-        text="A personal portfolio combining a suspended black-ice gallery with an original night-sky descent. Visual and interaction studies: Samana Studio and Igloo Inc. Independently built with Three.js, GSAP, Lenis and Next.js. Geometry, shaders and the layered soundscape are original."
+        title="About this site"
+        text="Made with Next.js, Three.js, GSAP and Lenis. The design takes inspiration from Samana Studio and Igloo Inc. See the asset credits for model, environment and font sources."
       >
         <p className="hud-credit">
-          Studio Small 08: Sergej Majboroda / Poly Haven, CC0. Geist
-          and JetBrains Mono: SIL Open Font License.
+          Studio Small 08: Sergej Majboroda / Poly Haven, CC0. Vintage boxing
+          gloves: Joachim Bornemann, CC0. Geist and JetBrains Mono: SIL Open
+          Font License.
         </p>
         <div className="reading-links">
           <a

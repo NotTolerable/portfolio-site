@@ -1,6 +1,6 @@
 # Product requirements
 
-Status: Nightfall release `18648cc` deployed to Vercel production at [babisanp.com](https://babisanp.com) on 2026-10-29. Build, lint, typecheck, all 36 production checks and the public-site smoke check passed. The owner’s production request supersedes the earlier local-only restriction.
+Status: Nightfall is hosted on Vercel production at [babisanp.com](https://babisanp.com) following the 2026-10-29 release. Production refinements require build, lint, typecheck, browser checks and public-site verification. The owner’s production request supersedes the earlier local-only restriction.
 
 ## Audience and purpose
 
@@ -54,7 +54,7 @@ The owner rejected the pale ice and physical processor chamber. Keep the gallery
 
 ## Release authorization — 2026-10-29
 
-The owner explicitly requested deployment to Vercel production once the current work is completed. Finish the refinement, run the required verification, and publish it to the existing `portfolio-site` project. Preserve the archived city and existing functional routes. The release is being prepared; successful deployment and production checks must be confirmed before reporting it live.
+The owner explicitly requested deployment to Vercel production once the current work is completed. Finish the refinement, run the required verification, and publish it to the existing `portfolio-site` project. Preserve the archived city and existing functional routes. Release `18648cc` was deployed and publicly verified. Subsequent approved refinements follow the same verification and production release workflow.
 
 ## Confirmed public content
 
@@ -67,7 +67,8 @@ The owner explicitly requested deployment to Vercel production once the current 
 - Include AI-assisted client website work, public plugins, coursework and University of Waterloo education. Clearly identify AI-assisted delivery.
 - Preserve public email, GitHub and LinkedIn from the supplied resume. Unprovided project source/demo URLs stay absent.
 - `/resume` embeds the exact authorized public PDF, with direct/open/download controls; portfolio resume actions open a new tab. Private extended experience documents are not published.
-- `/infrastructure` retains the interactive, clearly **proposed** Route 53 / CloudFront / ACM / private S3 plan. The current portfolio is a Next.js app on Vercel, not a deployed AWS showcase.
+- Copy is casual and straightforward, using generic headings rather than dramatic slogans or startup-style positioning. Keep factual technical details and supported metrics.
+- `/infrastructure` explains the running portfolio in present tense: Next.js prebuilt pages on Vercel, CDN/HTTPS delivery, Cloudflare DNS/proxy and browser-side gallery rendering. The owner requested an explanation of serverless hosting; describe the verified live setup, without implying an AWS deployment or request-time functions that are not used. The earlier AWS diagram is historical planning.
 
 ## Functional acceptance
 
