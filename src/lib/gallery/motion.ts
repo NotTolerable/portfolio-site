@@ -60,17 +60,16 @@ export function sampleFishMotion(
   }
 }
 
-export const greetings = [
-  "Hello",
-  "வணக்கம்",
-  "你好",
-  "नमस्ते",
-  "Hola",
-  "مرحبا",
-  "Olá",
-  "Привет",
-  "こんにちは",
-  "Bonjour",
+export const loaderGreetingStepMs = 500;
+export const loaderWordTransitionMs = 320;
+export const loaderGreetings = [
+  { text: "Hello", lang: "en" },
+  { text: "வணக்கம்", lang: "ta" },
+  { text: "你好", lang: "zh-CN" },
+  { text: "Hola", lang: "es" },
+  { text: "مرحبا", lang: "ar" },
+  { text: "नमस्ते", lang: "hi" },
+  { text: "Bonjour", lang: "fr" },
+  { text: "Babisan Pirapakaran", lang: "en" },
 ] as const;
-export const greetingStep = 0.32;
-export const loaderMinimumMs = 4000;
+export const loaderMinimumMs = loaderGreetingStepMs * (loaderGreetings.length - 1) + 1000;

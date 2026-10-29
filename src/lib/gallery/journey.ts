@@ -50,7 +50,7 @@ const focus = [
   [0.12, 0, 0],
   [-0.04, 0.03, 0],
 ];
-export function cameraTrack(mobile: boolean) {
+export function cameraTrack(mobile: boolean, compact = false) {
   const positions: Vector3[] = [],
     targets: Vector3[] = [];
   exhibits.forEach((e) =>
@@ -66,14 +66,14 @@ export function cameraTrack(mobile: boolean) {
     }),
   );
   positions.push(
-    new Vector3(0, -84, mobile ? -65 : -88),
-    new Vector3(0, -84, mobile ? -65 : -88),
-    new Vector3(0, -118, -104),
+    new Vector3(0, -27, mobile ? -88 : -101),
+    new Vector3(-3, -34, mobile ? -92 : -112),
+    new Vector3(0, -45, -156),
   );
   targets.push(
-    new Vector3(0, -84, -128),
-    new Vector3(0, -84, -128),
-    new Vector3(0, -122, -150),
+    new Vector3(mobile ? 7 : 4, mobile ? (compact ? -35 : -38) : -30, -136),
+    new Vector3(mobile ? 7 : 4, mobile ? (compact ? -35 : -38) : -30, -136),
+    new Vector3(0, -42, -200),
   );
   return { positions, targets };
 }
@@ -106,4 +106,16 @@ export function hotspotForProgress(
   if (exhibit < 0) return -1;
   const base = exhibit * 3;
   return progress >= stops[base + 2] ? 2 : progress >= stops[base + 1] ? 1 : 0;
+}
+
+/** Clear destinations for both direct navigation and scroll status. */
+export const journeyChapters = [
+  { label: "About", progress: 0, end: .15 },
+  { label: "Experience", progress: .212, end: .36 },
+  { label: "Projects", progress: .423, end: .58 },
+  { label: "Interests", progress: .73, end: .9 },
+  { label: "Resume", progress: 1, end: 1.01 },
+] as const;
+export function chapterForProgress(progress:number) {
+  return journeyChapters.findIndex(chapter=>progress<chapter.end);
 }

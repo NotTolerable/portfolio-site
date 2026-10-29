@@ -6,6 +6,7 @@ export type Experience = {
   role: string;
   period?: string;
   kind: string;
+  summary: string;
   responsibilities: readonly string[];
   tools: string;
 };
@@ -13,6 +14,7 @@ export type Experience = {
 export const professionalExperience: readonly Experience[] = [
   {
     id: "407-etr", organization: "407 ETR", role: "Software Engineer Intern", period: "May 2026 – Present", kind: "Platforms & Infrastructure · Vaughan, ON",
+    summary: "Platform automation, cloud infrastructure and backend tooling for engineering teams.",
     responsibilities: [
       "Owned AWS S3 configuration for the migration of 200M+ historical customer invoices. Built a Python tool that generated 160 lifecycle policies for archival and retention-based expiration.",
       "Automated Helm chart generation, reducing Kubernetes deployment setup from more than four hours to 15 minutes.",
@@ -24,6 +26,7 @@ export const professionalExperience: readonly Experience[] = [
   },
   {
     id: "devroom", organization: "DevRoom", role: "Software Engineer", period: "Sep 2024 – Aug 2025", kind: "Freelance development & game server operations",
+    summary: "Backend infrastructure, production operations and client game server delivery.",
     responsibilities: [
       "Operated Ubuntu production environments across 20+ client deployments, configuring game servers and resolving release, configuration and performance issues.",
       "Built backend infrastructure connecting proxies, hub services and eight service stacks for a network serving 300 users.",
@@ -33,6 +36,7 @@ export const professionalExperience: readonly Experience[] = [
   },
   {
     id: "orbital", organization: "Orbital Studios", role: "Software Developer", period: "May 2023 – Apr 2024", kind: "Freelance development & game server operations",
+    summary: "Java backend services, delivery automation and runtime reliability for multiplayer systems.",
     responsibilities: [
       "Automated CI/CD workflows with GitHub Actions and Maven across nine repositories.",
       "Built multithreaded backend services supporting 200+ concurrent users across five service stacks.",
@@ -42,6 +46,7 @@ export const professionalExperience: readonly Experience[] = [
   },
   {
     id: "polaris", organization: "Polaris Studios", role: "Backend Infrastructure Engineer", kind: "Contract · Game server infrastructure",
+    summary: "Dedicated-server backends and proxy networks for client game server environments.",
     responsibilities: [
       "Configured dedicated-server backends and connected proxy and game server services into client networks.",
       "Delivered the hosting and network setup required to bring game server environments into operation.",
@@ -53,21 +58,48 @@ export const professionalExperience: readonly Experience[] = [
 export const gameServerWork = [
   {
     title: "Multiplayer infrastructure",
+    summary: "Deploying and operating the infrastructure behind multiplayer services.",
+    contributions: [
+      "Worked on shared-hosting and dedicated-server deployments, including a Hetzner migration.",
+      "Administered Linux environments and configured Pterodactyl hosting.",
+      "Connected hubs and multiple gameplay services through proxy networks.",
+      "Configured firewalls, DDoS protection, Cloudflare DNS, TLS certificates and service permissions.",
+    ],
     description: "I worked on shared-hosting and dedicated-server deployments, including a Hetzner migration, Linux administration, Pterodactyl setup, and proxy networks connecting hubs and multiple gameplay services. Configured firewalls, DDoS protection, Cloudflare DNS, TLS certificates and service permissions.",
     tools: "LINUX / HETZNER / PTERODACTYL / PROXY NETWORKS / DNS / TLS",
   },
   {
     title: "Runtime performance & diagnostics",
+    summary: "Tracing runtime bottlenecks and improving server stability under player load.",
+    contributions: [
+      "Used Spark profiling to trace memory leaks, CPU-heavy plugins and resource bottlenecks under player load.",
+      "Tuned JVM heap allocation and garbage-collection parameters.",
+      "Investigated errors across client environments and optimized configurations for stability.",
+      "Worked on earlier networks that reached 200+ concurrent players at peak.",
+    ],
     description: "Used Spark profiling to trace memory leaks, CPU-heavy plugins and resource bottlenecks under player load. Tuned JVM heap allocation and garbage-collection parameters, investigated errors across client environments, and optimized configurations for stability. Earlier networks reached 200+ concurrent players at peak.",
     tools: "JAVA / JVM / GARBAGE COLLECTION / SPARK / MEMORY & CPU PROFILING",
   },
   {
     title: "Anti-cheat & exploit prevention",
+    summary: "Improving detection workflows and correcting movement exploits in multiplayer environments.",
+    contributions: [
+      "Tuned detection-check buffers and thresholds, combining a general-purpose anti-cheat with combat-focused checks from an open-source engine.",
+      "Extended the open-source integration to send detection alerts through Discord webhooks.",
+      "Co-developed trajectory-based teleportation correction, collaborating on vector math to prevent players clipping through geometry.",
+    ],
     description: "Tuned detection-check buffers and thresholds, combining a general-purpose anti-cheat with combat-focused checks from an open-source engine. Extended the open-source integration to send detection alerts through Discord webhooks. Co-developed trajectory-based teleportation correction, collaborating on vector math to prevent players clipping through geometry.",
     tools: "DETECTION TUNING / VECTOR MATH / JAVA / EVENT HANDLING / DISCORD WEBHOOKS",
   },
   {
     title: "Java development & automation",
+    summary: "Building configurable Java plugins and scheduled server workflows.",
+    contributions: [
+      "Developed configurable combat physics, armor and enchantment modifiers through a Java game-server API.",
+      "Implemented custom item attributes, projectile interactions and reload commands.",
+      "Published three public plugins, including an extension of an existing open-source project.",
+      "Built scheduled gameplay workflows with cron-style tasks and advanced YAML/JSON configuration to avoid additional heavyweight dependencies.",
+    ],
     description: "Developed configurable combat physics, armor and enchantment modifiers, custom item attributes, projectile interactions and reload commands through a Java game-server API. Published three public plugins, including an extension of an existing open-source project. Built scheduled gameplay workflows with cron-style tasks and advanced YAML/JSON configuration to avoid additional heavyweight dependencies.",
     tools: "JAVA / SPIGOT API / YAML / JSON / SQL / CRON / PLUGIN INTEGRATION",
   },

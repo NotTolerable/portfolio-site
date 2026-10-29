@@ -1,18 +1,18 @@
 "use client";
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { gsap } from "gsap";
-import { exhibits, exhibitAt } from "@/lib/gallery/journey";
-import { loaderMinimumMs } from "@/lib/gallery/motion";
+import { exhibits, exhibitAt, journeyChapters, chapterForProgress } from "@/lib/gallery/journey";
 import type { GalleryController } from "@/lib/gallery/renderer";
-import { SimplePanel, type Panel } from "./typed-panels";
+import { SimplePanel, TypingSoundContext, type Panel } from "./typed-panels";
 import { GreetingName } from "./greeting-loader";
 import { ResumeFinale } from "./resume-finale";
-import { ExperienceControls } from "./experience-controls";
+import { ExperienceControls, SoundControl } from "./experience-controls";
 import { createAmbientAudio, type AmbientAudio } from "@/lib/gallery/audio";
 import type { GraphicsState, GraphicsMode } from "@/lib/gallery/quality";
 
 export function GalleryExperience({ children }: { children: ReactNode }) {
   const canvas = useRef<HTMLCanvasElement>(null),
+    loader = useRef<HTMLDivElement>(null),
     controller = useRef<GalleryController | null>(null),
     audio = useRef<AmbientAudio | null>(null),
     hotspotRefs = useRef<(HTMLButtonElement | null)[]>([]),
@@ -27,6 +27,7 @@ export function GalleryExperience({ children }: { children: ReactNode }) {
     [failed, setFailed] = useState(false),
     [reading, setReading] = useState(false),
     [active, setActive] = useState(0),
+    [journeyStep, setJourneyStep] = useState(0),
     [panel, setPanel] = useState<Panel | null>(null),
     [subject, setSubject] = useState(0),
     [paused, setPaused] = useState(false),
@@ -39,13 +40,33 @@ export function GalleryExperience({ children }: { children: ReactNode }) {
       label: "High",
     });
   const skipped = useRef(false),
+    introComplete = useRef(false),
+    enterGallery = useRef<() => void>(() => {}),
+    focusAfterIntro = useRef(false),
     activeRef = useRef(0),
+    stepRef = useRef(0),
+    objectEnergy = useRef(0),
     restoreFocus = useRef<HTMLElement | null>(null);
+  const typeSound = useCallback(() => audio.current?.cue("type"), []);
+  const completeIntro = useCallback(() => {
+    introComplete.current = true;
+    enterGallery.current();
+  }, []);
   useEffect(() => {
     let cancelled = false,
       owned: GalleryController | undefined,
-      timer: ReturnType<typeof setTimeout> | undefined;
-    const started = performance.now();
+      entered = false;
+    enterGallery.current = () => {
+      if (cancelled || skipped.current || entered || !owned || !introComplete.current) return;
+      entered = true;
+      focusAfterIntro.current = document.activeElement instanceof HTMLElement && !!document.activeElement.closest(".gallery-loader");
+      document.documentElement.classList.add("gallery-enhanced");
+      setReady(true);
+      owned.start();
+      if (location.hash === "#experience") openPanel("experience");
+      else if (location.hash === "#about") openPanel("about");
+      else if (location.hash === "#contact") owned.go(1, true);
+    };
     document.documentElement.classList.add("gallery-booting");
     const failure = () => {
       if (cancelled) return;
@@ -78,17 +99,26 @@ export function GalleryExperience({ children }: { children: ReactNode }) {
           onLoad: (n) => {
             if (!cancelled) setLoading((previous) => Math.max(previous, n));
           },
+          onInteraction: (energy) => { objectEnergy.current = energy; },
           onProgress: (p) => {
             if (cancelled) return;
-            audio.current?.update(p);
+            audio.current?.update(p, {object: objectEnergy.current, panel: !!dialog.current?.open});
+            const step = chapterForProgress(p);
+            if (step !== stepRef.current) {
+              if (step === 3) audio.current?.cue("transition");
+              else if (step === 4) audio.current?.cue("arrive");
+              stepRef.current = step;
+              setJourneyStep(step);
+            }
             const chapter = exhibitAt(p);
             if (chapter !== activeRef.current) {
               activeRef.current = chapter;
               if (chapter >= 0) audio.current?.cue("chapter");
               setActive(chapter);
             }
-            if (depth.current)
-              depth.current.value = `−${String(Math.round(p * 320)).padStart(3, "0")} M`;
+            const sectionLabel = `${String(step + 1).padStart(2, "0")} / 05 · ${journeyChapters[step]?.label ?? "Resume"}`;
+            if (depth.current && depth.current.value !== sectionLabel)
+              depth.current.value = sectionLabel;
             chapterNodes.current.forEach((node, i) => {
               if (!node) return;
               const starts = [0, 0.15, 0.36],
@@ -132,24 +162,7 @@ export function GalleryExperience({ children }: { children: ReactNode }) {
           return;
         }
         controller.current = instance;
-        timer = setTimeout(
-          () => {
-            if (cancelled || skipped.current) return;
-            document.documentElement.classList.add("gallery-enhanced");
-            setReady(true);
-            instance.start();
-            if (location.hash === "#experience") openPanel("experience");
-            else if (location.hash === "#about") openPanel("about");
-            else if (location.hash === "#contact") instance.go(1, true);
-          },
-          Math.max(
-            0,
-            (matchMedia("(prefers-reduced-motion: reduce)").matches
-              ? 0
-              : loaderMinimumMs) -
-              (performance.now() - started),
-          ),
-        );
+        enterGallery.current();
       })
       .catch((error) => {
         console.error("Gallery initialization failed", error);
@@ -157,7 +170,7 @@ export function GalleryExperience({ children }: { children: ReactNode }) {
       });
     return () => {
       cancelled = true;
-      clearTimeout(timer);
+      enterGallery.current = () => {};
       owned?.dispose();
       audio.current?.dispose();
       audio.current = null;
@@ -169,6 +182,31 @@ export function GalleryExperience({ children }: { children: ReactNode }) {
       );
     };
   }, []);
+  useEffect(() => {
+    if (ready && focusAfterIntro.current) {
+      focusAfterIntro.current = false;
+      document.querySelector<HTMLElement>(".experience-controls .sound-control")?.focus({ preventScroll: true });
+    }
+  }, [ready]);
+  useEffect(() => {
+    const curtain = loader.current;
+    if (!ready || failed || !curtain) return;
+    // Normally transitionend owns this handoff. Read the actual CSS timing for
+    // zero-duration styles and a guarded fallback if a browser drops the event.
+    const style = getComputedStyle(curtain);
+    const milliseconds = (value: string) => parseFloat(value) * (value.trim().endsWith("ms") ? 1 : 1000);
+    const properties = style.transitionProperty.split(",").map(value => value.trim());
+    const durations = style.transitionDuration.split(",").map(milliseconds);
+    const delays = style.transitionDelay.split(",").map(milliseconds);
+    const duration = Math.max(0, ...properties.map((property, index) =>
+      property === "transform" || property === "all" ?
+        durations[index % durations.length] + delays[index % delays.length] : 0));
+    const timer = setTimeout(() => {
+      if (getComputedStyle(curtain).visibility === "hidden" || curtain.getBoundingClientRect().bottom <= 1)
+        controller.current?.reveal();
+    }, duration > 1 ? duration + 64 : 0);
+    return () => clearTimeout(timer);
+  }, [ready, failed]);
   useEffect(() => {
     const node = dialog.current;
     if (!panel || !node) return;
@@ -204,12 +242,14 @@ export function GalleryExperience({ children }: { children: ReactNode }) {
     const text = exhibits[active].title,
       letters = "abcdefghijklmnopqrstuvwxyz",
       state = { progress: 0 };
+    let lastReveal = -1;
     const tween = gsap.to(state, {
       progress: 1,
       duration: 0.75,
       ease: "none",
       onUpdate: () => {
         const revealed = Math.floor(state.progress * (text.length + 3));
+        if (revealed !== lastReveal) { typeSound(); lastReveal = revealed; }
         span.textContent = text
           .split("")
           .map((c, i) =>
@@ -229,7 +269,7 @@ export function GalleryExperience({ children }: { children: ReactNode }) {
       tween.kill();
       span.textContent = text;
     };
-  }, [active, ready]);
+  }, [active, ready, typeSound]);
   function openPanel(next: Panel, index = 0) {
     audio.current?.cue("open");
     setSubject(index);
@@ -268,12 +308,14 @@ export function GalleryExperience({ children }: { children: ReactNode }) {
     const next = !paused;
     setPaused(next);
     controller.current?.pause(next);
+    audio.current?.setPaused(next);
   }
   async function toggleSound() {
     if (soundPending) return;
     setSoundPending(true);
     try {
       audio.current ??= createAmbientAudio();
+      audio.current.setPaused(paused);
       const enabled = await audio.current.setEnabled(!sound);
       setSound(enabled);
     } catch {
@@ -293,33 +335,41 @@ export function GalleryExperience({ children }: { children: ReactNode }) {
     <main
       id="content"
       data-graphics-tier={graphics.tier}
+      data-journey-step={journeyStep}
+      onPointerOver={(event) => {
+        const target = (event.target as HTMLElement).closest("button,a,summary,select");
+        const from = event.relatedTarget instanceof Node ? event.relatedTarget : null;
+        if (target && !target.contains(from)) audio.current?.cue("hover");
+      }}
+      onFocusCapture={() => audio.current?.cue("hover")}
+      onClickCapture={() => audio.current?.cue("press")}
       className={`gallery-page ${ready ? "is-ready" : ""} ${failed ? "has-failed" : ""} ${reading ? "is-reading" : ""} ${paused ? "motion-paused" : ""}`}
     >
       <div className="gallery-stage" aria-hidden="true">
         <canvas
           ref={canvas}
           className="gallery-canvas"
-          aria-label="An underwater gallery of floating ice sculptures and a particle processor"
+          aria-label="An interactive black-ice gallery with a holographic GPU descending into a nighttime sky"
         />
       </div>
       {!failed && (
         <div
+          ref={loader}
           className={`gallery-loader ${ready ? "is-finished" : ""}`}
           aria-hidden={ready}
-          role="status"
+          inert={ready}
+          role="region"
           aria-label="Loading interactive portfolio"
+          onTransitionEnd={(event) => {
+            if (ready && event.target === event.currentTarget && event.propertyName === "transform")
+              controller.current?.reveal();
+          }}
         >
-          <GreetingName />
-          <div className="loader-foot">
-            <span className="loader-track">
-              <i style={{ transform: `scaleX(${loading / 100})` }} />
-            </span>
-            <span>{String(loading).padStart(3, "0")}</span>
-          </div>
-          <div className="loader-shutters" aria-hidden="true">
-            {[0, 1, 2, 3, 4, 5].map((i) => (
-              <i key={i} style={{ "--column": i } as React.CSSProperties} />
-            ))}
+          <span className="visually-hidden" role="status">Loading interactive portfolio</span>
+          <GreetingName loading={loading} onComplete={completeIntro} />
+          <div className="loader-audio">
+            <SoundControl sound={sound} pending={soundPending} audioUnavailable={audioUnavailable} onSound={() => void toggleSound()} />
+            <span>Ambient music & interface sounds</span>
           </div>
           <button
             className="loader-skip"
@@ -327,6 +377,9 @@ export function GalleryExperience({ children }: { children: ReactNode }) {
               skipped.current = true;
               setFailed(true);
               controller.current?.dispose();
+              audio.current?.dispose();
+              audio.current = null;
+              setSound(false);
               document.documentElement.classList.remove(
                 "gallery-enhanced",
                 "gallery-booting",
@@ -346,15 +399,8 @@ export function GalleryExperience({ children }: { children: ReactNode }) {
           Babisan
         </button>
         <nav aria-label="Main navigation">
-          <button
-            onClick={() =>
-              reading
-                ? document.getElementById("reading-projects")?.scrollIntoView()
-                : go(0.423)
-            }
-          >
-            Work
-          </button>
+          <button onClick={() => openPanel("about")}>About</button>
+          <button onClick={() => openPanel("project")}>Projects</button>
           <a
             href="#reading-experience"
             onClick={(event) => {
@@ -421,7 +467,6 @@ export function GalleryExperience({ children }: { children: ReactNode }) {
               hotspotRefs.current[i] = node;
             }}
             className="gallery-hotspot"
-            onPointerEnter={() => audio.current?.cue("hover")}
             onClick={() => {
               if (active === 0)
                 openPanel(i === 0 ? "about" : i === 1 ? "education" : "skills");
@@ -445,10 +490,13 @@ export function GalleryExperience({ children }: { children: ReactNode }) {
           >
             <span />
             <i />
+            <b className="hotspot-label" aria-hidden="true">{
+              active === 0 ? ["About", "Education", "Interests"][i] : active === 1 ? ["407 ETR", "DevRoom", "Game servers"][i] : ["Axiom", "Verilly", "Behaviourly"][i]
+            }</b>
           </button>
         ))}
         <div className="gallery-closing" ref={closing} inert>
-          <p className="chamber-eyebrow">04 / THE SYSTEMS CHAMBER</p>
+          <p className="chamber-eyebrow">04 / SYSTEMS & INTERESTS</p>
           <h2>one layer deeper.</h2>
           <p className="closing-subtitle">
             systems. infrastructure. curiosity, in motion.
@@ -481,6 +529,14 @@ export function GalleryExperience({ children }: { children: ReactNode }) {
             <a href="/infrastructure">Infrastructure</a>
           </footer>
         </div>
+        <nav className="journey-nav" aria-label="Explore portfolio sections">
+          {journeyChapters.map((chapter, index) => (
+            <button key={chapter.label} onClick={() => go(chapter.progress)} aria-current={journeyStep === index ? "step" : undefined}>
+              <span className="journey-number" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+              <span>{chapter.label}</span><i aria-hidden="true" />
+            </button>
+          ))}
+        </nav>
         <button
           className="scroll-hint"
           ref={scrollHint}
@@ -491,10 +547,10 @@ export function GalleryExperience({ children }: { children: ReactNode }) {
           }
           aria-label="Continue through portfolio"
         >
-          <span />
+          <span aria-hidden="true">↓</span> Scroll to explore
         </button>
-        <output className="depth-meter" ref={depth} aria-label="Journey depth">
-          −000 M
+        <output className="depth-meter" ref={depth} aria-label="Portfolio section">
+          01 / 05 · About
         </output>
       </div>
       {ready && !reading && !failed && (
@@ -590,11 +646,9 @@ export function GalleryExperience({ children }: { children: ReactNode }) {
               </div>
             </div>
           ) : panel ? (
-            <SimplePanel
-              key={`${panel}-${subject}`}
-              panel={panel}
-              subject={subject}
-            />
+            <TypingSoundContext.Provider value={typeSound}>
+              <SimplePanel key={`${panel}-${subject}`} panel={panel} subject={subject} />
+            </TypingSoundContext.Provider>
           ) : null}
         </div>
       </dialog>

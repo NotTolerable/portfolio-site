@@ -44,3 +44,9 @@ Validation: production build, ESLint and TypeScript pass. The updated full suite
 A final short Chrome sample at 1440×900/DPR1 retained median/p95 animation-frame intervals of 16.7ms while the aurora field was active. This is a local cadence sample, not a sustained or cross-device performance guarantee.
 
 After the visible-scene clock and cursor-trail refinements, all 11 gallery checks passed again. The additional complete-resume check also passed at 640×360 landscape and 320×500 portrait. The local preview was shut down after review; no push or deployment was performed.
+
+## Current loading entrance — rechecked 2026-10-29
+
+Fresh desktop/mobile Chrome inspection and public markup confirmed a centered multilingual greeting on a dark water-toned gradient. The current reference flips words upward using perspective, with approximately 300ms transitions starting 360ms apart and an approximately 800ms final brand hold. A bottom-centered one-pixel line, 90–190px wide depending on viewport, sits beside a small three-digit monospace counter. Its curtain lifts over approximately two seconds while the inner composition counter-translates and the scene approach runs underneath. These current observations supersede the earlier shutter/timing description for the loading entrance; no proprietary assets or source are application dependencies.
+
+The owner’s current adaptation uses seven requested languages followed by the full name, calmer 500ms spacing and a final hold. Actual resource readiness and the complete greeting timeline jointly gate the curtain/scene handoff. [Decision 0017](../decisions/0017-multilingual-arrival-and-ambient-score.md) defines this approved behavior and the separately original atmospheric score.

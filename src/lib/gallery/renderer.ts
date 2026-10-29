@@ -15,12 +15,13 @@ import {
   hotspotForProgress,
 } from "./journey";
 import {
-  cpuParticleGeometry,
   frostTextures,
   iceGeometry,
   randomSource,
 } from "./art";
-import { basketball, boxingGloves, dumbbell, fitSportsArt } from "./sports";
+import { basketball, dumbbell } from "./sports";
+import { loadGloveArt } from "./glove-art";
+import { createParticleSport } from "./particle-sports";
 import { createCursorField } from "./aurora";
 import {
   AdaptiveGraphics,
@@ -29,13 +30,16 @@ import {
   type GraphicsState,
 } from "./quality";
 import { createRuntimeCore } from "./runtime-core";
+import { createGpuHologram } from "./gpu-hologram";
+import { createBlackIceMaterial, iceContactUv } from "./black-ice";
+import { createFrostField } from "./frost-field";
+import { createTrianglePattern } from "./triangle-pattern";
+import { createExhibitSignals } from "./signals";
 import {
   skyVertex,
   skyFragment,
   snowVertex,
   snowFragment,
-  cpuVertex,
-  cpuFragment,
   gradeShader,
 } from "./shaders";
 
@@ -46,6 +50,7 @@ export type GalleryElements = {
   onLoad: (progress: number) => void;
   onFailure: () => void;
   onQuality?: (state: GraphicsState) => void;
+  onInteraction?: (energy: number) => void;
 };
 export async function createGallery(elements: GalleryElements) {
   const { canvas, hotspots } = elements;
@@ -83,6 +88,8 @@ export async function createGallery(elements: GalleryElements) {
   );
   const pmrem = new T.PMREMGenerator(renderer),
     room = new RoomEnvironment();
+  // Start alongside the HDR; the loader owns a missing-asset fallback.
+  const gloveArtwork = loadGloveArt();
   let environment = pmrem.fromScene(room, 0.045);
   room.dispose();
   try {
@@ -157,6 +164,7 @@ export async function createGallery(elements: GalleryElements) {
     uniforms: {
       time: { value: 0 },
       moving: { value: 0 },
+      atmosphere: { value: 0 },
       pixelRatio: { value: renderer.getPixelRatio() },
     },
     vertexShader: snowVertex,
@@ -168,37 +176,35 @@ export async function createGallery(elements: GalleryElements) {
   const snow = new T.Points(snowGeometry, snowMaterial);
   snow.frustumCulled = false;
   scene.add(snow);
-  const normal = frostTextures();
+  const normal = frostTextures(), trianglePattern = createTrianglePattern();
+  const frostFields = exhibits.map((_, index) => createFrostField(renderer, 707 + index * 31));
+  const frostUvs = exhibits.map(() => new T.Vector2());
   const groups: T.Group[] = [],
     shells: T.Mesh[] = [],
-    sculptures: T.Group[] = [];
+    arrivalEdges: T.LineSegments[] = [],
+    sculptures: T.Group[] = [],
+    iceMaterials: ReturnType<typeof createBlackIceMaterial>[] = [],
+    signals: ReturnType<typeof createExhibitSignals>[] = [];
   for (let i = 0; i < 3; i++) {
     const e = exhibits[i],
       group = new T.Group();
     group.position.fromArray(e.center);
     scene.add(group);
     groups.push(group);
-    const shell = new T.Mesh(
-      iceGeometry(62 + i * 17, e.size),
-      new T.MeshPhysicalMaterial({
-        color: 0x8296ad,
-        roughness: 0.42,
-        metalness: 0,
-        transmission: 0.86,
-        thickness: 0.7,
-        ior: 1.31,
-        attenuationColor: 0x9aacbd,
-        attenuationDistance: 2.3,
-        envMapIntensity: 0.35,
-        normalMap: normal,
-        normalScale: new T.Vector2(0.27, 0.27),
-        clearcoat: 0.2,
-        clearcoatRoughness: 0.18,
-        side: T.FrontSide,
-      }),
-    );
+    const ice = createBlackIceMaterial(normal, i, e.size, trianglePattern, frostFields[i].texture);
+    iceMaterials.push(ice);
+    const shell = new T.Mesh(iceGeometry(62 + i * 17, e.size), ice.material);
+    const signal = createExhibitSignals(e.size, 751 + i);
+    group.add(signal.group);
+    signals.push(signal);
     shell.rotation.set(0.08 + i * 0.14, 0.2 - i * 0.3, 0.12 - i * 0.1);
     group.add(shell);
+    signal.setSurface(shell);
+    const edge = new T.LineSegments(new T.EdgesGeometry(shell.geometry, 22), new T.LineBasicMaterial({color:0xe8f3f7, transparent:true, opacity:0, depthWrite:false}));
+    edge.rotation.copy(shell.rotation);
+    group.add(edge);
+    arrivalEdges.push(edge);
+    ice.update(0, i === 0 && !reduced ? 0 : 1, frostFields[i].texture);
     shells.push(shell);
     const inner = new T.Group();
     group.add(inner);
@@ -208,30 +214,20 @@ export async function createGallery(elements: GalleryElements) {
     group.add(light);
   }
   let disposed = false;
-  [basketball(), boxingGloves(), dumbbell()].forEach((art, i) =>
-    sculptures[i].add(fitSportsArt(art, exhibits[i].size)),
-  );
-  elements.onLoad(70);
-  const cpuMaterial = new T.ShaderMaterial({
-    uniforms: {
-      time: { value: 0 },
-      still: { value: reduced ? 1 : 0 },
-      pixelRatio: { value: renderer.getPixelRatio() },
-      cursor: { value: new T.Vector3(100, 100, 100) },
-      swimmer: { value: new T.Vector3(100, 100, 100) },
-      presence: { value: 1 },
-    },
-    vertexShader: cpuVertex,
-    fragmentShader: cpuFragment,
-    transparent: true,
-    depthWrite: false,
-    blending: T.AdditiveBlending,
+  const particleSports = [basketball(), await gloveArtwork, dumbbell()].map((art, i) => {
+    const cloud = createParticleSport(art, exhibits[i].size, 1201 + i * 37);
+    sculptures[i].add(cloud.group);
+    cloud.update(0, i === 0 && !reduced ? 0 : 1);
+    return cloud;
   });
-  const cpu = new T.Points(cpuParticleGeometry(85000), cpuMaterial);
-  cpu.position.set(6, -84, -128);
-  cpu.scale.setScalar(0.67);
-  cpu.rotation.set(0.14, 0.4, 0.04);
-  scene.add(cpu);
+  elements.onLoad(70);
+  const hologram = createGpuHologram(), gpu = hologram.group;
+  gpu.position.set(7, -30, -136);
+  gpu.scale.setScalar(.7);
+  // A pitched, rising diagonal keeps the faceplate, fan and card depth legible.
+  gpu.rotation.set(.2, .4, .24);
+  hologram.uniforms.still.value = reduced ? 1 : 0;
+  scene.add(gpu);
   const runtime = createRuntimeCore();
   scene.add(runtime.group);
   const composer = new EffectComposer(renderer);
@@ -243,7 +239,7 @@ export async function createGallery(elements: GalleryElements) {
   renderer.debug.onShaderError = () => {
     shaderFailure = true;
   };
-  let track = cameraTrack(mobile()),
+  let track = cameraTrack(mobile(), innerHeight < 650),
     progress = 0,
     targetProgress = 0,
     focused = false,
@@ -257,6 +253,10 @@ export async function createGallery(elements: GalleryElements) {
     auroraElapsed = 0,
     started = false;
   const intro = { value: reduced ? 1 : 0 };
+  const firstRevealDuration = 1.8;
+  let firstReveal = reduced ? 1 : 0,
+    firstRevealElapsed = reduced ? firstRevealDuration : 0,
+    firstRevealRequested = reduced;
   let tween: gsap.core.Tween | undefined;
   const pointer = new T.Vector2(),
     previousPointer = new T.Vector2(),
@@ -270,6 +270,12 @@ export async function createGallery(elements: GalleryElements) {
     cursorPlane = new T.Plane(),
     planeNormal = new T.Vector3(),
     cursorHit = new T.Vector3(),
+    localHit = new T.Vector3(),
+    shellHit = new T.Vector3(),
+    shellIntersections: T.Intersection[] = [],
+    thirdCenter = new T.Vector3(...exhibits[2].center),
+    formationCenter = new T.Vector3(7, -30, -136),
+    interaction = exhibits.map(() => 0),
     smoothPointer = new T.Vector2(),
     desired = new T.Vector3(),
     look = new T.Vector3(),
@@ -282,7 +288,10 @@ export async function createGallery(elements: GalleryElements) {
     new T.Vector3(0.45, -0.14, 0.4),
     new T.Vector3(-0.24, -0.67, 0.3),
   ];
-  let pointerEnergy = 0;
+  let pointerEnergy = 0,
+    pointerPresent = false,
+    pointerSequence = 0,
+    processedPointerSequence = 0;
   let dragging = false,
     dragIndex = -1,
     previousX = 0,
@@ -299,6 +308,8 @@ export async function createGallery(elements: GalleryElements) {
     targetProgress = Math.max(0, Math.min(1, lenis.progress));
   });
   function pointerMove(event: PointerEvent) {
+    pointerSequence++;
+    pointerPresent = true;
     pointer.set(
       (event.clientX / innerWidth) * 2 - 1,
       1 - (event.clientY / innerHeight) * 2,
@@ -316,6 +327,12 @@ export async function createGallery(elements: GalleryElements) {
     if (event.button !== 0 || focused) return;
     dragIndex = exhibitAt(progress);
     if (dragIndex < 0) return;
+    if (dragIndex === 0 && firstReveal < .8) return;
+    pointerPresent = true;
+    // Touch/pens may send pointerdown without an earlier pointermove.
+    pointer.set((event.clientX / innerWidth) * 2 - 1, 1 - (event.clientY / innerHeight) * 2);
+    ray.setFromCamera(pointer, camera);
+    if (!ray.ray.intersectsSphere(hoverSphere.set(groups[dragIndex].position, exhibits[dragIndex].size * .6))) return;
     dragging = true;
     previousX = event.clientX;
     previousY = event.clientY;
@@ -332,37 +349,35 @@ export async function createGallery(elements: GalleryElements) {
       Math.min(devicePixelRatio, mobile() ? profile.mobileDpr : profile.dpr),
     );
     renderer.setSize(innerWidth, innerHeight);
-    renderer.transmissionResolutionScale = quality.tier === 0 ? 0.5 : 0.35;
+    renderer.transmissionResolutionScale = quality.tier === 0 ? 1 : .75;
     composer.setPixelRatio(renderer.getPixelRatio());
     composer.setSize(innerWidth, innerHeight);
     grade.enabled = profile.post;
     canvas.style.imageRendering = profile.pixelated ? "pixelated" : "auto";
     canvas.dataset.graphicsTier = String(quality.tier);
     snow.geometry.setDrawRange(0, profile.snow);
-    cpu.geometry.setDrawRange(
-      0,
-      Math.min(profile.points, mobile() ? 55000 : 85000),
-    );
+    hologram.setQuality(profile.points, renderer.getPixelRatio(), quality.tier >= 2);
     snowMaterial.uniforms.pixelRatio.value = renderer.getPixelRatio();
-    cpuMaterial.uniforms.pixelRatio.value = renderer.getPixelRatio();
+    hologram.uniforms.pixelRatio.value = renderer.getPixelRatio();
     skyMaterial.uniforms.resolution.value.set(
       innerWidth * renderer.getPixelRatio(),
       innerHeight * renderer.getPixelRatio(),
     );
-    for (const shell of shells) {
-      const material = shell.material as T.MeshPhysicalMaterial;
-      material.transmission = profile.transmission ? 0.86 : 0;
-      material.transparent = !profile.transmission;
-      material.opacity = profile.transmission ? 1 : 0.68;
-      material.depthWrite = profile.transmission;
-      material.roughness = profile.transmission ? 0.42 : 0.6;
-      material.needsUpdate = true;
-    }
+    frostFields.forEach((field) => field.setQuality(quality.tier >= 2));
+    iceMaterials.forEach((ice, index) => {
+      ice.setQuality(profile.transmission);
+      ice.setViewport(innerHeight);
+      ice.setField(frostFields[index].texture);
+    });
+    signals.forEach(signal => signal.setQuality(renderer.getPixelRatio(), quality.tier >= 2));
+    particleSports.forEach(cloud => cloud.setQuality(renderer.getPixelRatio(), quality.tier));
+    gpu.scale.setScalar(mobile() ? (innerHeight < 650 ? .42 : .56) : .7);
+    runtime.group.scale.setScalar(mobile() ? (innerHeight < 650 ? .6 : .78) : 1);
     runtime.setSimple(quality.tier >= 2);
     elements.onQuality?.(quality.state);
   }
   function resize() {
-    track = cameraTrack(mobile());
+    track = cameraTrack(mobile(), innerHeight < 650);
     camera.aspect = innerWidth / innerHeight;
     camera.updateProjectionMatrix();
     applyGraphics();
@@ -378,10 +393,11 @@ export async function createGallery(elements: GalleryElements) {
   }
   function preference() {
     reduced = media.matches;
-    cpuMaterial.uniforms.still.value = reduced ? 1 : 0;
+    hologram.uniforms.still.value = reduced || paused ? 1 : 0;
     if (reduced) {
       tween?.kill();
       intro.value = 1;
+      finishFirstReveal();
     }
   }
   function contextLost(event: Event) {
@@ -395,6 +411,11 @@ export async function createGallery(elements: GalleryElements) {
   canvas.addEventListener("pointercancel", pointerUp);
   canvas.addEventListener("webglcontextlost", contextLost);
   media.addEventListener("change", preference);
+  function finishFirstReveal() {
+    firstRevealRequested = true;
+    firstRevealElapsed = firstRevealDuration;
+    firstReveal = 1;
+  }
   function tick(now: number) {
     if (disposed) return;
     frame = requestAnimationFrame(tick);
@@ -417,15 +438,23 @@ export async function createGallery(elements: GalleryElements) {
       tween?.kill();
       intro.value = 1;
     }
+    // Camera settling runs under the curtain. The visible exhibit has its own
+    // clock, released by curtain completion and frozen with the gallery.
+    if (targetProgress > .003 && firstReveal < 1) finishFirstReveal();
+    if (firstRevealRequested && firstReveal < 1 && !paused && !reduced) {
+      firstRevealElapsed = Math.min(firstRevealDuration, firstRevealElapsed + dt);
+      const t = firstRevealElapsed / firstRevealDuration;
+      firstReveal = t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+    }
     smoothPointer.lerp(pointer, 1 - Math.exp(-4 * dt));
     sampleTrack(progress, track, desired, look);
     if (intro.value < 1) {
-      const angle = (1 - intro.value) * 1.2;
+      const angle = (1 - intro.value) * .32;
       const offset = track.positions[0]
         .clone()
         .sub(track.targets[0])
         .applyAxisAngle(T.Object3D.DEFAULT_UP, angle)
-        .multiplyScalar(1 + (1 - intro.value) * 0.6);
+        .multiplyScalar(1 + (1 - intro.value) * .12);
       desired.copy(track.targets[0]).add(offset);
       look.copy(track.targets[0]);
     }
@@ -449,34 +478,30 @@ export async function createGallery(elements: GalleryElements) {
     camera.updateMatrixWorld();
     sky.position.copy(camera.position);
     skyMaterial.uniforms.time.value = time;
-    skyMaterial.uniforms.depth.value = T.MathUtils.smoothstep(
-      progress,
-      0.35,
-      0.85,
-    );
+    skyMaterial.uniforms.depth.value = progress;
+    snowMaterial.uniforms.atmosphere.value = T.MathUtils.smoothstep(progress, .58, .96);
     snow.position.copy(camera.position);
     snowMaterial.uniforms.time.value = time;
-    cpuMaterial.uniforms.time.value = time;
+    hologram.uniforms.time.value = time;
     if (!reduced && !paused) {
       if (progress > 0.56 && progress < 0.9) formationTime += dt;
     }
-    cpu.rotation.y = 0.4 + formationTime * 0.05;
-    cpuMaterial.uniforms.presence.value =
-      0.75 * (1 - T.MathUtils.smoothstep(progress, 0.64, 0.74));
-    cpu.visible = progress > 0.54 && progress < 0.75;
-    runtime.update(
-      time,
-      T.MathUtils.smoothstep(progress, 0.61, 0.7) *
-        (1 - T.MathUtils.smoothstep(progress, 0.88, 0.96)),
-    );
-    cpu.updateMatrixWorld(true);
+    const assembly = T.MathUtils.smoothstep(progress, .52, .67);
+    gpu.position.lerpVectors(thirdCenter, formationCenter, T.MathUtils.smoothstep(progress, .505, .704));
+    gpu.rotation.y = .4 + formationTime * .1;
+    hologram.update(formationTime, assembly,
+      T.MathUtils.smoothstep(progress, .80, .90),
+      T.MathUtils.smoothstep(progress, .50, .57) * (1-T.MathUtils.smoothstep(progress, .80, .89)));
+    runtime.update(formationTime,
+      T.MathUtils.smoothstep(progress, .66, .72) * (1-T.MathUtils.smoothstep(progress, .80, .88)));
+    gpu.updateMatrixWorld(true);
     ray.setFromCamera(pointer, camera);
-    planeNormal.copy(camera.position).sub(cpu.position).normalize();
-    cursorPlane.setFromNormalAndCoplanarPoint(planeNormal, cpu.position);
-    if (ray.ray.intersectPlane(cursorPlane, cursorHit)) {
-      cpu.worldToLocal(cursorHit);
-      cpuMaterial.uniforms.cursor.value.copy(cursorHit);
-    } else cpuMaterial.uniforms.cursor.value.set(100, 100, 100);
+    planeNormal.copy(camera.position).sub(gpu.position).normalize();
+    cursorPlane.setFromNormalAndCoplanarPoint(planeNormal, gpu.position);
+    if (pointerPresent && !focused && ray.ray.intersectPlane(cursorPlane, cursorHit)) {
+      gpu.worldToLocal(cursorHit);
+      hologram.uniforms.cursor.value.copy(cursorHit);
+    } else hologram.uniforms.cursor.value.set(100, 100, 100);
     if (!dragging && dragIndex >= 0 && !paused) {
       dragAngles[dragIndex].x += velocityX * dt * 60;
       dragAngles[dragIndex].y += velocityY * dt * 60;
@@ -484,21 +509,43 @@ export async function createGallery(elements: GalleryElements) {
       velocityY *= Math.exp(-4 * dt);
     }
     const current = exhibitAt(progress);
+    const movement = pointer.distanceTo(previousPointer);
+    const freshPointerMotion = pointerSequence !== processedPointerSequence && movement > .00001;
     groups.forEach((g, i) => {
       const exhibit = exhibits[Math.max(0, i)];
       const hovered =
-        i === current &&
-        !focused &&
-        !dragging &&
-        !reduced &&
-        !paused &&
-        ray.ray.intersectsSphere(
-          hoverSphere.set(g.position, exhibit.size * 0.55),
-        );
+        pointerPresent && i === current && (i !== 0 || firstReveal > .8) && !focused && !reduced && !paused &&
+        ray.ray.intersectsSphere(hoverSphere.set(g.position, exhibit.size * .6));
+      interaction[i] = T.MathUtils.lerp(interaction[i], hovered || (dragging && i === dragIndex) ? 1 : 0, 1-Math.exp(-5*dt));
+      shellIntersections.length = 0;
+      if (hovered) {
+        ray.intersectObject(shells[i], false, shellIntersections);
+        if (shellIntersections.length) {
+          shellHit.copy(shellIntersections[0].point);
+          shells[i].worldToLocal(shellHit);
+          localHit.copy(shellHit);
+        }
+      }
+      const erosion = i === 2 ? 1-T.MathUtils.smoothstep(progress, .515, .565) : i === 0 ? T.MathUtils.smoothstep(firstReveal, 0, .88) : 1;
+      const edgeMaterial = arrivalEdges[i].material as T.LineBasicMaterial;
+      edgeMaterial.opacity = i === 0 && firstRevealRequested ?
+        (.12 + Math.sin(firstReveal * Math.PI) * .22) * (1 - T.MathUtils.smoothstep(firstReveal, .55, 1)) : 0;
+      arrivalEdges[i].visible = edgeMaterial.opacity > .001;
+      const touchingSurface = hovered && shellIntersections.length > 0;
+      if (touchingSurface && freshPointerMotion) iceContactUv(localHit, exhibit.size, frostUvs[i]);
+      if (!reduced && !paused && (i === current || frostFields[i].active)) {
+        frostFields[i].update(dt, time, touchingSurface ? frostUvs[i] : undefined,
+          touchingSurface && freshPointerMotion ? Math.min(1, movement * 35) : 0);
+      }
+      iceMaterials[i].update(time, erosion, frostFields[i].texture);
+      signals[i].update(time, dt, i === current && !focused && intro.value > .8 && (i !== 0 || firstReveal > .8), reduced);
+      particleSports[i].update(time, i === 0 ? firstReveal : i === 2 ? 1-T.MathUtils.smoothstep(progress, .51, .56) : 1);
+      sculptures[i].scale.setScalar(i === 2 ? Math.max(.001, 1-T.MathUtils.smoothstep(progress, .51, .56)) : 1);
+      g.visible = i !== 2 || progress < .59;
       hoverProjection.copy(g.position).project(camera);
       hoverTarget.set(
-        hovered ? (pointer.x - hoverProjection.x) * 0.8 : 0,
-        hovered ? -(pointer.y - hoverProjection.y) * 0.5 : 0,
+        hovered && !dragging ? (pointer.x - hoverProjection.x) * 0.8 : 0,
+        hovered && !dragging ? -(pointer.y - hoverProjection.y) * 0.5 : 0,
       );
       hoverAngles[i].lerp(hoverTarget, 1 - Math.exp(-6 * dt));
       if (!reduced && !paused && !focused && (!dragging || i !== dragIndex)) {
@@ -516,7 +563,8 @@ export async function createGallery(elements: GalleryElements) {
         sculptures[i].rotation.y = Math.sin(time * 0.12 + i) * 0.035;
       }
     });
-    const movement = pointer.distanceTo(previousPointer);
+    elements.onInteraction?.(focused || paused || reduced ? 0 : Math.max(...interaction) * (.18 + Math.min(1, pointer.distanceTo(previousPointer) * 35)));
+    processedPointerSequence = pointerSequence;
     previousPointer.copy(pointer);
     pointerEnergy = T.MathUtils.lerp(
       pointerEnergy,
@@ -534,7 +582,7 @@ export async function createGallery(elements: GalleryElements) {
     const selectedHotspot = hotspotForProgress(progress, active);
     let highlighted = -1;
     hotspots.forEach((el, i) => {
-      if (active < 0 || focused || intro.value < 0.96) {
+      if (active < 0 || focused || intro.value < 0.96 || (active === 0 && firstReveal < .96)) {
         el.style.opacity = "0";
         el.style.pointerEvents = "none";
         el.tabIndex = -1;
@@ -582,6 +630,8 @@ export async function createGallery(elements: GalleryElements) {
     media.removeEventListener("change", preference);
     disposeObject(scene);
     normal.dispose();
+    trianglePattern.dispose();
+    frostFields.forEach(field => field.dispose());
     cursorField.dispose();
     environment.dispose();
     composer.dispose();
@@ -603,15 +653,24 @@ export async function createGallery(elements: GalleryElements) {
   return {
     start() {
       if (disposed || frame) return;
+      // Enhancement replaces the reading layout with the scroll journey. Do
+      // not normalize its first frames against Lenis's cached reading height.
+      lenis.resize();
       last = performance.now();
       frame = requestAnimationFrame(tick);
       tween = gsap.to(intro, {
         value: 1,
-        duration: reduced ? 0 : 3.2,
+        duration: reduced ? 0 : 1.8,
         ease: "power2.inOut",
       });
     },
+    reveal() {
+      if (disposed || firstRevealRequested) return;
+      if (reduced || focused || targetProgress > .003) finishFirstReveal();
+      else firstRevealRequested = true;
+    },
     go(progress: number, immediate = false) {
+      lenis.resize();
       lenis.scrollTo(
         progress * (document.documentElement.scrollHeight - innerHeight),
         { immediate: immediate || reduced, duration: 1.6 },
@@ -620,6 +679,7 @@ export async function createGallery(elements: GalleryElements) {
     focus(value: boolean) {
       focused = value;
       if (value) {
+        finishFirstReveal();
         focusPosition.copy(camera.position).lerp(cameraLook, 0.1);
         focusTarget.copy(cameraLook);
         lenis.stop();
@@ -628,7 +688,7 @@ export async function createGallery(elements: GalleryElements) {
     pause(value: boolean) {
       paused = value;
       tween?.paused(value);
-      cpuMaterial.uniforms.still.value = reduced || value ? 1 : 0;
+      hologram.uniforms.still.value = reduced || value ? 1 : 0;
     },
     suspend(value: boolean) {
       suspended = value;
@@ -647,7 +707,7 @@ function disposeObject(root: T.Object3D) {
     materials = new Set<T.Material>(),
     textures = new Set<T.Texture>();
   root.traverse((o) => {
-    if (o instanceof T.Mesh || o instanceof T.Points) {
+    if (o instanceof T.Mesh || o instanceof T.Points || o instanceof T.Line) {
       geometries.add(o.geometry);
       (Array.isArray(o.material) ? o.material : [o.material]).forEach(
         (m: T.Material) => {

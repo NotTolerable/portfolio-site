@@ -1,7 +1,7 @@
 Babisan Pirapakaran — underwater portfolio gallery
 
 Visual and interaction reference: https://samanastudio.es/
-Independent application code, original portfolio content and CPU formation.
+Independent application code, original portfolio content and GPU formation.
 
 Baby Angel Sculpture — M.Reslan
 https://sketchfab.com/3d-models/baby-angel-sculpture-7ca5460e6af541f7ac9e0ac2cb3b9955
@@ -42,3 +42,28 @@ Personal black-ice revision (2026-10-25): the Baby Angel and Nike assets are dor
 resume-preview.png is a full-page rendering of the owner-authorized Babisan-Pirapakaran-Resume.pdf, created using scripts/render-resume-preview.swift (macOS PDFKit). The original PDF remains available unchanged.
 
 2026-10-27 local game-style refinement: the fish model is dormant and not loaded by the active renderer. The physical systems chamber, processor label, instrument platform, signal arcs, synthesized Web Audio ambience/cues and adaptive rendering logic are original. Igloo Inc. informed composition and interaction research only; no Igloo models, code or audio recordings are included.
+
+2026-10-28 Nightfall hybrid: contact-history mineral shaders, local geometric fields, upper-atmosphere cloud/horizon rendering, erosion/particle assembly and buffered layered sound design are original. Igloo Inc. (https://www.igloo.inc/) and Samana Studio (https://samanastudio.es/) are visual/interaction references. No proprietary recordings or application code are bundled or hotlinked. The physical processor pedestal is superseded by a suspended particle field.
+
+Further 2026-10-28 refinement: the dual-fan GPU hologram (geometry, scan/edge shaders and sampled particles), surface-conforming contact facets, dry game-interface audio and dark materialization entrance are original. Continuous ambient/wind/contact audio and the former CPU formation/circular field are inactive.
+
+Ice fidelity refinement: cut-plane/subtractive-wedge slab geometry, generated granular height/normal texture and spatial frost/refraction shaders are independently authored. The installed Three.js MarchingCubes mesher is used during geometry initialization only. No Igloo authored models, roughness/normal maps or shader source are included.
+
+2026-10-29 geometric refinement: the periodic irregular triangle data texture is generated from original seeded points and triangulation. The GPU frost-history/frontier shader and separate drifting node/link network are independently authored behavioral adaptations. They supersede the earlier surface-face contact patch; no reference bitmap, shader source or application code is bundled.
+
+Modern GPU refinement: original unbranded single-visible-fan geometry, broad faceplate and X/hourglass frame follow the owner-provided hardware image as a shape reference. No manufacturer logos, product-name text, photographs or third-party GPU model files are used. The slanted hologram retains original scan/edge shaders and sampled-particle formation.
+
+2026-10-29 arrival/music refinement: the multilingual upward-word entrance, loading line/counter and curtain transition are independently implemented from the owner's Samana-inspired direction. The optional 48-second atmospheric score is an original offline-rendered composition of overlapping harmonic pads and sparse notes; no Samana/Igloo music, sound recording or application code is included. This score supersedes the preceding cue-only policy while wind/noise beds remain absent.
+
+Particle sports refinement: the white particle basketball, boxing-glove pair and dumbbell use the portfolio's original procedural geometry as their shape source. No external sports model, particle recording or reference texture is included. The visible solid sports meshes are superseded by these particle forms; original source provenance remains above.
+
+Particle clarity and glove refinement (2026-10-29):
+Vintage boxing gloves — Joachim Bornemann.
+https://www.blendkit.com/asset-gallery-detail/7a526c99-4ea9-4955-822e-829bb962965f/
+Asset base ID: 7a526c99-4ea9-4955-822e-829bb962965f
+Asset version: 57dfa5ed-fdd0-4380-829a-3d4816925c1f
+License: Creative Commons Zero (CC0 1.0 Universal)
+https://creativecommons.org/publicdomain/zero/1.0/
+Author/license verified against the original model page and official BlenderKit asset API on 2026-10-29. Downloaded through the official anonymous download endpoint.
+Changes: geometry-only Blender export from the low-texture source variant, decimation, Meshopt compression, centering/orientation and one-time surface sampling into all-white particles. Leather textures/materials are omitted. The solid source model is not rendered; it replaces the original procedural glove shape in the normal path, which remains a missing-asset fallback.
+Preparation: scripts/prepare-glove-asset.py and scripts/compress-glove-asset.mjs. No endorsement is implied.

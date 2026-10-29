@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import {
   AboutRecord,
   EducationRecord,
@@ -19,8 +19,10 @@ export type Panel =
   | "contact"
   | "credits"
   | "menu";
+export const TypingSoundContext = createContext<() => void>(() => {});
 export function TypedParagraph({ text }: { text: string }) {
   const ref = useRef<HTMLSpanElement>(null);
+  const onType = useContext(TypingSoundContext);
   useEffect(() => {
     const span = ref.current;
     if (!span) return;
@@ -31,19 +33,21 @@ export function TypedParagraph({ text }: { text: string }) {
     const characters = Array.from(text),
       duration = Math.min(3200, 800 + characters.length * 7);
     let frame = 0,
-      start = 0;
+      start = 0,
+      lastCount = 0;
     function draw(now: number) {
       if (!start) start = now;
       const progress = Math.min(1, (now - start) / duration);
-      span!.textContent = characters
-        .slice(0, Math.floor(progress * characters.length))
-        .join("");
+      const count = Math.floor(progress * characters.length);
+      span!.textContent = characters.slice(0, count).join("");
+      if (count > lastCount && /\S/.test(characters[count - 1] ?? "")) onType();
+      lastCount = count;
       if (progress < 1) frame = requestAnimationFrame(draw);
       else span!.dataset.typing = "false";
     }
     frame = requestAnimationFrame(draw);
     return () => cancelAnimationFrame(frame);
-  }, [text]);
+  }, [text, onType]);
   return (
     <p className="typed-copy">
       <span className="visually-hidden">{text}</span>
@@ -60,17 +64,22 @@ function Record({
   text,
   children,
   complete,
+  navigation,
+  className = "",
 }: {
   eyebrow: string;
   title: string;
   text: string;
   children?: ReactNode;
   complete?: ReactNode;
+  navigation?: ReactNode;
+  className?: string;
 }) {
   return (
-    <div className="hud-record">
+    <div className={`hud-record ${className}`}>
       <p className="eyebrow">{eyebrow}</p>
       <h2>{title}</h2>
+      {navigation}
       <TypedParagraph text={text} />
       {children}
       {complete && (
@@ -112,30 +121,41 @@ export function ProjectPanel({ initial = 0 }: { initial?: number }) {
 export function ExperiencePanel({ initial = 0 }: { initial?: number }) {
   const [selected, setSelected] = useState(initial),
     role = professionalExperience[selected];
-  const text = role
-    ? `${role.role}${role.period ? " · " + role.period : ""}. ${role.responsibilities.slice(0, 2).join(" ")}`
-    : gameServerWork.map((w) => w.description).join(" ");
+  const intro = role
+    ? `${role.role}${role.period ? " · " + role.period : ""}. ${role.summary}`
+    : "I worked on the infrastructure, performance, anti-cheat systems and Java tooling behind multiplayer game servers.";
   return (
     <Record
+      className="experience-panel"
       eyebrow="EXPERIENCE"
       title={role?.organization ?? "Game server engineering"}
-      text={text}
+      text={intro}
       complete={<ExperienceRecord />}
+      navigation={
+        <div className="hud-selector" role="group" aria-label="Select experience">
+          {[...professionalExperience.map((entry) => entry.organization), "Game servers"].map((name, index) => (
+            <button key={name} aria-pressed={index === selected} onClick={() => setSelected(index)}>
+              {name}
+            </button>
+          ))}
+        </div>
+      }
     >
-      <div className="hud-selector" role="group" aria-label="Select experience">
-        {[
-          ...professionalExperience.map((e) => e.organization),
-          "Game servers",
-        ].map((name, i) => (
-          <button
-            key={name}
-            aria-pressed={i === selected}
-            onClick={() => setSelected(i)}
-          >
-            {name}
-          </button>
-        ))}
-      </div>
+      {role ? (
+        <ul className="experience-contributions">
+          {role.responsibilities.map((contribution) => <li key={contribution}>{contribution}</li>)}
+        </ul>
+      ) : (
+        gameServerWork.map((work) => (
+          <section className="experience-category" key={work.title}>
+            <h3>{work.title}</h3>
+            <p>{work.summary}</p>
+            <ul className="experience-contributions">
+              {work.contributions.map((contribution) => <li key={contribution}>{contribution}</li>)}
+            </ul>
+          </section>
+        ))
+      )}
     </Record>
   );
 }
@@ -213,11 +233,10 @@ export function SimplePanel({
       <Record
         eyebrow="CREDITS"
         title="Under the surface."
-        text="A personal portfolio following Samana Studio’s underwater gallery direction. Independently built with Three.js, GSAP, Lenis and Next.js. Black ice, sports objects, particle processor and atmosphere are original to this implementation."
+        text="A personal portfolio combining a suspended black-ice gallery with an original night-sky descent. Visual and interaction studies: Samana Studio and Igloo Inc. Independently built with Three.js, GSAP, Lenis and Next.js. Geometry, shaders and the layered soundscape are original."
       >
         <p className="hud-credit">
-          Barramundi Fish: Microsoft, CC0, resized textures and procedural
-          swimming. Studio Small 08: Sergej Majboroda / Poly Haven, CC0. Geist
+          Studio Small 08: Sergej Majboroda / Poly Haven, CC0. Geist
           and JetBrains Mono: SIL Open Font License.
         </p>
         <div className="reading-links">

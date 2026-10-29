@@ -1,7 +1,7 @@
 import * as T from "three";
-import { ConvexGeometry } from "three/addons/geometries/ConvexGeometry.js";
 import { mergeVertices } from "three/addons/utils/BufferGeometryUtils.js";
 import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.js";
+import { MarchingCubes } from "three/addons/objects/MarchingCubes.js";
 
 export function randomSource(seed: number) {
   return () => {
@@ -29,110 +29,147 @@ export function frostTextures() {
       sy,
     );
   };
-  const height = (x: number, y: number) =>
-    noise(x * 0.06, y * 0.06) * 0.7 +
-    noise(x * 0.17, y * 0.17) * 0.22 +
-    noise(x * 0.7, y * 0.7) * 0.08 -
-    Math.exp(
-      -Math.abs(
-        Math.sin(x * 0.055 + noise(x * 0.02, y * 0.02) * 4 + y * 0.027),
-      ) * 38,
-    ) *
-      0.16;
+  // Granular, pitted frost without the former long sinusoidal ridges.
+  const height = (x: number, y: number) => {
+    const coarse = noise(x * .11, y * .11);
+    const middle = noise(x * .35, y * .35);
+    const fine = noise(x * 1.1, y * 1.1);
+    const pits = Math.pow(Math.max(0, .52 - noise(x * .19, y * .19)) * 2, 4);
+    return coarse * .3 + middle * .25 + fine * .17 - pits * .22;
+  };
   for (let y = 0; y < n; y++)
     for (let x = 0; x < n; x++) {
       const k = (y * n + x) * 4,
         dx = height(x + 1, y) - height(x - 1, y),
         dy = height(x, y + 1) - height(x, y - 1);
-      data[k] = Math.round(128 + dx * 330);
-      data[k + 1] = Math.round(128 + dy * 330);
-      data[k + 2] = 245;
-      data[k + 3] = 255;
+      const normalX = -dx * 2.2, normalY = -dy * 2.2;
+      const length = Math.hypot(normalX, normalY, 1);
+      data[k] = Math.round((normalX / length * .5 + .5) * 255);
+      data[k + 1] = Math.round((normalY / length * .5 + .5) * 255);
+      data[k + 2] = Math.round((1 / length * .5 + .5) * 255);
+      data[k + 3] = Math.round(T.MathUtils.clamp(height(x, y) * .8 + .2, 0, 1) * 255);
     }
   const texture = new T.DataTexture(data, n, n);
   texture.wrapS = texture.wrapT = T.RepeatWrapping;
-  texture.repeat.set(4, 4);
+  texture.repeat.set(5.5, 5.5);
+  texture.magFilter = T.LinearFilter;
+  texture.minFilter = T.LinearMipmapLinearFilter;
+  texture.generateMipmaps = true;
+  texture.anisotropy = 4;
   texture.needsUpdate = true;
   return texture;
 }
-/** Original convex fracture geometry: uneven planar edges with an icy micro-normal. */
+/**
+ * Original fractured slab, extracted once from intersecting cut planes and
+ * subtractive wedges. The perimeter has real ledges and open concave chips;
+ * only a narrow fracture seam is softened, not the entire boulder silhouette.
+ */
 export function iceGeometry(seed: number, size: number) {
-  const r = randomSource(seed),
-    points: T.Vector3[] = [];
-  for (let i = 0; i < 44; i++) {
-    const phi = Math.acos(2 * r() - 1),
-      theta = r() * Math.PI * 2,
-      radius = 0.84 + r() * 0.2;
-    points.push(
-      new T.Vector3(
-        Math.sin(phi) * Math.cos(theta) * 0.78,
-        Math.cos(phi) * 1.1,
-        Math.sin(phi) * Math.sin(theta) * 0.7,
-      ).multiplyScalar(radius),
-    );
+  const random = randomSource(seed);
+  for (let i = 0; i < 7; i++) random();
+  const width = .385 + random() * .055;
+  const planes: number[][] = [];
+  function plane(x: number, y: number, z: number, distance: number) {
+    const length = Math.hypot(x, y, z);
+    planes.push([x / length, y / length, z / length, distance / length]);
   }
-  const geometry = new ConvexGeometry(points);
-  geometry.computeBoundingBox();
-  const extent = geometry.boundingBox!.getSize(new T.Vector3());
-  geometry.scale(
-    size / Math.max(extent.x, extent.y, extent.z),
-    size / Math.max(extent.x, extent.y, extent.z),
-    size / Math.max(extent.x, extent.y, extent.z),
-  );
-  // Subdivide each cut face, then weld and soften the seams. The small continuous
-  // world-space displacement makes this fractured ice rather than a gemstone hull.
-  const source = geometry.getAttribute("position"),
-    vertices: number[] = [],
-    a = new T.Vector3(),
-    b = new T.Vector3(),
-    c = new T.Vector3(),
-    point = new T.Vector3();
-  const divisions = 7;
-  function vertex(u: number, v: number) {
-    point
-      .copy(a)
-      .multiplyScalar(1 - u - v)
-      .addScaledVector(b, u)
-      .addScaledVector(c, v);
-    const x = point.x / size,
-      y = point.y / size,
-      z = point.z / size;
-    const rough =
-      (Math.sin(x * 39 + seed) * Math.sin(y * 27 - z * 19) +
-        Math.sin(y * 61 + x * 31) * 0.3) *
-      size *
-      0.006;
-    point.addScaledVector(point.clone().normalize(), rough);
-    vertices.push(point.x, point.y, point.z);
+  // Six uneven principal fractures and oblique shoulder/edge breaks.
+  plane(1, .08, -.07, width);
+  plane(-1, -.07, .045, width * .96);
+  plane(-.18, 1, .09, .59);
+  plane(.23, -1, -.05, .575);
+  plane(.075, -.04, 1, .325);
+  plane(-.09, .025, -1, .31);
+  plane(.85, .7, .13, .55 + random() * .025);
+  plane(-.92, .56, -.15, .535 + random() * .025);
+  plane(-.65, -.78, .18, .48 + random() * .025);
+  plane(.64, -.83, -.13, .48 + random() * .025);
+  plane(.8, -.04, .76, .465);
+  plane(-.81, .07, .72, .47);
+  plane(.83, .08, -.74, .465);
+  plane(-.76, -.06, -.78, .46);
+
+  type Wedge = { center: T.Vector3; half: T.Vector3; axes: T.Vector3[] };
+  const wedges: Wedge[] = [];
+  function wedge(x: number, y: number, z: number, hx: number, hy: number, hz: number, rx: number, ry: number, rz: number) {
+    const rotation = new T.Quaternion().setFromEuler(new T.Euler(rx, ry, rz));
+    const center = new T.Vector3(x + (random() - .5) * .025, y + (random() - .5) * .035, z);
+    wedges.push({ center, half: new T.Vector3(hx, hy, hz), axes: [
+      new T.Vector3(1, 0, 0).applyQuaternion(rotation),
+      new T.Vector3(0, 1, 0).applyQuaternion(rotation),
+      new T.Vector3(0, 0, 1).applyQuaternion(rotation),
+    ] });
   }
-  for (let face = 0; face < source.count; face += 3) {
-    a.fromBufferAttribute(source, face);
-    b.fromBufferAttribute(source, face + 1);
-    c.fromBufferAttribute(source, face + 2);
-    for (let i = 0; i < divisions; i++)
-      for (let j = 0; j < divisions - i; j++) {
-        vertex(i / divisions, j / divisions);
-        vertex((i + 1) / divisions, j / divisions);
-        vertex(i / divisions, (j + 1) / divisions);
-        if (j < divisions - i - 1) {
-          vertex((i + 1) / divisions, j / divisions);
-          vertex((i + 1) / divisions, (j + 1) / divisions);
-          vertex(i / divisions, (j + 1) / divisions);
+  // These volumes actually intersect the front/back perimeter. They are open
+  // broken chips, not Gaussian depressions hidden behind the visible surface.
+  wedge(-width + .005, .235, .3, .12, .09, .17, .28, -.3, -.32);
+  wedge(width - .005, -.055, .29, .09, .075, .19, -.25, .3, .28);
+  wedge(-width + .01, -.255, .255, .105, .065, .17, .2, -.2, .38);
+  wedge(width - .01, .255, -.285, .115, .085, .18, -.2, .27, -.28);
+  wedge(-width + .005, -.09, -.285, .09, .065, .19, .3, -.25, .34);
+  wedge(.12, -.525, .27, .13, .09, .15, -.25, -.18, .4);
+  wedge(-.11, .565, .225, .1, .075, .13, .2, .1, -.3);
+
+  const smoothMaximum = (a: number, b: number, radius: number) => {
+    const blend = Math.max(radius - Math.abs(a - b), 0) / radius;
+    return Math.max(a, b) + blend * blend * radius * .25;
+  };
+  const resolution = 62;
+  const temporaryMaterial = new T.MeshBasicMaterial();
+  const extraction = new MarchingCubes(resolution, temporaryMaterial, false, false, 24000);
+  extraction.isolation = 0;
+  const step = 2 / resolution;
+  const phase = random() * 12;
+  for (let iz = 0; iz < resolution; iz++) {
+    const z = iz * step - 1;
+    for (let iy = 0; iy < resolution; iy++) {
+      const y = iy * step - 1;
+      for (let ix = 0; ix < resolution; ix++) {
+        const x = ix * step - 1;
+        let distance = -10;
+        for (const [nx, ny, nz, offset] of planes) {
+          distance = smoothMaximum(distance, x * nx + y * ny + z * nz - offset, .009);
         }
+        // Restrained large-scale fracture chatter; no rounded whole-face warp.
+        const rim = T.MathUtils.smoothstep(Math.max(Math.abs(x) / width, Math.abs(y) / .6), .68, 1);
+        distance += (Math.sin(x * 53 + phase) * Math.sin(y * 47 - z * 31)
+          + Math.sin(z * 69 + x * 27) * .35) * (.001 + rim * .0028);
+        for (const { center, half, axes } of wedges) {
+          const dx = x - center.x, dy = y - center.y, dz = z - center.z;
+          const qx = Math.abs(dx * axes[0].x + dy * axes[0].y + dz * axes[0].z) - half.x;
+          const qy = Math.abs(dx * axes[1].x + dy * axes[1].y + dz * axes[1].z) - half.y;
+          const qz = Math.abs(dx * axes[2].x + dy * axes[2].y + dz * axes[2].z) - half.z;
+          const cut = Math.hypot(Math.max(qx, 0), Math.max(qy, 0), Math.max(qz, 0))
+            + Math.min(Math.max(qx, qy, qz), 0);
+          distance = smoothMaximum(distance, -cut, .008);
+        }
+        extraction.field[iz * resolution * resolution + iy * resolution + ix] = -distance;
       }
+    }
   }
+  extraction.update();
   const detailed = new T.BufferGeometry();
-  detailed.setAttribute("position", new T.Float32BufferAttribute(vertices, 3));
-  const surface = mergeVertices(detailed, size * 0.00001);
-  surface.computeVertexNormals();
+  detailed.setAttribute("position", new T.Float32BufferAttribute(
+    extraction.positionArray.slice(0, extraction.count * 3), 3,
+  ));
+  extraction.geometry.dispose();
+  temporaryMaterial.dispose();
+  const surface = mergeVertices(detailed, .00001);
   detailed.dispose();
-  geometry.dispose();
-  // ConvexGeometry has no UVs: triplanar-ish normal coordinates are stable on each face.
-  const pos = surface.getAttribute("position"),
-    uv = new Float32Array(pos.count * 2);
-  for (let i = 0; i < pos.count; i++) {
-    uv[i * 2] = pos.getX(i) / size + 0.5;
-    uv[i * 2 + 1] = pos.getY(i) / size + 0.5;
+  surface.computeBoundingBox();
+  const box = surface.boundingBox!;
+  const extent = box.getSize(new T.Vector3());
+  const center = box.getCenter(new T.Vector3());
+  surface.translate(-center.x, -center.y, -center.z);
+  surface.scale(size / extent.y, size / extent.y, size / extent.y);
+  surface.computeVertexNormals();
+  surface.computeBoundingBox();
+  surface.computeBoundingSphere();
+  const position = surface.getAttribute("position");
+  const uv = new Float32Array(position.count * 2);
+  for (let i = 0; i < position.count; i++) {
+    uv[i * 2] = position.getX(i) / size + .5;
+    uv[i * 2 + 1] = position.getY(i) / size + .5;
   }
   surface.setAttribute("uv", new T.BufferAttribute(uv, 2));
   return surface;

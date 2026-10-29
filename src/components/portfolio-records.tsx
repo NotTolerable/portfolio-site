@@ -23,10 +23,10 @@ export function ExperienceRecord() {
     <p className="record-lead">From multiplayer communities to platforms and infrastructure.</p>
     <a className="inline-link" href="/resume" target="_blank" rel="noopener">View resume ↗<span className="visually-hidden"> (opens in a new tab)</span></a>
     <h3 className="record-divider">Professional & contract work</h3>
-    {professionalExperience.map(e=><article key={e.id} className="role-record"><div className="role-record-top"><h3>{e.organization}</h3>{e.period&&<span className="mono">{e.period}</span>}</div><p className="role-title">{e.role}</p><p className="caption">{e.kind}</p><ul>{e.responsibilities.map(r=><li key={r}>{r}</li>)}</ul><p className="record-tools mono">{e.tools}</p></article>)}
+    {professionalExperience.map(e=><article key={e.id} className="role-record"><div className="role-record-top"><h3>{e.organization}</h3>{e.period&&<span className="mono">{e.period}</span>}</div><p className="role-title">{e.role}</p><p className="caption">{e.kind}</p><p>{e.summary}</p><ul>{e.responsibilities.map(r=><li key={r}>{r}</li>)}</ul><p className="record-tools mono">{e.tools}</p></article>)}
     <h3 className="record-divider">Game server infrastructure & development</h3><p>Hands-on work on the services, runtime behavior and tooling behind multiplayer communities.</p>
     <dl className="server-metrics">{gameServerMetrics.map(m=><div key={m.label}><dt>{m.label}<small>{m.context}</small></dt><dd>{m.value}</dd></div>)}</dl>
-    {gameServerWork.map(w=><article className="role-record" key={w.title}><h4>{w.title}</h4><p>{w.description}</p><p className="record-tools mono">{w.tools}</p></article>)}
+    {gameServerWork.map(w=><article className="role-record" key={w.title}><h4>{w.title}</h4><p>{w.summary}</p><ul>{w.contributions.map(contribution=><li key={contribution}>{contribution}</li>)}</ul><p className="record-tools mono">{w.tools}</p></article>)}
     <h3 className="record-divider">Other things I’ve built</h3>
     {additionalBuilds.map(b=><article className="role-record" key={b.name}><p className="eyebrow">{b.label}</p><h4>{b.name}</h4><p>{b.description}</p></article>)}
     <EducationRecord />

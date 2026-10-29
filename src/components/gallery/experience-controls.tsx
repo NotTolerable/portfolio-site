@@ -1,5 +1,26 @@
 "use client";
 import type { GraphicsMode, GraphicsState } from "@/lib/gallery/quality";
+type SoundControlProps = {
+  sound: boolean;
+  pending: boolean;
+  audioUnavailable: boolean;
+  onSound: () => void;
+};
+export function SoundControl({ sound, pending, audioUnavailable, onSound }: SoundControlProps) {
+  return (
+    <button
+      className="sound-control"
+      type="button"
+      onClick={onSound}
+      disabled={pending || audioUnavailable}
+      aria-pressed={sound}
+      aria-label={audioUnavailable ? "Audio unavailable" : sound ? "Turn sound off" : "Turn sound on"}
+    >
+      <span className="sound-bars" aria-hidden="true"><i /><i /><i /></span>
+      {audioUnavailable ? "Audio unavailable" : sound ? "Sound on" : "Sound off"}
+    </button>
+  );
+}
 export function ExperienceControls({
   graphics,
   sound,
@@ -17,31 +38,7 @@ export function ExperienceControls({
 }) {
   return (
     <div className="experience-controls">
-      <button
-        className="sound-control"
-        type="button"
-        onClick={onSound}
-        disabled={pending || audioUnavailable}
-        aria-pressed={sound}
-        aria-label={
-          audioUnavailable
-            ? "Audio unavailable"
-            : sound
-              ? "Turn sound off"
-              : "Turn sound on"
-        }
-      >
-        <span className="sound-bars" aria-hidden="true">
-          <i />
-          <i />
-          <i />
-        </span>
-        {audioUnavailable
-          ? "Audio unavailable"
-          : sound
-            ? "Sound on"
-            : "Sound off"}
-      </button>
+      <SoundControl sound={sound} pending={pending} audioUnavailable={audioUnavailable} onSound={onSound} />
       <div className="graphics-control">
         <label className="visually-hidden" htmlFor="gallery-graphics">
           Graphics quality

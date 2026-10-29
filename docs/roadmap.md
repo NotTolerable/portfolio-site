@@ -1,6 +1,6 @@
 # Roadmap
 
-Updated 2026-10-27. Active direction: faithful Samana Studio underwater-gallery portfolio adaptation. The city project is canceled and archived.
+Updated 2026-10-29. Active direction: Nightfall, a personal black-ice gallery/Igloo interaction hybrid, with [frost-frontier and modern GPU](decisions/0016-frost-frontier-and-modern-gpu.md) and current [multilingual arrival/ambient score](decisions/0017-multilingual-arrival-and-ambient-score.md) refinements. The city project is canceled and archived.
 
 ## Current redesign
 
@@ -20,7 +20,17 @@ Updated 2026-10-27. Active direction: faithful Samana Studio underwater-gallery 
 - [x] Record the owner’s report that they deployed the earlier version themselves.
 - [x] Build the local-only game-style refinement: scroll-driven breathing glints, frosted auto-rotating objects, systems chamber and optional original audio.
 - [x] Add measured adaptive graphics tiers, manual overrides and a distinct low-spec canvas treatment.
-- [ ] Review this version at localhost:3000 with the owner. Do not push or deploy this refinement unless explicitly requested.
+- [x] Replace the rejected pale frost/processor pedestal with black mineral contact shaders, sparse fields, layered tactile audio and atmospheric processor-to-resume descent.
+- [x] Add direct record navigation and labeled finite journey destinations; remove meteor decoration and fictitious meter-depth UI.
+- [x] Refine the local version with a 3D GPU hologram, surface-conforming white contact geometry, cue-only game UI sound and a dark materialization entrance.
+- [x] Match artifact fidelity more closely: actual chipped fracture slabs, granular triplanar frost, rough/clear zones and neutral interior refraction in the black palette.
+- [x] Separate geometric interactions into an advected surface frost frontier with irregular triangle lines and an independent drifting exterior network; retire the rejected surface-face highlight patch.
+- [x] Verify the two-layer interaction and slanted, unbranded modern single-fan GPU in desktop/mobile Chrome, all shader quality modes and the production browser suite.
+- [x] Verify the restored multilingual loading sequence, continuous curtain-to-scene transition and opt-in original ambient score, including reduced motion, skip, mute, pause and dialog ducking.
+- [x] Verify the white particle basketball, glove pair and dumbbell through the ice, and the first geometric reveal starting after the loading curtain clears.
+- [x] Sharpen interior refraction and replace the primitive glove source with a detailed, attributed CC0 sculpted pair.
+- [x] Record the owner’s 2026-10-29 request to deploy the completed refinement to Vercel production, superseding the earlier local-only restriction.
+- [ ] Complete verification, publish the committed redesign to the existing Vercel production project, and verify its production aliases and preserved routes.
 
 ## Content evidence and subsequent work
 

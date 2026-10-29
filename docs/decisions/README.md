@@ -1,6 +1,6 @@
 # Technical decision records
 
-Current refinement: [0014 — Systems chamber, sound and adaptive graphics](0014-systems-chamber-and-adaptive-graphics.md), building on [0012 — Underwater portfolio](0012-underwater-portfolio.md) and 0013. The owner canceled the city/observatory directions in 0005–0011; they remain historical records.
+Current refinement: [0017 — Multilingual arrival and ambient score](0017-multilingual-arrival-and-ambient-score.md), retaining [0016 — Frost frontier and modern GPU](0016-frost-frontier-and-modern-gpu.md) and refining [0015 — Nightfall contact and atmosphere](0015-nightfall-contact-and-atmosphere.md). Adaptive graphics from 0014 and the personal gallery from 0012/0013 remain. The owner canceled the city/observatory directions in 0005–0011; they remain historical records.
 
 - [0001: Main portfolio stack and initial hosting](0001-main-portfolio-stack.md) — accepted.
 - [0002: Current design reference and visual implementation](0002-design-reference.md) — superseded for the active composition by 0004 and 0005.
@@ -45,4 +45,8 @@ Mark a decision accepted only after it has actually been agreed. When a decision
 
 - [0012: Reference-faithful underwater portfolio](0012-underwater-portfolio.md) — current accepted direction, implemented locally.
 - [0013: Personal black-ice exhibits and resume finale](0013-personal-black-ice.md) — current refinement of 0012, implemented locally.
-- [0014: Systems chamber, original sound and adaptive graphics](0014-systems-chamber-and-adaptive-graphics.md) — current local-only game-style refinement.
+- [0014: Systems chamber, original sound and adaptive graphics](0014-systems-chamber-and-adaptive-graphics.md) — historical physical chamber, retained adaptive graphics.
+
+- [0015: Nightfall contact and atmosphere](0015-nightfall-contact-and-atmosphere.md) — current local-only black-ice/Igloo interaction hybrid.
+- [0016: Frost frontier and modern GPU](0016-frost-frontier-and-modern-gpu.md) — current two-layer geometric interaction and slanted modern hardware refinement; local-only.
+- [0017: Multilingual arrival and ambient score](0017-multilingual-arrival-and-ambient-score.md) — restores the requested greeting sequence and original atmospheric music, superseding the prior name-only/cue-only restrictions; local-only.
