@@ -173,7 +173,7 @@ export function SimplePanel({
       <Record
         eyebrow="ABOUT ME"
         title="Babisan Pirapakaran"
-        text="I’m a software engineer studying Computational Mathematics at the University of Waterloo, with a Computer Science minor. I work on platforms and infrastructure at 407 ETR. I’m interested in backend development and low-latency systems. Outside work, I like basketball, boxing, lifting, and anime."
+        text="I’m a software engineer studying Computational Mathematics at the University of Waterloo, with a Computer Science minor. I work on platforms and infrastructure at 407 ETR. I’m interested in backend development and low-latency systems. Outside of work and school, I like to watch sports, play video games and hangout with my friends."
         complete={<AboutRecord />}
       />
     );
