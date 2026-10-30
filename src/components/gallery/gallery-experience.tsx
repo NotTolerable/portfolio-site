@@ -508,8 +508,8 @@ export function GalleryExperience({ children }: { children: ReactNode }) {
             concurrency, and performance.
           </p>
           <p>
-            I’m also exploring GPU programming and CUDA. Away from my desk,
-            I like basketball, boxing, lifting, and anime.
+            I’m also exploring GPU programming and CUDA. Away from the desk,
+            I like sports, video games and watching shows.
           </p>
           <button className="closing-link" onClick={() => openPanel("skills")}>
             Tools & interests <span aria-hidden="true">↗</span>
